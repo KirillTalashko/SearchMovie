@@ -6,17 +6,17 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.searchmovie.HomeFragment"
+        android:name="com.example.searchmovie.presentation.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home"/>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.searchmovie.SearchFragment"
+        android:name="com.example.searchmovie.presentation.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search"/>
     <fragment
         android:id="@+id/personFragment"
-        android:name="com.example.searchmovie.PersonFragment"
+        android:name="com.example.searchmovie.presentation.PersonFragment"
         android:label="person_fragment"
         tools:layout="@layout/fragment_person"/>
 </navigation>
