@@ -11,6 +11,6 @@
     <item
         android:id="@+id/personFragment"
         android:icon="@drawable/bottom_person"
-        android:title=""/>
+        android:title="" />
 
 </menu>

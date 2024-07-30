@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SearchMovie</string>
+    <string name="watch_film">Смотреть фильм</string>
+    <string name="watch_trailer">Смотреть трейлер</string>
+    <string name="name">Название</string>
+    <string name="popular">Популярные</string>
 </resources>

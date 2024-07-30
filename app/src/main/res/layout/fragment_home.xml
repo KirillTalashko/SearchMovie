@@ -9,50 +9,70 @@
         android:id="@+id/text_continue_viewing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start_text"
-        android:layout_marginTop="44dp"
-        android:text="Смотреть трейлер"
-        android:textSize="24sp" />
+        android:layout_margin="@dimen/margin_start_text"
+        android:fontFamily="@font/lato_regular"
+        android:text="@string/watch_film"
+        android:textSize="@dimen/text_size" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/image_continue_viewing"
         android:layout_width="match_parent"
-        android:layout_height="191dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="28dp"
-        app:cardCornerRadius="20dp">
+        android:layout_height="220dp"
+        android:layout_margin="@dimen/margin_start_text"
+        android:padding="10dp"
+        app:cardCornerRadius="39dp">
 
         <ImageView
             android:id="@+id/image_trailer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="center" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="110dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="140dp"
             app:cardCornerRadius="10dp">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:src="@drawable/bottom_play" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="65dp"
-                android:layout_marginTop="7dp"
-                android:text="Посмотреть" />
+                <ImageView
+                    android:id="@+id/image_play_bottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/bottom_play"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="65dp"
-                android:layout_marginTop="30dp"
-                android:text="Название трейлера" />
+                <TextView
+                    android:id="@+id/watch_trailer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:fontFamily="@font/lato_regular"
+                    android:text="@string/watch_trailer"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toEndOf="@id/image_play_bottom"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/name_trailer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:fontFamily="@font/lato_regular"
+                    android:maxLength="20"
+                    android:text="@string/name"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/image_play_bottom" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
     </androidx.cardview.widget.CardView>
 
@@ -60,15 +80,14 @@
         android:id="@+id/text_trending"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start_text"
-        android:layout_marginTop="36dp"
-        android:text="Популярные"
-        android:textSize="24sp" />
+        android:layout_margin="@dimen/margin_start_text"
+        android:fontFamily="@font/lato_regular"
+        android:text="@string/popular"
+        android:textSize="@dimen/text_size" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_image_trending"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="24dp"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>
