@@ -4,4 +4,6 @@
     <string name="watch_trailer">Смотреть трейлер</string>
     <string name="name">Название</string>
     <string name="popular">Популярные</string>
+    <string name="text_rating">IMDb</string>
+    <string name="text_rating_movie">7.0</string>
 </resources>
