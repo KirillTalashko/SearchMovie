@@ -10,6 +10,6 @@ class PlayTrailerView @JvmOverloads constructor(
     : CardView(context,attrs,defStyleAttr) {
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.screen_play_trailer, this, false)
+        LayoutInflater.from(context).inflate(R.layout.screen_play_trailer, this, true)
     }
 }

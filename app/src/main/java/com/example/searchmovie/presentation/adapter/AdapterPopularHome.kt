@@ -4,10 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.databinding.ShowPopularMovieMainBinding
 
-class AdapterPopularHome : ListAdapter<String,  RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class AdapterPopularHome : ListAdapter<String,  ViewHolderPopularHome>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<String>() {
@@ -20,13 +19,13 @@ class AdapterPopularHome : ListAdapter<String,  RecyclerView.ViewHolder>(DIFF_CA
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderPopularHome {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = ShowPopularMovieMainBinding.inflate(layoutInflater,parent,false)
         return ViewHolderPopularHome(view)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolderPopularHome, position: Int) {
     }
 
 }
