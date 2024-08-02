@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/image_play_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bottom_play"
+        android:layout_gravity="start|center" />
+
+    <TextView
+        android:id="@+id/watch_trailer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lato_regular"
+        android:text="@string/watch_trailer"
+        android:textSize="16sp"
+        android:layout_gravity="top|center" />
+
+    <TextView
+        android:id="@+id/name_trailer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lato_regular"
+        android:maxLength="20"
+        android:text="@string/name"
+        android:textSize="16sp"
+        android:layout_gravity="bottom|center" />
+</androidx.cardview.widget.CardView>
