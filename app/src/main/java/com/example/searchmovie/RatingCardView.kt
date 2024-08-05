@@ -5,11 +5,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.cardview.widget.CardView
 
-class PlayTrailerView @JvmOverloads constructor(
+class RatingCardView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : CardView(context,attrs,defStyleAttr) {
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.screen_play_trailer, this, true)
+        LayoutInflater.from(context).inflate(R.layout.screen_rating_card, this, true)
     }
 }
