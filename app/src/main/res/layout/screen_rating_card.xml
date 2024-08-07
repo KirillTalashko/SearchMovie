@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,25 +10,25 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/rating_text_cardview_popular"
+            android:id="@+id/text_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/lato_regular"
             android:text="@string/text_rating"
             android:textSize="11sp"
-            app:layout_constraintBottom_toTopOf="@id/image_star_cardview_popular"
-            app:layout_constraintStart_toStartOf="@id/image_star_cardview_popular"
+            app:layout_constraintBottom_toTopOf="@id/image_star"
+            app:layout_constraintStart_toStartOf="@id/image_star"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/image_star_cardview_popular"
+            android:id="@+id/image_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:src="@drawable/image_star"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rating_text_cardview_popular" />
+            app:layout_constraintTop_toBottomOf="@id/text_rating" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
             android:text="@string/text_rating_movie"
             android:textSize="@dimen/text_size_in_card"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image_star_cardview_popular" />
+            app:layout_constraintStart_toEndOf="@id/image_star" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</merge>

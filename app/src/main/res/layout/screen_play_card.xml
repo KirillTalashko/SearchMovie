@@ -1,49 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_layout_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp">
+        android:background="@color/gray_shadow_text">
 
         <ImageView
             android:id="@+id/image_play_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:src="@drawable/bottom_play"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/watch_trailer"
+            android:id="@+id/text_watch_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/lato_regular"
             android:text="@string/watch_trailer"
             android:textColor="@color/gray_text"
             android:textSize="@dimen/text_size_in_card"
-            android:layout_marginStart="10dp"
-            app:layout_constraintBottom_toTopOf="@id/name_trailer"
+            app:layout_constraintBottom_toTopOf="@id/text_name_movie"
             app:layout_constraintStart_toEndOf="@id/image_play_bottom"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/name_trailer"
+            android:id="@+id/text_name_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:fontFamily="@font/lato_regular"
             android:maxLength="15"
-            android:layout_marginStart="10dp"
             android:text="@string/name"
-            android:textSize="@dimen/text_size_in_card"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_play_bottom"
-            app:layout_constraintTop_toBottomOf="@id/watch_trailer" />
+            app:layout_constraintTop_toBottomOf="@id/text_watch_movie" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</merge>

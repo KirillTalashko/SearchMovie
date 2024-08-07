@@ -11,5 +11,6 @@ class RatingCardView @JvmOverloads constructor(
 
     init {
         LayoutInflater.from(context).inflate(R.layout.screen_rating_card, this, true)
+        radius = 30f
     }
 }
