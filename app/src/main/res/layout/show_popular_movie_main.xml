@@ -8,9 +8,10 @@
     app:cardCornerRadius="30dp">
 
     <ImageView
+        android:id="@+id/image_trending"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="center" />
+        android:scaleType="centerCrop" />
 
     <com.example.searchmovie.RatingCardView
         android:layout_width="wrap_content"
