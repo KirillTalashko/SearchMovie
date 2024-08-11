@@ -26,7 +26,8 @@
         android:layout_gravity="bottom|center"
         android:layout_margin="30dp"
         android:background="@drawable/text_color_card_trending"
-        android:padding="25dp"
+        android:padding="15dp"
         android:text="@string/name"
-        android:textSize="@dimen/text_size_in_card" />
+        android:textSize="@dimen/text_size_in_card"
+        android:maxEms="10"/>
 </androidx.cardview.widget.CardView>

@@ -36,6 +36,7 @@
             android:scaleType="centerCrop" />
 
         <com.example.searchmovie.PlayCardView
+            android:id="@+id/play_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"

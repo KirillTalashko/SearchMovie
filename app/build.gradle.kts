@@ -54,5 +54,12 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation (libs.glide)
 
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.process)
 
+    implementation(libs.okhttp)
+    implementation (libs.retrofit)
+    implementation(libs.logging.interceptor)
+    implementation (libs.converter.gson)
 }

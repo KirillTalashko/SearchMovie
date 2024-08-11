@@ -26,7 +26,7 @@ class AdapterPopularHome : ListAdapter<String,  ViewHolderPopularHome>(DIFF_CALL
     }
 
     override fun onBindViewHolder(holder: ViewHolderPopularHome, position: Int) {
-        holder.bind()
+        holder.bind(getItem(position))
     }
 
 }

@@ -18,9 +18,8 @@ class CenterZoomLayoutManager(context: Context) : LinearLayoutManager(
         state: RecyclerView.State?
     ): Int {
         if (orientation == HORIZONTAL) {
-            val scrolled = super.scrollHorizontallyBy(dx, recycler, state)
             scaleChildren()
-            return scrolled
+            return super.scrollHorizontallyBy(dx, recycler, state)
         } else {
             return 0
         }

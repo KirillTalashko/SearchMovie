@@ -5,9 +5,9 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_layout_rating_card"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/text_rating"
@@ -24,7 +24,6 @@
             android:id="@+id/image_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:src="@drawable/image_star"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,11 +32,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="5dp"
             android:fontFamily="@font/lato_regular"
             android:text="@string/text_rating_movie"
             android:textSize="@dimen/text_size_in_card"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_star" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
