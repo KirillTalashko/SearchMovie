@@ -1,43 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/text_continue_viewing"
+        android:id="@+id/text_watch_movie_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="@dimen/margin_start_text"
         android:layout_marginTop="44dp"
-        android:textSize="24sp"
-        android:text="Продолжить просмотр"/>
+        android:fontFamily="@font/lato_regular"
+        android:text="@string/watch_film"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintBottom_toTopOf="@id/card_movie_main"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/image_continue_viewing"
+        android:id="@+id/card_movie_main"
         android:layout_width="match_parent"
-        android:layout_height="191dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="25dp"
-        app:cardCornerRadius="40dp"
-        android:backgroundTint="@color/black"/>
+        android:layout_height="220dp"
+        android:layout_marginHorizontal="@dimen/margin_start_text"
+        android:layout_marginTop="28dp"
+        app:cardCornerRadius="39dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_watch_movie_main">
+
+        <ImageView
+            android:id="@+id/image_movie"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <com.example.searchmovie.PlayCardView
+            android:id="@+id/play_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/margin_start_text" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/text_trending"
+        android:id="@+id/text_trending_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Популярные"
-        android:layout_marginTop="40dp"
-        android:layout_marginStart="40dp"
-        android:textSize="24sp"/>
+        android:layout_margin="24dp"
+        android:fontFamily="@font/lato_regular"
+        android:text="@string/popular"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_movie_main" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/middle_screen_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_start_text"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_image_trending"
+        android:id="@+id/scroll_trending_movies_main"
         android:layout_width="match_parent"
-        android:layout_height="320dp"
-        android:orientation="horizontal"
-        android:layout_marginTop="24dp"/>
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/middle_screen_main"
+        tools:itemCount="3"
+        tools:listitem="@layout/show_popular_movie_main" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
