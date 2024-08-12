@@ -1,10 +1,11 @@
-package com.example.searchmovie
+package com.example.searchmovie.presentation.customView
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.searchmovie.R
 
 
 class RatingCardView @JvmOverloads constructor(

@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
-import com.example.searchmovie.CenterZoomLayoutManager
 import com.example.searchmovie.databinding.FragmentHomeBinding
-import com.example.searchmovie.domain.RepositoryGetTrailer
+import com.example.searchmovie.domain.MovieRepositoryImpl
+import com.example.searchmovie.model.StatusRequest
 import com.example.searchmovie.presentation.adapter.AdapterPopularHome
-import com.example.searchmovie.presentation.viewModel.MyViewModelFactory
-import com.example.searchmovie.presentation.viewModel.ViewModelRandomTrailer
+import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
+import com.example.searchmovie.presentation.viewModel.ViewModelFactory
+import com.example.searchmovie.presentation.viewModel.ViewModelRandomMovie
 
 class HomeFragment : Fragment() {
 
@@ -21,8 +21,11 @@ class HomeFragment : Fragment() {
         get() = _binding!!
 
 
-    private val viewModel: ViewModelRandomTrailer by lazy {
-        ViewModelProvider(this, factory = MyViewModelFactory(repository = RepositoryGetTrailer()))[ViewModelRandomTrailer::class.java]
+    private val viewModel: ViewModelRandomMovie by lazy {
+        ViewModelProvider(
+            this,
+            factory = ViewModelFactory(repository = MovieRepositoryImpl())
+        )[ViewModelRandomMovie::class.java]
     }
 
     override fun onCreateView(
@@ -39,13 +42,35 @@ class HomeFragment : Fragment() {
         binding.scrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
         val adapter = AdapterPopularHome()
         binding.scrollTrendingMoviesMain.adapter = adapter
-        adapter.submitList(listOf("Первому игроку приготовиться", "Матрица","Валл-и","Первому игроку приготовиться"))
-        viewModel.getTrailer()
-        viewModel.trailer.observe(viewLifecycleOwner){
-            Glide.with(requireContext())
-                .load(it?.let {it.persons[1].photo})
-                .into(binding.imageMovie)
+        adapter.submitList(
+            listOf(
+                "Первому игроку приготовиться",
+                "Матрица",
+                "Валл-и",
+                "Первому игроку приготовиться"
+            )
+        )
+        viewModel.getStatusResponse()
+        viewModel.trailer.observe(viewLifecycleOwner) {
+            when (it) {
+                is StatusRequest.Error -> {
+                    binding.loadingProgressBar.visibility = View.GONE
+                    viewModel.getStatusResponse()
+                }
+
+                StatusRequest.Loading -> {
+                    binding.loadingProgressBar.visibility = View.VISIBLE
+                }
+
+                is StatusRequest.Success -> {
+                    val url = it.data.poster.url
+                    binding.imageMovie.visibility = View.VISIBLE
+                    binding.playCard.visibility = View.VISIBLE
+                    binding.loadingProgressBar.visibility = View.GONE
+                    viewModel.getPhoto(requireContext(), url, binding.imageMovie)
+                    binding.playCard.getTextNameView().text = it.data.name
+                }
+            }
         }
     }
-
 }

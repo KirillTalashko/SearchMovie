@@ -1,4 +1,4 @@
-package com.example.searchmovie
+package com.example.searchmovie.presentation.customView
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager

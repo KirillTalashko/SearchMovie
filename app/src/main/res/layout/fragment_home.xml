@@ -29,18 +29,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_watch_movie_main">
 
+        <ProgressBar
+            android:id="@+id/loading_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible"/>
+
         <ImageView
             android:id="@+id/image_movie"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
 
-        <com.example.searchmovie.PlayCardView
+        <com.example.searchmovie.presentation.customView.PlayCardView
             android:id="@+id/play_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_margin="@dimen/margin_start_text" />
+            android:layout_margin="@dimen/margin_start_text"
+            android:visibility="gone"/>
     </androidx.cardview.widget.CardView>
 
     <TextView
