@@ -4,9 +4,13 @@ import android.content.Context
 import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.example.searchmovie.domain.MovieRepository
 import com.example.searchmovie.model.StatusRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
 
 class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel() {
 
@@ -15,11 +19,17 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
         get() = _trailer
 
     fun getStatusResponse() {
-        repository.getRandomMovie { response, throwable ->
-            if (throwable != null)
-                _trailer.value = StatusRequest.Error(throwable)
-            else if (response != null)
-                _trailer.value = StatusRequest.Success(response)
+        viewModelScope.launch(Dispatchers.IO) {
+            val body = repository.getRandomMovie().body()
+            try {
+                if (body != null) {
+                    _trailer.postValue(StatusRequest.Success(body))
+                } else
+                    _trailer.postValue(StatusRequest.Loading)
+
+            } catch (e: Exception) {
+                _trailer.postValue(StatusRequest.Error(e))
+            }
         }
     }
 

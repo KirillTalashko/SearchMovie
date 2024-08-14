@@ -1,7 +1,8 @@
 package com.example.searchmovie.domain
 
 import com.example.searchmovie.model.PosterMovie
+import retrofit2.Response
 
 interface MovieRepository {
-    fun getRandomMovie(callback: (PosterMovie?, Throwable?) -> Unit)
+    suspend fun getRandomMovie() : Response<PosterMovie>
 }

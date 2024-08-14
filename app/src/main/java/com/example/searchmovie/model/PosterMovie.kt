@@ -8,6 +8,6 @@ data class PosterMovie(
 )
 
 data class Poster(
-    @SerializedName("url") val url: String?
+    @SerializedName("url") val url: String
 )
 

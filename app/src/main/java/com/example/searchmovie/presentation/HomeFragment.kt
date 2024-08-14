@@ -54,8 +54,12 @@ class HomeFragment : Fragment() {
         viewModel.trailer.observe(viewLifecycleOwner) {
             when (it) {
                 is StatusRequest.Error -> {
+                    it.error.printStackTrace()
                     binding.loadingProgressBar.visibility = View.GONE
-                    viewModel.getStatusResponse()
+                    binding.restartStateButton.visibility = View.VISIBLE
+                    binding.restartStateButton.setOnClickListener {
+                        viewModel.getStatusResponse()
+                    }
                 }
 
                 StatusRequest.Loading -> {

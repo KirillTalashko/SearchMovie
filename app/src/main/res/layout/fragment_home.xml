@@ -35,6 +35,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="visible"/>
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/restart_state_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:src="@drawable/restart_state"
+            android:background="@color/white"/>
 
         <ImageView
             android:id="@+id/image_movie"
