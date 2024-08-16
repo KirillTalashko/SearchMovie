@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.domain.MovieRepositoryImpl
+import com.example.searchmovie.extension.getPhoto
 import com.example.searchmovie.model.StatusRequest
 import com.example.searchmovie.presentation.adapter.AdapterPopularHome
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
@@ -51,14 +53,16 @@ class HomeFragment : Fragment() {
             )
         )
         viewModel.getStatusResponse()
-        viewModel.trailer.observe(viewLifecycleOwner) {
+        viewModel.movie.observe(viewLifecycleOwner) {
             when (it) {
                 is StatusRequest.Error -> {
-                    it.error.printStackTrace()
+                    Toast.makeText(requireContext(), it.error, Toast.LENGTH_LONG).show()
                     binding.loadingProgressBar.visibility = View.GONE
                     binding.restartStateButton.visibility = View.VISIBLE
                     binding.restartStateButton.setOnClickListener {
                         viewModel.getStatusResponse()
+                        binding.restartStateButton.visibility = View.GONE
+                        binding.loadingProgressBar.visibility = View.VISIBLE
                     }
                 }
 
@@ -67,11 +71,11 @@ class HomeFragment : Fragment() {
                 }
 
                 is StatusRequest.Success -> {
-                    val url = it.data.poster.url
+                    val url = it.data.poster.url!!
                     binding.imageMovie.visibility = View.VISIBLE
                     binding.playCard.visibility = View.VISIBLE
                     binding.loadingProgressBar.visibility = View.GONE
-                    viewModel.getPhoto(requireContext(), url, binding.imageMovie)
+                    requireContext().getPhoto(url, binding.imageMovie)
                     binding.playCard.getTextNameView().text = it.data.name
                 }
             }

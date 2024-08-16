@@ -3,7 +3,7 @@ package com.example.searchmovie.presentation.customView
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.searchmovie.utils.log
+import com.example.searchmovie.extension.log
 import java.lang.Math.abs
 
 class CenterZoomLayoutManager(context: Context) : LinearLayoutManager(

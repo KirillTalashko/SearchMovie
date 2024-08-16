@@ -1,4 +1,4 @@
-package com.example.searchmovie.utils
+package com.example.searchmovie.extension
 
 import android.util.Log
 
