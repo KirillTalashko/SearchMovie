@@ -70,7 +70,8 @@
         android:text="@string/popular"
         android:textSize="@dimen/text_size"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_movie_main" />
+        app:layout_constraintTop_toBottomOf="@id/card_movie_main"
+        app:layout_constraintBottom_toTopOf="@+id/scroll_trending_movies_main"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/middle_screen_main"

@@ -53,16 +53,19 @@ class HomeFragment : Fragment() {
             )
         )
         viewModel.getStatusResponse()
+        //viewModel.getListMovie()
         viewModel.movie.observe(viewLifecycleOwner) {
             when (it) {
                 is StatusRequest.Error -> {
                     Toast.makeText(requireContext(), it.error, Toast.LENGTH_LONG).show()
-                    binding.loadingProgressBar.visibility = View.GONE
-                    binding.restartStateButton.visibility = View.VISIBLE
-                    binding.restartStateButton.setOnClickListener {
-                        viewModel.getStatusResponse()
-                        binding.restartStateButton.visibility = View.GONE
-                        binding.loadingProgressBar.visibility = View.VISIBLE
+                    binding.apply {
+                        loadingProgressBar.visibility = View.GONE
+                        restartStateButton.visibility = View.VISIBLE
+                        restartStateButton.setOnClickListener {
+                            viewModel.getStatusResponse()
+                            restartStateButton.visibility = View.GONE
+                            loadingProgressBar.visibility = View.VISIBLE
+                        }
                     }
                 }
 
@@ -72,11 +75,13 @@ class HomeFragment : Fragment() {
 
                 is StatusRequest.Success -> {
                     val url = it.data.poster.url!!
-                    binding.imageMovie.visibility = View.VISIBLE
-                    binding.playCard.visibility = View.VISIBLE
-                    binding.loadingProgressBar.visibility = View.GONE
+                    binding.apply {
+                        imageMovie.visibility = View.VISIBLE
+                        playCard.visibility = View.VISIBLE
+                        loadingProgressBar.visibility = View.GONE
+                        playCard.getTextNameView().text = it.data.name
+                    }
                     requireContext().getPhoto(url, binding.imageMovie)
-                    binding.playCard.getTextNameView().text = it.data.name
                 }
             }
         }
