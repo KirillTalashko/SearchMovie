@@ -1,7 +1,9 @@
 package com.example.searchmovie.domain
 
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
+import okio.IOException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -12,6 +14,27 @@ class RetrofitGetApi {
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(InterceptorMovieApiKey(apiKey))
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        .addInterceptor {
+            var response: Response? = null
+            var firstTry = 0
+            val lastTry = 3
+            var lastError: Exception? = null
+
+            while (firstTry < lastTry) {
+                try {
+                    response = it.proceed(it.request())
+                    if (response.isSuccessful) {
+                        return@addInterceptor response
+                    }
+                } catch (e: Exception) {
+                    lastError = e
+                }
+
+                firstTry++
+            }
+
+            response ?: throw lastError ?: throw IOException("Ошибка получения данных")
+        }
         .build()
 
     private val retrofit =
