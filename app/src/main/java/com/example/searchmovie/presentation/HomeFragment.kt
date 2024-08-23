@@ -9,12 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.domain.MovieRepositoryImpl
-import com.example.searchmovie.extension.getPhoto
 import com.example.searchmovie.model.StatusRequest
 import com.example.searchmovie.presentation.adapter.AdapterPopularHome
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
 import com.example.searchmovie.presentation.viewModel.ViewModelFactory
 import com.example.searchmovie.presentation.viewModel.ViewModelRandomMovie
+import com.example.searchmovie.utils.ImageHelper
 
 class HomeFragment : Fragment() {
 
@@ -44,16 +44,6 @@ class HomeFragment : Fragment() {
         binding.scrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
         val adapter = AdapterPopularHome()
         binding.scrollTrendingMoviesMain.adapter = adapter
-        adapter.submitList(
-            listOf(
-                "Первому игроку приготовиться",
-                "Матрица",
-                "Валл-и",
-                "Первому игроку приготовиться"
-            )
-        )
-        viewModel.getStatusResponse()
-        //viewModel.getListMovie()
         viewModel.movie.observe(viewLifecycleOwner) {
             when (it) {
                 is StatusRequest.Error -> {
@@ -74,16 +64,18 @@ class HomeFragment : Fragment() {
                 }
 
                 is StatusRequest.Success -> {
-                    val url = it.data.poster.url!!
                     binding.apply {
                         imageMovie.visibility = View.VISIBLE
                         playCard.visibility = View.VISIBLE
                         loadingProgressBar.visibility = View.GONE
                         playCard.getTextNameView().text = it.data.name
                     }
-                    requireContext().getPhoto(url, binding.imageMovie)
+                    ImageHelper().getPhoto(it.data.poster.url, binding.imageMovie)
                 }
             }
+        }
+        viewModel.listMovie.observe(viewLifecycleOwner){
+            adapter.submitList(it.movie)
         }
     }
 }

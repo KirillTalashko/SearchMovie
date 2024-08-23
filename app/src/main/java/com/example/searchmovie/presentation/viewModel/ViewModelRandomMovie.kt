@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.searchmovie.domain.MovieRepository
 import com.example.searchmovie.extension.checkingResponse
+import com.example.searchmovie.model.MovieResponse
 import com.example.searchmovie.model.StatusRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,30 +22,43 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
     private var _movie = MutableLiveData<StatusRequest>(StatusRequest.Loading)
     val movie: MutableLiveData<StatusRequest>
         get() = _movie
+    private var _listMovie = MutableLiveData<MovieResponse>()
+    val listMovie: MutableLiveData<MovieResponse>
+        get() = _listMovie
 
+    init {
+        getStatusResponse()
+        getListMovieResponse()
+    }
 
     fun getStatusResponse() {
         _movie.postValue(StatusRequest.Loading)
-        jobResponseMovie = viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val response = repository.getRandomMovie()
-                if (response.errorBody() == null) {
-                    TODO()
-                } else {
-                    _movie.postValue(StatusRequest.Success(response.body()!!))
-                }
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = try {
+                repository.getRandomMovie()
             } catch (e: Exception) {
                 _movie.postValue(StatusRequest.Error(e.checkingResponse()))
+                return@launch
             }
+            response.body()?.let {
+                _movie.postValue(StatusRequest.Success(it))
+            } ?: _movie.postValue(StatusRequest.Error(NullPointerException().checkingResponse()))
         }
     }
 
-    fun getListMovie() {
+    private fun getListMovieResponse() {
         viewModelScope.launch(Dispatchers.IO) {
-            val responseListMovie = repository.getListMovie()
-            "Ответ: ${responseListMovie.body()}"
+            val response = try {
+                repository.getListMovie()
+            } catch (e: Exception) {
+                e.checkingResponse()
+                return@launch
+            }
+            _listMovie.postValue(response.body())
+            // Здесь должна быть проверка на null
         }
     }
+
 
     override fun onCleared() {
         super.onCleared()

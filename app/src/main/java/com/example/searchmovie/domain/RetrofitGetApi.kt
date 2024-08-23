@@ -14,26 +14,20 @@ class RetrofitGetApi {
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(InterceptorMovieApiKey(apiKey))
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-        .addInterceptor {
+        .addInterceptor {chain ->
             var response: Response? = null
-            var firstTry = 0
-            val lastTry = 3
             var lastError: Exception? = null
-
-            while (firstTry < lastTry) {
+            repeat(3){
                 try {
-                    response = it.proceed(it.request())
-                    if (response.isSuccessful) {
-                        return@addInterceptor response
+                    response = chain.proceed(chain.request())
+                    if (response!!.isSuccessful){
+                        return@addInterceptor response!!
                     }
-                } catch (e: Exception) {
+                }catch (e:Exception){
                     lastError = e
                 }
-
-                firstTry++
             }
-
-            response ?: throw lastError ?: throw IOException("Ошибка получения данных")
+            response ?:throw lastError ?: throw IOException("Ошибка получения данных")
         }
         .build()
 
