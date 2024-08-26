@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.domain.MovieRepositoryImpl
-import com.example.searchmovie.model.StatusRequest
+import com.example.searchmovie.presentation.viewModel.StatusRequest
 import com.example.searchmovie.presentation.adapter.AdapterPopularHome
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
 import com.example.searchmovie.presentation.viewModel.ViewModelFactory
@@ -44,7 +44,7 @@ class HomeFragment : Fragment() {
         binding.scrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
         val adapter = AdapterPopularHome()
         binding.scrollTrendingMoviesMain.adapter = adapter
-        viewModel.movie.observe(viewLifecycleOwner) {
+        viewModel.state.observe(viewLifecycleOwner) {
             when (it) {
                 is StatusRequest.Error -> {
                     Toast.makeText(requireContext(), it.error, Toast.LENGTH_LONG).show()
@@ -70,12 +70,12 @@ class HomeFragment : Fragment() {
                         loadingProgressBar.visibility = View.GONE
                         playCard.getTextNameView().text = it.data.name
                     }
-                    ImageHelper().getPhoto(it.data.poster.url, binding.imageMovie)
+                    ImageHelper().getPhoto(it.data.poster?.url, binding.imageMovie)
                 }
             }
         }
-        viewModel.listMovie.observe(viewLifecycleOwner){
-            adapter.submitList(it.movie)
+        viewModel.mediator.observe(viewLifecycleOwner){
+
         }
     }
 }

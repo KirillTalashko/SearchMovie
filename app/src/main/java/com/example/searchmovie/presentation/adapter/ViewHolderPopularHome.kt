@@ -20,7 +20,6 @@ class ViewHolderPopularHome(private val binding: ShowPopularMovieMainBinding) :
         }*/
         binding.textNameCardMovie.text = item.name
         binding.cardRating.getTextRating().text = rating.toString()
-        ImageHelper().getPhoto(item.poster.url, binding.imageTrending)
-
+        ImageHelper().getPhoto(item.poster?.url, binding.imageTrending)
     }
 }

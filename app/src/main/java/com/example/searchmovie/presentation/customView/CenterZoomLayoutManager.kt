@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.extension.log
-import java.lang.Math.abs
+import kotlin.math.abs
 
 class CenterZoomLayoutManager(context: Context) : LinearLayoutManager(
     context,
@@ -27,7 +27,7 @@ class CenterZoomLayoutManager(context: Context) : LinearLayoutManager(
 
     private fun scaleChildren() {
         val midpoint = width / 2
-        val endDistance = shrinkDirection * midpoint
+        val endDistance = shrinkDirection * width
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             val childMidpoint = child?.let { getDecoratedLeft(it) + getDecoratedRight(it) / 2f }

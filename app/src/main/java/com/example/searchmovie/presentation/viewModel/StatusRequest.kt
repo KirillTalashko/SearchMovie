@@ -1,4 +1,6 @@
-package com.example.searchmovie.model
+package com.example.searchmovie.presentation.viewModel
+
+import com.example.searchmovie.model.Movie
 
 sealed class StatusRequest {
     data class Error(val error: String) : StatusRequest()
