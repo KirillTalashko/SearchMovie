@@ -4,7 +4,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
 import com.example.searchmovie.domain.MovieRepository
 import com.example.searchmovie.extension.checkingResponse
 import com.example.searchmovie.model.Movie
@@ -13,7 +12,9 @@ import kotlinx.coroutines.launch
 
 class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel() {
 
-    private var _mediatorData = MediatorLiveData<DetailsData>()
+    private var _mediatorData = MediatorLiveData<DetailsData>().apply {
+        value = DetailsData(emptyList(), null,null,null)
+    }
     private var _movie = MutableLiveData<Movie>()
     private var _listMovie = MutableLiveData<List<Movie>>()
     private var _movieError = MutableLiveData<String>()

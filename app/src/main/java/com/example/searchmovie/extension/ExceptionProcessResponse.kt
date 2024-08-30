@@ -4,7 +4,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 fun Exception.checkingResponse(): String{
-        when(this) {
+       return when(this) {
             is NullPointerException ->{
                 return "Список пуст"
             }
@@ -14,6 +14,6 @@ fun Exception.checkingResponse(): String{
             is UnknownHostException -> {
                 return "Нет соединения с сервером"
             }
+           else -> "Нет соединения с сервером"
         }
-        return this.message!!
     }
