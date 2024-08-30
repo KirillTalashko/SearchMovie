@@ -4,6 +4,8 @@ import com.example.searchmovie.model.Movie
 
 sealed class StatusRequest {
     data class Error(val error: String) : StatusRequest()
-    data class Success(val data: Movie) : StatusRequest()
-    data object Loading: StatusRequest()
+    data class SuccessMovie(val movie: Movie) : StatusRequest()
+    data class SuccessListMovie(val listMovie: List<Movie>): StatusRequest()
+    data object LoadingMovie : StatusRequest()
+    data object LoadingListMovie : StatusRequest()
 }
