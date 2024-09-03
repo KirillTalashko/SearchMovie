@@ -96,6 +96,7 @@ class HomeFragment : Fragment() {
                 StatusRequest.LoadingMovie -> {
                     binding.shimmerPlayCard.startShimmer()
                     binding.shimmerPlayCard.visibility = View.VISIBLE
+                    binding.cardMovieMain.visibility = View.GONE
                 }
 
                 is StatusRequest.SuccessListMovie -> {
@@ -108,7 +109,10 @@ class HomeFragment : Fragment() {
                 is StatusRequest.SuccessMovie -> {
                     binding.apply {
                         shimmerPlayCard.stopShimmer()
-                        binding.shimmerPlayCard.visibility = View.GONE
+                        shimmerPlayCard.visibility = View.GONE
+                        cardMovieMain.visibility = View.VISIBLE
+                        imageMovie.visibility = View.VISIBLE
+                        playCard.visibility = View.VISIBLE
                         playCard.getTextNameView().text = it.movie.name ?: "Нет названия"
                     }
                     ImageHelper().getPhoto(it.movie.poster?.url, binding.imageMovie)
