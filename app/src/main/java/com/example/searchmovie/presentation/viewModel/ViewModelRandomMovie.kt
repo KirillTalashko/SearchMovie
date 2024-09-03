@@ -9,10 +9,13 @@ import com.example.searchmovie.extension.checkingResponse
 import com.example.searchmovie.extension.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel() {
 
-    var isLoading = false
+    private var _isLoading = false
+    val isLoading: Boolean
+        get() = _isLoading
 
     private val _state = MutableLiveData<StatusRequest>()
     val state: LiveData<StatusRequest>
@@ -24,13 +27,12 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
     }
 
     fun getStatusResponse() {
-        _state.postValue(StatusRequest.LoadingMovie)
+        _state.value = StatusRequest.LoadingMovie
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = repository.getRandomMovie()
                 response.body()?.let {
                     _state.postValue(StatusRequest.SuccessMovie(it))
-                    isLoading = false
                 }
                     ?: run { _state.postValue(StatusRequest.Error(NullPointerException().checkingResponse())) }
             } catch (e: Exception) {
@@ -40,21 +42,28 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
         }
     }
 
-    private fun getListMovieResponse() {
-        _state.postValue(StatusRequest.LoadingListMovie)
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val response = repository.getListMovie()
-                response.body()?.let {
-                    val currentList = it.movie.orEmpty()
-                    val updatedList = it.movie?.plus(currentList) ?: emptyList()
-                    isLoading = false
-                    _state.postValue(StatusRequest.SuccessListMovie(updatedList))
-                }
-                    ?: run { _state.postValue(StatusRequest.Error(NullPointerException().checkingResponse())) }
-            } catch (e: Exception) {
-                _state.postValue(StatusRequest.Error(e.checkingResponse()))
+    fun getListMovieResponse() {
+        if (!_isLoading) {
+            "запрос".log()
+            _isLoading = true
+            _state.value = StatusRequest.LoadingListMovie
+            viewModelScope.launch {
+                try {
+                    val response = withContext(Dispatchers.IO) {
+                        repository.getListMovie()
+                    }
+                    response.body()?.let {
+                        val currentList = it.movie.orEmpty()
+                        _state.postValue(StatusRequest.SuccessListMovie(currentList))
+                    }
+                        ?: run { _state.postValue(StatusRequest.Error(NullPointerException().checkingResponse())) }
+                } catch (e: Exception) {
+                    _state.postValue(StatusRequest.Error(e.checkingResponse()))
 
+                } finally {
+                    _isLoading = false
+                    "отработал".log()
+                }
             }
         }
     }

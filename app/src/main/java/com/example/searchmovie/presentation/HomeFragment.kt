@@ -24,8 +24,10 @@ class HomeFragment : Fragment() {
     private val binding
         get() = _binding!!
 
+    private val adapterMovieMain = AdapterPopularHome()
+    private var count = 0
 
-    private val viewModel: ViewModelRandomMovie by lazy {
+    private val viewModel: ViewModelRandomMovie by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
             this,
             factory = ViewModelFactory(repository = MovieRepositoryImpl())
@@ -43,51 +45,70 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.scrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
-        val adapter = AdapterPopularHome()
-        binding.scrollTrendingMoviesMain.adapter = adapter
+        initRecyclerView()
+        observerViewModel()
+        interactionWithView()
+    }
+
+    private fun interactionWithView() {
         binding.restartStateButton.setOnClickListener {
             viewModel.getStatusResponse()
             binding.restartStateButton.visibility = View.GONE
         }
+    }
+
+    private fun initRecyclerView() {
+        binding.scrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
+        binding.scrollTrendingMoviesMain.adapter = adapterMovieMain
         binding.scrollTrendingMoviesMain.addOnScrollListener(object :
             RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                viewModel.isLoading = true
-                val totalItemCount = CenterZoomLayoutManager(requireContext()).itemCount
-                val lastVisibleItem = CenterZoomLayoutManager(requireContext()).findLastVisibleItemPosition()
+                val layoutManager =
+                    binding.scrollTrendingMoviesMain.layoutManager as CenterZoomLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                 if (!viewModel.isLoading && lastVisibleItem == totalItemCount - 3) {
-                    "isLoading = true".log()
-                    viewModel.getStatusResponse()
+                    "запрос № $count, ${viewModel.isLoading},${lastVisibleItem}".log()
+                    count++
+                    viewModel.getListMovieResponse()
                 }
             }
         })
+    }
+
+    private fun observerViewModel() {
         viewModel.state.observe(viewLifecycleOwner) {
             when (it) {
                 is StatusRequest.Error -> {
                     Toast.makeText(requireContext(), it.error, Toast.LENGTH_LONG).show()
                     binding.apply {
-                        binding.loadingProgressBar.visibility = View.GONE
                         binding.restartStateButton.visibility = View.VISIBLE
                     }
                 }
 
-                StatusRequest.LoadingListMovie -> {}
+                StatusRequest.LoadingListMovie -> {
+                    binding.shimmerScrollListMovie.startShimmer()
+                    binding.shimmerScrollListMovie.visibility = View.VISIBLE
+                    binding.cardMovieMain.visibility = View.GONE
+                }
 
                 StatusRequest.LoadingMovie -> {
-                    binding.loadingProgressBar.visibility = View.VISIBLE
+                    binding.shimmerPlayCard.startShimmer()
+                    binding.shimmerPlayCard.visibility = View.VISIBLE
                 }
 
                 is StatusRequest.SuccessListMovie -> {
-                    adapter.submitList(it.listMovie)
+                    binding.shimmerScrollListMovie.stopShimmer()
+                    binding.shimmerScrollListMovie.visibility = View.GONE
+                    binding.scrollTrendingMoviesMain.visibility = View.VISIBLE
+                    adapterMovieMain.submitList(it.listMovie)
                 }
 
                 is StatusRequest.SuccessMovie -> {
                     binding.apply {
-                        imageMovie.visibility = View.VISIBLE
-                        playCard.visibility = View.VISIBLE
-                        loadingProgressBar.visibility = View.GONE
+                        shimmerPlayCard.stopShimmer()
+                        binding.shimmerPlayCard.visibility = View.GONE
                         playCard.getTextNameView().text = it.movie.name ?: "Нет названия"
                     }
                     ImageHelper().getPhoto(it.movie.poster?.url, binding.imageMovie)

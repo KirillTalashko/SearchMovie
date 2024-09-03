@@ -35,8 +35,8 @@ class CenterZoomLayoutManager(context: Context) : LinearLayoutManager(
             val scale = 1f - (shrinkAmount * distanceRelativeEdge) / endDistance
             child.scaleX = scale
             child.scaleY = scale
-            "scale $scale, $width".log()
-            "endDistance $endDistance , childMidpoint $childMidpoint, distanceRelativeEdge $distanceRelativeEdge ".log()
+            //"scale $scale, $width".log()
+            //"endDistance $endDistance , childMidpoint $childMidpoint, distanceRelativeEdge $distanceRelativeEdge ".log()
         }
     }
 }

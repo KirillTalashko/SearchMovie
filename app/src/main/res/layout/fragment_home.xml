@@ -14,7 +14,6 @@
         android:fontFamily="@font/lato_regular"
         android:text="@string/watch_film"
         android:textSize="@dimen/text_size"
-        app:layout_constraintBottom_toTopOf="@id/card_movie_main"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,12 +29,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ProgressBar
-            android:id="@+id/loading_progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="visible" />
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_play_card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/gray_text"
+            android:visibility="visible"
+            app:shimmer_auto_start="true"
+            app:shimmer_duration="4000" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/restart_state_button"
@@ -70,9 +71,8 @@
         android:fontFamily="@font/lato_regular"
         android:text="@string/popular"
         android:textSize="@dimen/text_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_movie_main"
-        app:layout_constraintBottom_toTopOf="@+id/middle_screen_main"/>
+        app:layout_constraintBottom_toTopOf="@+id/middle_screen_main"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/middle_screen_main"
@@ -82,11 +82,28 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_scroll_list_movie"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/middle_screen_main"
+        app:shimmer_auto_start="true"
+        app:shimmer_duration="3000">
+
+        <include layout="@layout/show_popular_movie_main" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/scroll_trending_movies_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="24dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/middle_screen_main"

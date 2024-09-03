@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitGetApi {
-    private val apiKey = "XMM6YTT-2EP4J36-KVCC1HQ-JAKVEF6"
+    private val apiKey = "T89S8JR-Y5343QN-HCRHHVV-KATN0A8"
     private val baseUrl = "https://api.kinopoisk.dev/"
 
     private val okHttpClient = OkHttpClient.Builder()
