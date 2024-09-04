@@ -6,5 +6,5 @@ import retrofit2.Response
 
 interface MovieRepository {
     suspend fun getRandomMovie() : Response<Movie>
-    suspend fun getListMovie(): Response<MovieResponse>
+    suspend fun getListMovie(page:Int): Response<MovieResponse>
 }

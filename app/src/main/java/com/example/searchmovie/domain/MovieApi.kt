@@ -15,7 +15,7 @@ interface MovieApi {
     @GET("v1.4/movie")
     suspend fun getListMovie(
         @Query("limit") limit: Int = 10,
-        @Query("page") page: Int = 1,
+        @Query("page") page: Int,
         @Query("rating.kp") ratingKp: String = "7-10"
     ): Response<MovieResponse>
 }

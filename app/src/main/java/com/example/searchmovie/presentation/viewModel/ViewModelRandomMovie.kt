@@ -13,21 +13,22 @@ import kotlinx.coroutines.withContext
 
 class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel() {
 
-    private var _isLoading = false
-    val isLoading: Boolean
-        get() = _isLoading
+    private var isLoading = false
+    fun getIsLoading() = isLoading
 
     private val _state = MutableLiveData<StatusRequest>()
     val state: LiveData<StatusRequest>
         get() = _state
 
+    private var page = 1
+
     init {
-        getStatusResponse()
-        getListMovieResponse()
+        getRandomMovie()
+        getListMovie()
     }
 
-    fun getStatusResponse() {
-        _state.value = StatusRequest.LoadingMovie
+    fun getRandomMovie() {
+        _state.postValue(StatusRequest.LoadingMovie)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = repository.getRandomMovie()
@@ -42,27 +43,26 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
         }
     }
 
-    fun getListMovieResponse() {
-        if (!_isLoading) {
-            "запрос".log()
-            _isLoading = true
+    fun getListMovie() {
+        if (!isLoading) {
+            isLoading = true
             _state.value = StatusRequest.LoadingListMovie
             viewModelScope.launch {
                 try {
                     val response = withContext(Dispatchers.IO) {
-                        repository.getListMovie()
+                        repository.getListMovie(page = page)
                     }
                     response.body()?.let {
                         val currentList = it.movie.orEmpty()
                         _state.postValue(StatusRequest.SuccessListMovie(currentList))
+                        page++
                     }
                         ?: run { _state.postValue(StatusRequest.Error(NullPointerException().checkingResponse())) }
                 } catch (e: Exception) {
                     _state.postValue(StatusRequest.Error(e.checkingResponse()))
 
                 } finally {
-                    _isLoading = false
-                    "отработал".log()
+                    isLoading = false
                 }
             }
         }

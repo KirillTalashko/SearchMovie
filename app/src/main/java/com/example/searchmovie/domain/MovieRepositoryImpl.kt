@@ -9,8 +9,8 @@ class MovieRepositoryImpl : MovieRepository {
     override suspend fun getRandomMovie(): Response<Movie> {
         return RetrofitGetApi().createMovieApi().getRandomMovie()
     }
-    override suspend fun getListMovie():Response<MovieResponse>{
-        return RetrofitGetApi().createMovieApi().getListMovie()
+    override suspend fun getListMovie(page:Int):Response<MovieResponse>{
+        return RetrofitGetApi().createMovieApi().getListMovie(page = page)
     }
 
 }

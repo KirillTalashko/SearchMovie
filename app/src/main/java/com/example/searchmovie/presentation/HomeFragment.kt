@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.domain.MovieRepositoryImpl
-import com.example.searchmovie.extension.log
 import com.example.searchmovie.presentation.adapter.AdapterPopularHome
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
 import com.example.searchmovie.presentation.viewModel.StatusRequest
@@ -25,7 +24,6 @@ class HomeFragment : Fragment() {
         get() = _binding!!
 
     private val adapterMovieMain = AdapterPopularHome()
-    private var count = 0
 
     private val viewModel: ViewModelRandomMovie by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
@@ -51,9 +49,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun interactionWithView() {
-        binding.restartStateButton.setOnClickListener {
-            viewModel.getStatusResponse()
-            binding.restartStateButton.visibility = View.GONE
+        binding.cardViewMovie.restartStateButton.setOnClickListener {
+            viewModel.getRandomMovie()
         }
     }
 
@@ -68,10 +65,8 @@ class HomeFragment : Fragment() {
                     binding.scrollTrendingMoviesMain.layoutManager as CenterZoomLayoutManager
                 val totalItemCount = layoutManager.itemCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-                if (!viewModel.isLoading && lastVisibleItem == totalItemCount - 3) {
-                    "запрос № $count, ${viewModel.isLoading},${lastVisibleItem}".log()
-                    count++
-                    viewModel.getListMovieResponse()
+                if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
+                    viewModel.getListMovie()
                 }
             }
         })
@@ -82,40 +77,46 @@ class HomeFragment : Fragment() {
             when (it) {
                 is StatusRequest.Error -> {
                     Toast.makeText(requireContext(), it.error, Toast.LENGTH_LONG).show()
-                    binding.apply {
-                        binding.restartStateButton.visibility = View.VISIBLE
-                    }
+                    binding.cardViewMovie.restartStateButton.visibility = View.VISIBLE
                 }
 
                 StatusRequest.LoadingListMovie -> {
-                    binding.shimmerScrollListMovie.startShimmer()
-                    binding.shimmerScrollListMovie.visibility = View.VISIBLE
-                    binding.cardMovieMain.visibility = View.GONE
+                    if (adapterMovieMain.currentList.isEmpty()) {
+                        binding.shimmerScrollListMovie.startShimmer()
+                        binding.shimmerScrollListMovie.visibility = View.VISIBLE
+                        binding.scrollTrendingMoviesMain.visibility = View.GONE
+                    }
                 }
 
                 StatusRequest.LoadingMovie -> {
-                    binding.shimmerPlayCard.startShimmer()
-                    binding.shimmerPlayCard.visibility = View.VISIBLE
-                    binding.cardMovieMain.visibility = View.GONE
+                    binding.apply {
+                        cardViewMovie.restartStateButton.visibility = View.GONE
+                        shimmerPlayCard.startShimmer()
+                        shimmerPlayCard.visibility = View.VISIBLE
+                    }
                 }
 
                 is StatusRequest.SuccessListMovie -> {
-                    binding.shimmerScrollListMovie.stopShimmer()
-                    binding.shimmerScrollListMovie.visibility = View.GONE
-                    binding.scrollTrendingMoviesMain.visibility = View.VISIBLE
-                    adapterMovieMain.submitList(it.listMovie)
+                    if (adapterMovieMain.currentList.isEmpty()) {
+                        binding.apply {
+                            shimmerScrollListMovie.stopShimmer()
+                            shimmerScrollListMovie.visibility = View.GONE
+                            scrollTrendingMoviesMain.visibility = View.VISIBLE
+                        }
+                    }
+                    val currentList = adapterMovieMain.currentList
+                    adapterMovieMain.submitList(currentList.plus(it.listMovie))
                 }
 
                 is StatusRequest.SuccessMovie -> {
                     binding.apply {
                         shimmerPlayCard.stopShimmer()
                         shimmerPlayCard.visibility = View.GONE
-                        cardMovieMain.visibility = View.VISIBLE
-                        imageMovie.visibility = View.VISIBLE
-                        playCard.visibility = View.VISIBLE
-                        playCard.getTextNameView().text = it.movie.name ?: "Нет названия"
+                        cardViewMovie.cardMovieMain.visibility = View.VISIBLE
+                        cardViewMovie.playCard.getTextNameView().text =
+                            it.movie.name ?: "Нет названия"
                     }
-                    ImageHelper().getPhoto(it.movie.poster?.url, binding.imageMovie)
+                    ImageHelper().getPhoto(it.movie.poster?.url, binding.cardViewMovie.imageMovie)
                 }
             }
         }

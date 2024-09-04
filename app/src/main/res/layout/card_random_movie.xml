@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_movie_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="39dp">
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/restart_state_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/white"
+        android:src="@drawable/restart_state"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/image_movie"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <com.example.searchmovie.presentation.customView.PlayCardView
+        android:id="@+id/play_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/margin_start_text" />
+</androidx.cardview.widget.CardView>
