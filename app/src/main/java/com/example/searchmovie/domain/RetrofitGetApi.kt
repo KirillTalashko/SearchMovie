@@ -1,55 +1,44 @@
 package com.example.searchmovie.domain
 
-import com.example.searchmovie.model.RandomTrailerResponse
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
+import okio.IOException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.Callback
-import retrofit2.Response
-import java.io.IOException
 
 class RetrofitGetApi {
-    private val apiKey = "XMM6YTT-2EP4J36-KVCC1HQ-JAKVEF6"
-    private var retrofit: Retrofit? = null
+    private val apiKey = "T89S8JR-Y5343QN-HCRHHVV-KATN0A8"
     private val baseUrl = "https://api.kinopoisk.dev/"
 
     private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(MyInterceptor(apiKey))
+        .addInterceptor(InterceptorMovieApiKey(apiKey))
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        .addInterceptor {chain ->
+            var response: Response? = null
+            var lastError: Exception? = null
+            repeat(3){
+                try {
+                    response = chain.proceed(chain.request())
+                    if (response!!.isSuccessful){
+                        return@addInterceptor response!!
+                    }
+                }catch (e:Exception){
+                    lastError = e
+                }
+            }
+            response ?:throw lastError ?: throw IOException("Ошибка получения данных")
+        }
         .build()
 
-    private fun getRandomMovie(): RandomApi {
-        if (retrofit == null) {
-            retrofit = Retrofit.Builder()
-                .client(okHttpClient)
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        }
-        return retrofit!!.create(RandomApi::class.java)
-    }
+    private val retrofit =
+        Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-    fun getResponse(callback : (RandomTrailerResponse?, Throwable?) -> Unit){
-        getRandomMovie().getRandomMovie().enqueue(object : Callback<RandomTrailerResponse> {
-            override fun onResponse(
-                call: Call<RandomTrailerResponse>,
-                response: Response<RandomTrailerResponse>
-            ) {
-                if (!response.isSuccessful) {
-                    callback(null, Exception("Unexpected code $response"))
-                        throw IOException(
-                            "Запрос к серверу не был успешен"
-                        )
-                    }
-                    callback(response.body(), null)
-            }
-
-            override fun onFailure(call: Call<RandomTrailerResponse>, t: Throwable) {
-                t.printStackTrace()
-                callback(null,t)
-            }
-        })
+    fun createMovieApi(): MovieApi {
+        return retrofit.create(MovieApi::class.java)
     }
 }

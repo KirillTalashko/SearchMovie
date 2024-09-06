@@ -1,10 +1,10 @@
-package com.example.searchmovie
+package com.example.searchmovie.presentation.customView
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.searchmovie.utils.log
-import java.lang.Math.abs
+import com.example.searchmovie.extension.log
+import kotlin.math.abs
 
 class CenterZoomLayoutManager(context: Context) : LinearLayoutManager(
     context,
@@ -27,7 +27,7 @@ class CenterZoomLayoutManager(context: Context) : LinearLayoutManager(
 
     private fun scaleChildren() {
         val midpoint = width / 2
-        val endDistance = shrinkDirection * midpoint
+        val endDistance = shrinkDirection * width
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             val childMidpoint = child?.let { getDecoratedLeft(it) + getDecoratedRight(it) / 2f }
@@ -35,8 +35,8 @@ class CenterZoomLayoutManager(context: Context) : LinearLayoutManager(
             val scale = 1f - (shrinkAmount * distanceRelativeEdge) / endDistance
             child.scaleX = scale
             child.scaleY = scale
-            "scale $scale, $width".log()
-            "endDistance $endDistance , childMidpoint $childMidpoint, distanceRelativeEdge $distanceRelativeEdge ".log()
+            //"scale $scale, $width".log()
+            //"endDistance $endDistance , childMidpoint $childMidpoint, distanceRelativeEdge $distanceRelativeEdge ".log()
         }
     }
 }

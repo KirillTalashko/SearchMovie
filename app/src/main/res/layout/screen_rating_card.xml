@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/text_rating"
+            android:id="@+id/text_imd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/lato_regular"
@@ -27,14 +27,14 @@
             android:src="@drawable/image_star"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_rating" />
+            app:layout_constraintTop_toBottomOf="@id/text_imd" />
 
         <TextView
+            android:id="@+id/text_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:fontFamily="@font/lato_regular"
-            android:text="@string/text_rating_movie"
             android:textSize="@dimen/text_size_in_card"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -5,15 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.searchmovie.databinding.ShowPopularMovieMainBinding
+import com.example.searchmovie.model.Movie
 
-class AdapterPopularHome : ListAdapter<String,  ViewHolderPopularHome>(DIFF_CALLBACK) {
+
+class AdapterPopularHome : ListAdapter<Movie,  ViewHolderPopularHome>(DIFF_CALLBACK) {
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<String>() {
-            override fun areItemsTheSame(oldItem: String, newItem: String) =
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
+            override fun areItemsTheSame(oldItem: Movie, newItem: Movie) =
                 oldItem == newItem
 
-            override fun areContentsTheSame(oldItem: String, newItem: String) =
+            override fun areContentsTheSame(oldItem: Movie, newItem: Movie) =
                 oldItem == newItem
         }
     }

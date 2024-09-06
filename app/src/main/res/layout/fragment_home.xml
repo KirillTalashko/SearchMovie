@@ -9,39 +9,42 @@
         android:id="@+id/text_watch_movie_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start_text"
-        android:layout_marginTop="44dp"
+        android:layout_margin="@dimen/margin_start_text"
         android:fontFamily="@font/lato_regular"
         android:text="@string/watch_film"
         android:textSize="@dimen/text_size"
-        app:layout_constraintBottom_toTopOf="@id/card_movie_main"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_movie_main"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_play_card"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:layout_marginHorizontal="@dimen/margin_start_text"
-        android:layout_marginTop="28dp"
-        app:cardCornerRadius="39dp"
+        android:layout_height="250dp"
+        android:layout_margin="@dimen/margin_start_text"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/middle_screen_main"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_watch_movie_main">
+        app:layout_constraintTop_toTopOf="parent"
+        app:shimmer_auto_start="true"
+        app:shimmer_colored="true"
+        app:shimmer_duration="5000"
+        app:shimmer_highlight_color="@color/orange">
 
-        <ImageView
-            android:id="@+id/image_movie"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+        <include layout="@layout/card_random_movie" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
-        <com.example.searchmovie.PlayCardView
-            android:id="@+id/play_card"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_margin="@dimen/margin_start_text" />
-    </androidx.cardview.widget.CardView>
+    <include
+        android:id="@+id/card_view_movie"
+        layout="@layout/card_random_movie"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginHorizontal="24dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/middle_screen_main"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/text_trending_main"
@@ -51,8 +54,8 @@
         android:fontFamily="@font/lato_regular"
         android:text="@string/popular"
         android:textSize="@dimen/text_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_movie_main" />
+        app:layout_constraintBottom_toTopOf="@+id/middle_screen_main"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/middle_screen_main"
@@ -62,11 +65,29 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_scroll_list_movie"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_margin="24dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/middle_screen_main"
+        app:shimmer_auto_start="true"
+        app:shimmer_colored="true"
+        app:shimmer_duration="5000"
+        app:shimmer_highlight_color="@color/orange">
+
+        <include layout="@layout/show_popular_movie_main" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/scroll_trending_movies_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/middle_screen_main"

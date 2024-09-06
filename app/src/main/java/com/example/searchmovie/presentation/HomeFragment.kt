@@ -4,15 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
-import com.example.searchmovie.CenterZoomLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.databinding.FragmentHomeBinding
-import com.example.searchmovie.domain.RepositoryGetTrailer
+import com.example.searchmovie.domain.MovieRepositoryImpl
 import com.example.searchmovie.presentation.adapter.AdapterPopularHome
-import com.example.searchmovie.presentation.viewModel.MyViewModelFactory
-import com.example.searchmovie.presentation.viewModel.ViewModelRandomTrailer
+import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
+import com.example.searchmovie.presentation.viewModel.StatusRequest
+import com.example.searchmovie.presentation.viewModel.ViewModelFactory
+import com.example.searchmovie.presentation.viewModel.ViewModelRandomMovie
+import com.example.searchmovie.utils.ImageHelper
 
 class HomeFragment : Fragment() {
 
@@ -20,9 +23,13 @@ class HomeFragment : Fragment() {
     private val binding
         get() = _binding!!
 
+    private val adapterMovieMain = AdapterPopularHome()
 
-    private val viewModel: ViewModelRandomTrailer by lazy {
-        ViewModelProvider(this, factory = MyViewModelFactory(repository = RepositoryGetTrailer()))[ViewModelRandomTrailer::class.java]
+    private val viewModel: ViewModelRandomMovie by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(
+            this,
+            factory = ViewModelFactory(repository = MovieRepositoryImpl())
+        )[ViewModelRandomMovie::class.java]
     }
 
     override fun onCreateView(
@@ -36,16 +43,82 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.scrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
-        val adapter = AdapterPopularHome()
-        binding.scrollTrendingMoviesMain.adapter = adapter
-        adapter.submitList(listOf("Первому игроку приготовиться", "Матрица","Валл-и","Первому игроку приготовиться"))
-        viewModel.getTrailer()
-        viewModel.trailer.observe(viewLifecycleOwner){
-            Glide.with(requireContext())
-                .load(it?.let {it.persons[1].photo})
-                .into(binding.imageMovie)
+        initRecyclerView()
+        observerViewModel()
+        interactionWithView()
+    }
+
+    private fun interactionWithView() {
+        binding.cardViewMovie.restartStateButton.setOnClickListener {
+            viewModel.getRandomMovie()
         }
     }
 
+    private fun initRecyclerView() {
+        binding.scrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
+        binding.scrollTrendingMoviesMain.adapter = adapterMovieMain
+        binding.scrollTrendingMoviesMain.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager =
+                    binding.scrollTrendingMoviesMain.layoutManager as CenterZoomLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+                if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
+                    viewModel.getListMovie()
+                }
+            }
+        })
+    }
+
+    private fun observerViewModel() {
+        viewModel.state.observe(viewLifecycleOwner) {
+            when (it) {
+                is StatusRequest.Error -> {
+                    Toast.makeText(requireContext(), it.error, Toast.LENGTH_LONG).show()
+                    binding.cardViewMovie.restartStateButton.visibility = View.VISIBLE
+                }
+
+                StatusRequest.LoadingListMovie -> {
+                    if (adapterMovieMain.currentList.isEmpty()) {
+                        binding.shimmerScrollListMovie.startShimmer()
+                        binding.shimmerScrollListMovie.visibility = View.VISIBLE
+                        binding.scrollTrendingMoviesMain.visibility = View.GONE
+                    }
+                }
+
+                StatusRequest.LoadingMovie -> {
+                    binding.apply {
+                        cardViewMovie.restartStateButton.visibility = View.GONE
+                        shimmerPlayCard.startShimmer()
+                        shimmerPlayCard.visibility = View.VISIBLE
+                    }
+                }
+
+                is StatusRequest.SuccessListMovie -> {
+                    if (adapterMovieMain.currentList.isEmpty()) {
+                        binding.apply {
+                            shimmerScrollListMovie.stopShimmer()
+                            shimmerScrollListMovie.visibility = View.GONE
+                            scrollTrendingMoviesMain.visibility = View.VISIBLE
+                        }
+                    }
+                    val currentList = adapterMovieMain.currentList
+                    adapterMovieMain.submitList(currentList.plus(it.listMovie))
+                }
+
+                is StatusRequest.SuccessMovie -> {
+                    binding.apply {
+                        shimmerPlayCard.stopShimmer()
+                        shimmerPlayCard.visibility = View.GONE
+                        cardViewMovie.cardMovieMain.visibility = View.VISIBLE
+                        cardViewMovie.playCard.getTextNameView().text =
+                            it.movie.name ?: "Нет названия"
+                    }
+                    ImageHelper().getPhoto(it.movie.poster?.url, binding.cardViewMovie.imageMovie)
+                }
+            }
+        }
+    }
 }

@@ -2,13 +2,13 @@ package com.example.searchmovie.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.searchmovie.domain.MyRepository
+import com.example.searchmovie.domain.MovieRepository
 
-class MyViewModelFactory(private val repository : MyRepository): ViewModelProvider.Factory {
+class ViewModelFactory(private val repository : MovieRepository): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ViewModelRandomTrailer::class.java)) {
+        if (modelClass.isAssignableFrom(ViewModelRandomMovie::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return ViewModelRandomTrailer(repository) as T
+            return ViewModelRandomMovie(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
