@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("androidx.navigation.safeargs.kotlin")
+    kotlin("kapt")
 }
 
 android {
@@ -65,4 +66,7 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation (libs.converter.gson)
     implementation (libs.shimmer)
+
+    kapt (libs.dagger.compiler)
+    implementation (libs.dagger)
 }
