@@ -1,14 +1,14 @@
-package com.example.searchmovie.presentation.adapter
+package com.example.searchmovie.presentation.home.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.searchmovie.databinding.ShowPopularMovieMainBinding
-import com.example.searchmovie.model.Movie
+import com.example.searchmovie.modelsMovie.Movie
 
 
-class AdapterPopularHome : ListAdapter<Movie,  ViewHolderPopularHome>(DIFF_CALLBACK) {
+class AdapterPopularHome : ListAdapter<Movie, ViewHolderPopularHome>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {

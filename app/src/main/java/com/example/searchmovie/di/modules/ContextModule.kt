@@ -1,7 +1,7 @@
-package com.example.searchmovie.di
+package com.example.searchmovie.di.modules
 
 import android.content.Context
-import com.example.searchmovie.utils.SearchMovieApp
+import com.example.searchmovie.SearchMovieApp
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

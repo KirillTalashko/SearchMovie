@@ -1,4 +1,4 @@
-package com.example.searchmovie.presentation
+package com.example.searchmovie.presentation.person
 
 import androidx.fragment.app.Fragment
 

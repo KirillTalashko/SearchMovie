@@ -1,4 +1,4 @@
-package com.example.searchmovie.presentation
+package com.example.searchmovie.presentation.home.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,15 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.example.searchmovie.R
+import com.example.searchmovie.SearchMovieApp
+import com.example.searchmovie.core.extension.showToast
+import com.example.searchmovie.core.utils.ImageHelper
 import com.example.searchmovie.databinding.FragmentHomeBinding
-import com.example.searchmovie.extension.showToast
-import com.example.searchmovie.presentation.adapter.AdapterPopularHome
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
-import com.example.searchmovie.presentation.viewModel.StatusRequest
-import com.example.searchmovie.presentation.viewModel.ViewModelFactory
-import com.example.searchmovie.presentation.viewModel.ViewModelRandomMovie
-import com.example.searchmovie.utils.ImageHelper
-import com.example.searchmovie.utils.SearchMovieApp
+import com.example.searchmovie.presentation.home.adapter.AdapterPopularHome
+import com.example.searchmovie.presentation.home.viewModel.HomeFragmentState
+import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
 import javax.inject.Inject
 
 class HomeFragment : Fragment() {
@@ -28,17 +28,20 @@ class HomeFragment : Fragment() {
     private val currentListEmpty: Boolean
         get() = adapterMovieMain.currentList.isEmpty()
 
+    private val inject by lazy {
+        (requireContext().applicationContext as SearchMovieApp).appComponent.inject(this)
+    }
+
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
 
     private val viewModel: ViewModelRandomMovie by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(
-            this,
-            TODO("не смог коректно сделать фабрику и зависимости")
-        )[ViewModelRandomMovie::class.java]
+        ViewModelProvider(this, factory)[ViewModelRandomMovie::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (requireContext().applicationContext as SearchMovieApp).appComponent.inject(this)
+        inject
     }
 
     override fun onCreateView(
@@ -84,12 +87,13 @@ class HomeFragment : Fragment() {
     private fun observerViewModel() {
         viewModel.state.observe(viewLifecycleOwner) {
             when (it) {
-                is StatusRequest.Error -> {
+                is HomeFragmentState.Error -> {
+                    TODO("Сделать отдельный экран для этого состояния")
                     requireContext().showToast(it.error)
                     binding.cardViewMovie.restartStateButton.visibility = View.VISIBLE
                 }
 
-                StatusRequest.LoadingListMovie -> {
+                HomeFragmentState.LoadingListMovie -> {
                     if (currentListEmpty) {
                         binding.shimmerScrollListMovie.startShimmer()
                         binding.shimmerScrollListMovie.visibility = View.VISIBLE
@@ -97,7 +101,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                StatusRequest.LoadingMovie -> {
+                HomeFragmentState.LoadingMovie -> {
                     binding.apply {
                         cardViewMovie.restartStateButton.visibility = View.GONE
                         shimmerPlayCard.startShimmer()
@@ -105,7 +109,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                is StatusRequest.SuccessListMovie -> {
+                is HomeFragmentState.SuccessListMovie -> {
                     if (currentListEmpty) {
                         binding.apply {
                             shimmerScrollListMovie.stopShimmer()
@@ -117,13 +121,13 @@ class HomeFragment : Fragment() {
                     adapterMovieMain.submitList(currentList.plus(it.listMovie))
                 }
 
-                is StatusRequest.SuccessMovie -> {
+                is HomeFragmentState.SuccessMovie -> {
                     binding.apply {
                         shimmerPlayCard.stopShimmer()
                         shimmerPlayCard.visibility = View.GONE
                         cardViewMovie.cardMovieMain.visibility = View.VISIBLE
                         cardViewMovie.playCard.getTextNameView().text =
-                            it.movie.name ?: "Нет названия"
+                            it.movie.name ?: getString(R.string.no_name)
                     }
                     ImageHelper().getPhoto(it.movie.poster?.url, binding.cardViewMovie.imageMovie)
                 }

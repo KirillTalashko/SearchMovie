@@ -1,7 +1,8 @@
-package com.example.searchmovie.domain
+package com.example.searchmovie.domain.repositopy
 
-import com.example.searchmovie.model.Movie
-import com.example.searchmovie.model.MovieResponse
+import com.example.searchmovie.domain.api.MovieApi
+import com.example.searchmovie.modelsMovie.Movie
+import com.example.searchmovie.modelsMovie.MovieResponse
 import retrofit2.Response
 
 class MovieRepositoryImpl(private val movieApi: MovieApi) : MovieRepository {
