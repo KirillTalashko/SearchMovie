@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
@@ -63,6 +64,9 @@ class HomeFragment : Fragment() {
     private fun interactionWithView() {
         binding.cardViewMovie.restartStateButton.setOnClickListener {
             viewModel.getRandomMovie()
+        }
+        binding.cardViewMovie.playCard.getImageView().setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCardMovieFragment())
         }
     }
 
