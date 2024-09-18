@@ -30,7 +30,7 @@
         android:id="@+id/duration_and_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_name_in_card_movie" />
 
@@ -38,7 +38,7 @@
         android:id="@+id/first_line"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_margin="24dp"
+        android:layout_margin="@dimen/margin_start_text"
         android:background="@color/gray_shadow_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,7 @@
         android:id="@+id/date_and_genre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="24dp"
+        android:layout_marginHorizontal="@dimen/margin_start_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/first_line" />
@@ -57,7 +57,7 @@
         android:id="@+id/second_line"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_margin="24dp"
+        android:layout_margin="@dimen/margin_start_text"
         android:background="@color/gray_shadow_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -67,21 +67,20 @@
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="24dp"
         android:text="@string/description"
+        android:layout_marginHorizontal="@dimen/margin_start_text"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/second_line" />
+        app:layout_constraintTop_toBottomOf="@id/second_line"/>
 
     <TextView
         android:id="@+id/description_movie"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_marginHorizontal="@dimen/margin_start_text"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/description" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
