@@ -17,9 +17,6 @@ class DurationAndRatingMovie @JvmOverloads constructor(
     init {
         _binding = ScreenDurationAndRatingMovieBinding.inflate(LayoutInflater.from(context), this, true)
         setIndents()
-        binding.timeInMinutes.textSize = 15f
-        binding.textRatingCardMovie.textSize = 15f
-
     }
 
     private fun setIndents() {

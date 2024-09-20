@@ -3,6 +3,7 @@ package com.example.searchmovie.di.modules
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.searchmovie.domain.repositopy.MovieRepository
+import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
 import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
 import dagger.Module
 import dagger.Provides
@@ -20,6 +21,10 @@ class CommonModule {
                 if (modelClass.isAssignableFrom(ViewModelRandomMovie::class.java)) {
                     @Suppress("UNCHECKED_CAST")
                     return ViewModelRandomMovie(repository) as T
+                }
+                if (modelClass.isAssignableFrom(ViewModelCardMovie::class.java)) {
+                    @Suppress("UNCHECKED_CAST")
+                    return ViewModelCardMovie(repository) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }

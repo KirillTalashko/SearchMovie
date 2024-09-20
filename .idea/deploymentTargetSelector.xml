@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-08-19T08:34:03.669257800Z">
+        <DropdownSelection timestamp="2024-09-20T11:26:29.135821600Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Huawei\.android\avd\Pixel_7_Pro_API_34.avd" />
