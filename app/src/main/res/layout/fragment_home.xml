@@ -10,9 +10,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_start_text"
-        android:fontFamily="@font/lato_regular"
+        android:fontFamily="@font/lato_bold"
+        android:textColor="@color/black"
         android:text="@string/watch_film"
-        android:textSize="@dimen/text_size"
+        android:textSize="@dimen/caption_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,9 +52,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
-        android:fontFamily="@font/lato_regular"
+        android:fontFamily="@font/lato_bold"
+        android:textColor="@color/black"
         android:text="@string/popular"
-        android:textSize="@dimen/text_size"
+        android:textSize="@dimen/caption_text_size"
         app:layout_constraintBottom_toTopOf="@+id/middle_screen_main"
         app:layout_constraintStart_toStartOf="parent" />
 

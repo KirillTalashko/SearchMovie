@@ -30,5 +30,7 @@
         android:maxEms="10"
         android:padding="15dp"
         android:text=""
-        android:textSize="@dimen/text_size_in_card" />
+        android:fontFamily="@font/lato_bold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/section_text_size" />
 </androidx.cardview.widget.CardView>

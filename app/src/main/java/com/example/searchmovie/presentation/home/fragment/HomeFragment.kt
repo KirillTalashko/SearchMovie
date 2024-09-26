@@ -92,7 +92,7 @@ class HomeFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) {
             when (it) {
                 is HomeFragmentState.Error -> {
-                    TODO("Сделать отдельный экран для этого состояния")
+                    //TODO("Сделать отдельный экран для этого состояния")
                     requireContext().showToast(it.error)
                     binding.cardViewMovie.restartStateButton.visibility = View.VISIBLE
                 }

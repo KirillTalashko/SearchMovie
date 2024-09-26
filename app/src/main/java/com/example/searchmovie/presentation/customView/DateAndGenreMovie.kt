@@ -17,7 +17,6 @@ class DateAndGenreMovie @JvmOverloads constructor(
     init {
         _binding = ScreenDateAndGenreBinding.inflate(LayoutInflater.from(context), this, true)
         setIndents()
-        setTextSize()
     }
 
     private fun setIndents() {
@@ -47,17 +46,6 @@ class DateAndGenreMovie @JvmOverloads constructor(
             layoutParams = it
         }
     }
-
-    private fun setTextSize() {
-        binding.apply {
-            releaseDate.textSize = 20f
-            yearMovie.textSize = 15f
-            genreMovie.textSize = 20f
-            firstButton.textSize = 12f
-            lastButton.textSize = 12f
-        }
-    }
-
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
