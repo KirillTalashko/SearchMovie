@@ -6,4 +6,14 @@
     <string name="popular">Популярные</string>
     <string name="text_rating">IMDb</string>
     <string name="text_rating_movie">7.0</string>
+    <string name="no_name">Нет названия</string>
+    <string name="minutes">минуты</string>
+    <string name="random_time">152</string>
+    <string name="example_description">Rey (Daisy Ridley) finally manages to find the legendary Jedi knight, Luke Skywalker (Mark Hamill) on an island with a magical aura. The heroes of The Force Awakens including Leia.</string>
+    <string name="year">2023</string>
+    <string name="release_date">Дата выхода</string>
+    <string name="genre">Жанр</string>
+    <string name="comedy">Комедия</string>
+    <string name="thriller">Триллер</string>
+    <string name="description">Описание</string>
 </resources>
