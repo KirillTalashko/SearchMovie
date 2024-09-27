@@ -41,13 +41,16 @@ class CardMovieFragment : Fragment() {
     private val url =
         "https://static.wikia.nocookie.net/d184dacd-7f49-43f8-a316-453d75ce8752/thumbnail-down/width/1280/height/720"
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        inject
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        inject
         _binding = FragmentCardMovieBinding.inflate(inflater)
         return binding.root
     }
@@ -74,14 +77,5 @@ class CardMovieFragment : Fragment() {
             resources.getString(R.string.example_description_long),
             binding.infoMovie.getReadMore()
         )
-        viewModel.trackingReadMore.observe(viewLifecycleOwner) { tracking ->
-            if (!tracking) {
-                binding.scrollSimilarMovie.visibility = View.GONE
-                binding.similarMovieTextInCardMovie.visibility = View.GONE
-            } else {
-                binding.scrollSimilarMovie.visibility = View.VISIBLE
-                binding.similarMovieTextInCardMovie.visibility = View.VISIBLE
-            }
-        }
     }
 }
