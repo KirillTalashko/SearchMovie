@@ -8,8 +8,8 @@ import com.example.searchmovie.databinding.ScreenSimilarMovieBinding
 class ViewHolderRelatedMovie(private val binding: ScreenSimilarMovieBinding) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(item: String) {
-        binding.similarMovie.getTextSimilarMovie().text = item
-        ImageHelper().getPhoto(url, binding.similarMovie.getImageSimilarMovie())
+        binding.textSimilarMovieSecond.text = item
+        ImageHelper().getPhoto(url, binding.imageSimilarMovieSecond)
 
     }
 

@@ -4,22 +4,18 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.example.searchmovie.databinding.ScreenDateAndGenreBinding
+import com.example.searchmovie.R
 
 class DateAndGenreMovie @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    private var _binding: ScreenDateAndGenreBinding? = null
 
-    private val binding
-        get() = _binding!!
 
-    init {
-        _binding = ScreenDateAndGenreBinding.inflate(LayoutInflater.from(context), this, true)
-        setIndents()
+    init{
+    LayoutInflater.from(context).inflate(R.layout.screen_date_and_genre,this,true)
     }
 
-    private fun setIndents() {
+    /*private fun setIndents() {
         var params = binding.releaseDate.layoutParams as? MarginLayoutParams
         params?.let {
             it.setMargins(30, 10, 10, 10)
@@ -45,11 +41,5 @@ class DateAndGenreMovie @JvmOverloads constructor(
             it.marginStart = 25
             layoutParams = it
         }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        _binding = null
-    }
-
+    }*/
 }

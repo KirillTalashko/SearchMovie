@@ -68,6 +68,10 @@ class HomeFragment : Fragment() {
         binding.cardViewMovie.playCard.getImageView().setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCardMovieFragment())
         }
+        binding.root.setOnRefreshListener {
+            viewModel.getRandomMovie()
+            viewModel.getListMovie()
+        }
     }
 
     private fun initRecyclerView() {
@@ -92,7 +96,7 @@ class HomeFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) {
             when (it) {
                 is HomeFragmentState.Error -> {
-                    //TODO("Сделать отдельный экран для этого состояния")
+                    binding.root.isRefreshing = false
                     requireContext().showToast(it.error)
                     binding.cardViewMovie.restartStateButton.visibility = View.VISIBLE
                 }
@@ -114,6 +118,7 @@ class HomeFragment : Fragment() {
                 }
 
                 is HomeFragmentState.SuccessListMovie -> {
+                    binding.root.isRefreshing = false
                     if (currentListEmpty) {
                         binding.apply {
                             shimmerScrollListMovie.stopShimmer()
@@ -126,6 +131,7 @@ class HomeFragment : Fragment() {
                 }
 
                 is HomeFragmentState.SuccessMovie -> {
+                    binding.root.isRefreshing = false
                     binding.apply {
                         shimmerPlayCard.stopShimmer()
                         shimmerPlayCard.visibility = View.GONE

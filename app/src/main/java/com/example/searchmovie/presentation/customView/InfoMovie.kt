@@ -1,29 +1,33 @@
 package com.example.searchmovie.presentation.customView
 
 import android.content.Context
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.example.searchmovie.databinding.InformationMovieBinding
+import com.example.searchmovie.R
 
 class InfoMovie @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    private var _binding: InformationMovieBinding? = null
-    private val binding
-        get() = _binding!!
-
+    private val textDescriptionMovie: TextView
     init {
-        _binding = InformationMovieBinding.inflate(LayoutInflater.from(context), this, true)
+        LayoutInflater.from(context).inflate(R.layout.information_movie, this, true)
+        textDescriptionMovie = findViewById(R.id.text_description_movie)
     }
-
-    fun getReadMore(): TextView {
-        return binding.descriptionMovie
+    fun getTextDescriptionMovie() = textDescriptionMovie.text.toString()
+    fun setTextDescriptionMovie(text: SpannableString){
+        textDescriptionMovie.text = text
     }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        _binding = null
+    fun setTextDescriptionMovie(text: String){
+        textDescriptionMovie.text = text
+    }
+    fun setTextString(text: String){
+        textDescriptionMovie.text = text
+    }
+    fun setMovementMethodDescriptionMovie(){
+        textDescriptionMovie.movementMethod = LinkMovementMethod.getInstance()
     }
 }

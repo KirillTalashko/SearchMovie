@@ -1,20 +1,11 @@
 package com.example.searchmovie.presentation.cardMovie.viewModel
 
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.view.View
-import android.widget.TextView
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+
 import androidx.lifecycle.ViewModel
-import com.example.searchmovie.R
 import com.example.searchmovie.domain.repositopy.MovieRepository
 
 class ViewModelCardMovie(private val repository: MovieRepository) : ViewModel() {
-
+/*
     private var _trackingReadMore = MutableLiveData(false)
 
     val trackingReadMore: LiveData<Boolean>
@@ -74,5 +65,5 @@ class ViewModelCardMovie(private val repository: MovieRepository) : ViewModel() 
 
     fun getAddReadMore(text: String, textView: TextView){
         addReadMore(text, textView)
-    }
+    }*/
 }

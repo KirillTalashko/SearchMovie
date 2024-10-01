@@ -1,99 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/text_watch_movie_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_start_text"
-        android:fontFamily="@font/lato_bold"
-        android:textColor="@color/black"
-        android:text="@string/watch_film"
-        android:textSize="@dimen/caption_text_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmer_play_card"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_margin="@dimen/margin_start_text"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/middle_screen_main"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shimmer_auto_start="true"
-        app:shimmer_colored="true"
-        app:shimmer_duration="5000"
-        app:shimmer_highlight_color="@color/orange">
+        android:layout_height="match_parent">
 
-        <include layout="@layout/card_random_movie" />
-    </com.facebook.shimmer.ShimmerFrameLayout>
+        <TextView
+            android:id="@+id/text_watch_movie_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_start_text"
+            android:fontFamily="@font/lato_bold"
+            android:text="@string/watch_film"
+            android:textColor="@color/black"
+            android:textSize="@dimen/caption_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-        android:id="@+id/card_view_movie"
-        layout="@layout/card_random_movie"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_marginHorizontal="24dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/middle_screen_main"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_play_card"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_margin="@dimen/margin_start_text"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/middle_screen_main"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shimmer_auto_start="true"
+            app:shimmer_colored="true"
+            app:shimmer_duration="5000"
+            app:shimmer_highlight_color="@color/orange">
 
-    <TextView
-        android:id="@+id/text_trending_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="24dp"
-        android:fontFamily="@font/lato_bold"
-        android:textColor="@color/black"
-        android:text="@string/popular"
-        android:textSize="@dimen/caption_text_size"
-        app:layout_constraintBottom_toTopOf="@+id/middle_screen_main"
-        app:layout_constraintStart_toStartOf="parent" />
+            <include layout="@layout/card_random_movie" />
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/middle_screen_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_start_text"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        <include
+            android:id="@+id/card_view_movie"
+            layout="@layout/card_random_movie"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginHorizontal="24dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/middle_screen_main"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmer_scroll_list_movie"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_margin="24dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/middle_screen_main"
-        app:shimmer_auto_start="true"
-        app:shimmer_colored="true"
-        app:shimmer_duration="5000"
-        app:shimmer_highlight_color="@color/orange">
+        <TextView
+            android:id="@+id/text_trending_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:fontFamily="@font/lato_bold"
+            android:text="@string/popular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/caption_text_size"
+            app:layout_constraintBottom_toTopOf="@+id/middle_screen_main"
+            app:layout_constraintStart_toStartOf="parent" />
 
-        <include layout="@layout/show_popular_movie_main" />
-    </com.facebook.shimmer.ShimmerFrameLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/middle_screen_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_start_text"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/scroll_trending_movies_main"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/middle_screen_main"
-        tools:itemCount="3"
-        tools:listitem="@layout/show_popular_movie_main" />
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_scroll_list_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_margin="24dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/middle_screen_main"
+            app:shimmer_auto_start="true"
+            app:shimmer_colored="true"
+            app:shimmer_duration="5000"
+            app:shimmer_highlight_color="@color/orange">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <include layout="@layout/show_popular_movie_main" />
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/scroll_trending_movies_main"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/middle_screen_main"
+            tools:itemCount="3"
+            tools:listitem="@layout/show_popular_movie_main" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

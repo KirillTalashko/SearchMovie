@@ -4,41 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.example.searchmovie.databinding.ScreenDurationAndRatingMovieBinding
+import com.example.searchmovie.R
 
 class DurationAndRatingMovie @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private var _binding: ScreenDurationAndRatingMovieBinding? = null
-    private val binding
-        get() = _binding!!
-
     init {
-        _binding = ScreenDurationAndRatingMovieBinding.inflate(LayoutInflater.from(context), this, true)
-        setIndents()
-    }
-
-    private fun setIndents() {
-        var params = binding.timeInMinutes.layoutParams as? MarginLayoutParams
-        params?.let {
-            it.setMargins(20, 0, 10, 0)
-            layoutParams = it
-        }
-        params = binding.imageStarGray.layoutParams as? MarginLayoutParams
-        params?.let {
-            it.marginStart = 30
-            layoutParams = it
-        }
-        params = binding.textRatingCardMovie.layoutParams as? MarginLayoutParams
-        params?.let {
-            it.setMargins(20, 0, 10, 0)
-            layoutParams = it
-        }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        _binding = null
+        LayoutInflater.from(context).inflate(R.layout.screen_duration_and_rating_movie,this,true)
     }
 }
