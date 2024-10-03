@@ -10,8 +10,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
+import com.example.searchmovie.core.extension.loadPhoto
 import com.example.searchmovie.core.extension.showToast
-import com.example.searchmovie.core.utils.ImageHelper
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
 import com.example.searchmovie.presentation.home.adapter.AdapterPopularHome
@@ -139,7 +139,7 @@ class HomeFragment : Fragment() {
                         cardViewMovie.playCard.getTextNameView().text =
                             it.movie.name ?: getString(R.string.no_name)
                     }
-                    ImageHelper().getPhoto(it.movie.poster?.url, binding.cardViewMovie.imageMovie)
+                    binding.cardViewMovie.imageMovie.loadPhoto(it.movie.poster?.url)
                 }
             }
         }

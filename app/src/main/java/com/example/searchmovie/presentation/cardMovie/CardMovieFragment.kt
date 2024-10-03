@@ -1,10 +1,6 @@
 package com.example.searchmovie.presentation.cardMovie
 
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
-import com.example.searchmovie.core.utils.ImageHelper
-import com.example.searchmovie.core.utils.ShowMoreOrLessText
+import com.example.searchmovie.core.extension.loadPhoto
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.AdapterRelatedMovie
 import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
@@ -63,7 +58,7 @@ class CardMovieFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        initViewModel()
+        interactionWithView()
     }
 
     private fun initRecyclerView() {
@@ -75,63 +70,20 @@ class CardMovieFragment : Fragment() {
         adapter.submitList(listOf("1", "2", "3", "4"))
     }
 
-    private fun initViewModel() {
-        ImageHelper().getPhoto(url, binding.imageMovieInCardMovie)
-        binding.infoMovie.setTextString(resources.getString(R.string.example_description_long))
-        setObserverMoreOrLessText(binding.infoMovie.getTextDescriptionMovie())
-    }
-
-    private fun setObserverMoreOrLessText(text: String) {
-        object : ShowMoreOrLessText {
-            override fun addReadMore() {
-                if (text.length >= 250) {
-                    val afterText = SpannableString(text.substring(0, 250).plus("...Read more"))
-                    val clickableSpan: ClickableSpan = object : ClickableSpan() {
-                        override fun onClick(widget: View) {
-                            addReadLess(text)
-                        }
-
-                        override fun updateDrawState(ds: TextPaint) {
-                            super.updateDrawState(ds)
-                            ds.isUnderlineText = false
-                            TODO("как получить цвет с ресурсов?")
-                        }
-                    }
-                    afterText.setSpan(
-                        clickableSpan,
-                        afterText.length - 10,
-                        afterText.length,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.infoMovie.setTextDescriptionMovie(afterText)
-                    binding.infoMovie.setMovementMethodDescriptionMovie()
-                } else {
-                    binding.infoMovie.setTextDescriptionMovie(text)
-                }
-            }
-
-            override fun addReadLess(text: String) {
-                val beforeText = SpannableString(text.plus("...Read less"))
-                val clickableSpan: ClickableSpan = object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        addReadMore()
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        super.updateDrawState(ds)
-                        ds.isUnderlineText = false
-                    }
-                }
-                beforeText.setSpan(
-                    clickableSpan,
-                    beforeText.length - 10,
-                    beforeText.length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                binding.infoMovie.setTextDescriptionMovie(beforeText)
-                binding.infoMovie.setMovementMethodDescriptionMovie()
-            }
+    private fun interactionWithView() {
+        binding.imageMovieInCardMovie.loadPhoto(url)
+        viewModel.trackingReadMore.observe(viewLifecycleOwner) {
+            binding.infoMovie.setExpandableText(
+                fullText = resources.getString(R.string.example_description_long),
+                isExpanded = it,
+                textColor = resources.getColor(R.color.black),
+                isUnderline = it,
+                onExpand = {viewModel.onReadMoreClicked()},
+                onCollapse = { viewModel.onLessMoreClicked() }
+            )
         }
-
+        binding.infoMovie.setTime(R.drawable.image_time,getString(R.string.random_time),getString(R.string.minutes))
+        binding.infoMovie.setRating(R.drawable.image_star_gray,getString(R.string.text_rating_movie),getString(R.string.text_rating))
     }
+
 }

@@ -24,7 +24,7 @@ class CommonModule {
                 }
                 if (modelClass.isAssignableFrom(ViewModelCardMovie::class.java)) {
                     @Suppress("UNCHECKED_CAST")
-                    return ViewModelCardMovie(repository) as T
+                    return ViewModelCardMovie() as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }
