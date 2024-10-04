@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,9 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.extension.loadPhoto
+import com.example.searchmovie.core.utils.ParametersCustomView
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.AdapterRelatedMovie
 import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
+import com.example.searchmovie.presentation.customView.InfoMovie
+
 import javax.inject.Inject
 
 class CardMovieFragment : Fragment() {
@@ -82,8 +86,24 @@ class CardMovieFragment : Fragment() {
                 onCollapse = { viewModel.onLessMoreClicked() }
             )
         }
-        binding.infoMovie.setTime(R.drawable.image_time,getString(R.string.random_time),getString(R.string.minutes))
-        binding.infoMovie.setRating(R.drawable.image_star_gray,getString(R.string.text_rating_movie),getString(R.string.text_rating))
+
+        binding.infoMovie.setCharacteristics(
+            quantity = InfoMovie.QuantityCustomView.TIME,
+            settings = ParametersCustomView(
+                drawable = context?.let { ContextCompat.getDrawable(it, R.drawable.image_time) },
+                firstText = getString(R.string.random_time),
+                secondText = getString(R.string.minutes)
+            )
+        )
+
+        binding.infoMovie.setCharacteristics(
+            quantity = InfoMovie.QuantityCustomView.RATING,
+            settings = ParametersCustomView(
+                drawable = context?.let { ContextCompat.getDrawable(it, R.drawable.image_star_gray) },
+                firstText = getString(R.string.text_rating_movie),
+                secondText = getString(R.string.text_rating)
+            )
+        )
+        }
     }
 
-}

@@ -6,9 +6,12 @@ import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.example.searchmovie.R
+import com.example.searchmovie.core.utils.ParametersCustomView
 import com.example.searchmovie.core.utils.TextExpander
 import com.example.searchmovie.databinding.InformationMovieBinding
+import com.example.searchmovie.di.modules.CommonModule
 
 class InfoMovie @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -29,38 +32,60 @@ class InfoMovie @JvmOverloads constructor(
     fun setExpandableText(
         fullText: String,
         isExpanded: Boolean,
-        textColor: Int = resources.getColor(R.color.black),
+        textColor: Int = ContextCompat.getColor(context,R.color.black),
         isUnderline: Boolean = false,
         onExpand: () -> Unit,
         onCollapse: () -> Unit
     ) {
-        val text = if (isExpanded) {
-            resources.getString(R.string.read_more_text)
-        } else {
-            resources.getString(R.string.read_less_text)
-        }
         setCustomText(
-            if (isExpanded){
-                TextExpander.getReadLessText(fullText, textColor, isUnderline, onCollapse, text)
+            if (isExpanded) {
+                TextExpander.getReadLessText(
+                    fullText,
+                    textColor,
+                    isUnderline,
+                    onCollapse,
+                    resources.getString(R.string.read_less_text)
+                )
             } else {
-                TextExpander.getReadMoreText(fullText, textColor, isUnderline, onExpand, text)
+                TextExpander.getReadMoreText(
+                    fullText,
+                    textColor,
+                    isUnderline,
+                    onExpand,
+                    resources.getString(R.string.read_more_text)
+                )
             }
         )
     }
 
-    fun setTime(image: Int, firstText: String, secondText: String){
-        binding.durationAndRating.customViewTimes.setImage(image)
-        binding.durationAndRating.customViewTimes.setFirstText(firstText)
-        binding.durationAndRating.customViewTimes.setSecondText(secondText)
-    }
-    fun setRating(image: Int, firstText: String, secondText: String){
-        binding.durationAndRating.customViewRating.setImage(image)
-        binding.durationAndRating.customViewRating.setFirstText(firstText)
-        binding.durationAndRating.customViewRating.setSecondText(secondText)
+    fun setCharacteristics(quantity: QuantityCustomView, settings: ParametersCustomView) {
+        when (quantity) {
+            QuantityCustomView.TIME -> {
+                binding.customViewTimes.setData(
+                    firstText = settings.firstText,
+                    secondText = settings.secondText,
+                    drawable = settings.drawable
+                )
+            }
+
+            QuantityCustomView.RATING -> {
+                binding.customViewRating.setData(
+                    firstText = settings.firstText,
+                    secondText = settings.secondText,
+                    drawable = settings.drawable
+                )
+            }
+        }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         _binding = null
     }
+
+    enum class QuantityCustomView() {
+        TIME,
+        RATING
+    }
+
 }
