@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.searchmovie.domain.repositopy.MovieRepository
+import com.example.network.domain.repository.MovieRepository
 import com.example.searchmovie.core.extension.checkingResponse
 import com.example.searchmovie.core.extension.log
 import kotlinx.coroutines.Dispatchers

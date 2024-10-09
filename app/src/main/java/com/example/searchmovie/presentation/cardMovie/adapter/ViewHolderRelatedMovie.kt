@@ -2,14 +2,14 @@ package com.example.searchmovie.presentation.cardMovie.adapter
 
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.searchmovie.core.utils.ImageHelper
+import com.example.searchmovie.core.extension.loadPhoto
 import com.example.searchmovie.databinding.ScreenSimilarMovieBinding
 
 class ViewHolderRelatedMovie(private val binding: ScreenSimilarMovieBinding) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(item: String) {
-        binding.textSimilarMovie.text = item
-        ImageHelper().getPhoto(url, binding.imageSimilarMovie)
+        binding.textSimilarMovieSecond.text = item
+        binding.imageSimilarMovieSecond.loadPhoto(url)
 
     }
 

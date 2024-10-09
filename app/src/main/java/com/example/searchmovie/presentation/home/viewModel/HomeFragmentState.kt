@@ -1,6 +1,6 @@
 package com.example.searchmovie.presentation.home.viewModel
 
-import com.example.searchmovie.modelsMovie.Movie
+import com.example.network.modelsMovie.Movie
 
 sealed class HomeFragmentState {
     data class Error(val error: String) : HomeFragmentState()

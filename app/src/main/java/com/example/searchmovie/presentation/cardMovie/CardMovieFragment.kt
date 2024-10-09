@@ -4,16 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
-import com.example.searchmovie.core.utils.ImageHelper
+import com.example.searchmovie.core.extension.loadPhoto
+import com.example.searchmovie.core.utils.ValueHolderView
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.AdapterRelatedMovie
 import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
+import com.example.searchmovie.presentation.customView.InfoMovie
+
 import javax.inject.Inject
 
 class CardMovieFragment : Fragment() {
@@ -41,13 +45,16 @@ class CardMovieFragment : Fragment() {
     private val url =
         "https://static.wikia.nocookie.net/d184dacd-7f49-43f8-a316-453d75ce8752/thumbnail-down/width/1280/height/720"
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        inject
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        inject
         _binding = FragmentCardMovieBinding.inflate(inflater)
         return binding.root
     }
@@ -58,30 +65,45 @@ class CardMovieFragment : Fragment() {
         interactionWithView()
     }
 
-
     private fun initRecyclerView() {
-        binding.scrollSimilarMovie.layoutManager = LinearLayoutManager(
+        binding.rvScrollSimilarMovie.layoutManager = LinearLayoutManager(
             requireContext(),
             RecyclerView.HORIZONTAL, false
         )
-        binding.scrollSimilarMovie.adapter = adapter
+        binding.rvScrollSimilarMovie.adapter = adapter
         adapter.submitList(listOf("1", "2", "3", "4"))
     }
 
     private fun interactionWithView() {
-        ImageHelper().getPhoto(url, binding.imageMovieInCardMovie)
-        viewModel.getAddReadMore(
-            resources.getString(R.string.example_description_long),
-            binding.infoMovie.getReadMore()
+        binding.imageViewPosterMovie.loadPhoto(url)
+        viewModel.trackingReadMore.observe(viewLifecycleOwner) {
+            binding.customViewInfoMovie.setExpandableText(
+                fullText = resources.getString(R.string.example_description_long),
+                isExpanded = it,
+                textColor = ContextCompat.getColor(requireContext(),R.color.black),
+                isUnderline = it,
+                onExpand = {viewModel.onReadMoreClicked()},
+                onCollapse = { viewModel.onLessMoreClicked() }
+            )
+        }
+
+        binding.customViewInfoMovie.setCharacteristics(
+            display = InfoMovie.DisplayOptionsCustomView.TIME,
+            owner = ValueHolderView(
+                drawable = ContextCompat.getDrawable(requireContext(),R.drawable.image_time),
+                firstText = getString(R.string.random_time),
+                secondText = getString(R.string.minutes)
+            )
         )
-        viewModel.trackingReadMore.observe(viewLifecycleOwner) { tracking ->
-            if (!tracking) {
-                binding.scrollSimilarMovie.visibility = View.GONE
-                binding.similarMovieTextInCardMovie.visibility = View.GONE
-            } else {
-                binding.scrollSimilarMovie.visibility = View.VISIBLE
-                binding.similarMovieTextInCardMovie.visibility = View.VISIBLE
-            }
+
+        binding.customViewInfoMovie.setCharacteristics(
+            display = InfoMovie.DisplayOptionsCustomView.RATING,
+            owner = ValueHolderView(
+                drawable = ContextCompat.getDrawable(requireContext(),R.drawable.image_star_gray),
+                firstText = getString(R.string.text_rating_movie),
+                secondText = getString(R.string.text_rating)
+            )
+        )
         }
     }
-}
+

@@ -1,0 +1,7 @@
+package com.example.network.modelsMovie
+
+import com.google.gson.annotations.SerializedName
+
+data class Poster(
+    @SerializedName("url") val url: String?
+)
