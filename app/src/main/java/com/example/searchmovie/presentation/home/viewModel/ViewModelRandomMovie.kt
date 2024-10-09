@@ -16,9 +16,13 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
     private var isLoading = false
     fun getIsLoading() = isLoading
 
-    private val _state = MutableLiveData<HomeFragmentState>()
-    val state: LiveData<HomeFragmentState>
-        get() = _state
+    private val _stateRandomMovie = MutableLiveData<HomeFragmentStateRandomMovie>()
+    val stateRandomMovie: LiveData<HomeFragmentStateRandomMovie>
+        get() = _stateRandomMovie
+
+    private val _stateListMovie = MutableLiveData<HomeFragmentStateListMovie>()
+    val stateListMovie: LiveData<HomeFragmentStateListMovie>
+        get() = _stateListMovie
 
     private var page = 1
 
@@ -28,17 +32,17 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
     }
 
     fun getRandomMovie() {
-        _state.postValue(HomeFragmentState.LoadingMovie)
+        _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.LoadingMovie)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = repository.getRandomMovie()
                 response.body()?.let {
-                    _state.postValue(HomeFragmentState.SuccessMovie(it))
+                    _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.SuccessMovie(it))
                 }
-                    ?: run { _state.postValue(HomeFragmentState.Error(NullPointerException().checkingResponse())) }
+                    ?: run { _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.Error(NullPointerException().checkingResponse())) }
             } catch (e: Exception) {
                 e.message?.log()
-                _state.postValue(HomeFragmentState.Error(e.checkingResponse()))
+                _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.Error(e.checkingResponse()))
             }
         }
     }
@@ -46,7 +50,7 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
     fun getListMovie() {
         if (!isLoading) {
             isLoading = true
-            _state.value = HomeFragmentState.LoadingListMovie
+            _stateListMovie.value = HomeFragmentStateListMovie.LoadingListMovie
             viewModelScope.launch {
                 try {
                     val response = withContext(Dispatchers.IO) {
@@ -54,12 +58,12 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
                     }
                     response.body()?.let {
                         val currentList = it.movie.orEmpty()
-                        _state.postValue(HomeFragmentState.SuccessListMovie(currentList))
+                        _stateListMovie.postValue(HomeFragmentStateListMovie.SuccessListMovie(currentList))
                         page++
                     }
-                        ?: run { _state.postValue(HomeFragmentState.Error(NullPointerException().checkingResponse())) }
+                        ?: run { _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.Error(NullPointerException().checkingResponse())) }
                 } catch (e: Exception) {
-                    _state.postValue(HomeFragmentState.Error(e.checkingResponse()))
+                    _stateListMovie.postValue(HomeFragmentStateListMovie.Error(e.checkingResponse()))
 
                 } finally {
                     isLoading = false

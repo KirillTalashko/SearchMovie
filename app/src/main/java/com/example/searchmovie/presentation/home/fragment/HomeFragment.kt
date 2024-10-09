@@ -17,7 +17,8 @@ import com.example.searchmovie.core.extension.showToast
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
 import com.example.searchmovie.presentation.home.adapter.AdapterPopularHome
-import com.example.searchmovie.presentation.home.viewModel.HomeFragmentState
+import com.example.searchmovie.presentation.home.viewModel.HomeFragmentStateListMovie
+import com.example.searchmovie.presentation.home.viewModel.HomeFragmentStateRandomMovie
 import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
 import javax.inject.Inject
 
@@ -95,14 +96,43 @@ class HomeFragment : Fragment() {
     }
 
     private fun observerViewModel() {
-        viewModel.state.observe(viewLifecycleOwner) {
-            when (it) {
-                is HomeFragmentState.Error -> {
+        viewModel.stateRandomMovie.observe(viewLifecycleOwner) { randomMovie ->
+            when (randomMovie) {
+                is HomeFragmentStateRandomMovie.Error -> {
                     binding.root.isRefreshing = false
-                    requireContext().showToast(it.error)
+                    requireContext().showToast(randomMovie.error)
                 }
 
-                HomeFragmentState.LoadingListMovie -> {
+                HomeFragmentStateRandomMovie.LoadingMovie -> {
+                    binding.apply {
+                        shimmerCardMovieMain.startShimmer()
+                        shimmerCardMovieMain.visibility = View.VISIBLE
+                    }
+                }
+
+                is HomeFragmentStateRandomMovie.SuccessMovie -> {
+                    binding.root.isRefreshing = false
+                    binding.apply {
+                        shimmerCardMovieMain.stopShimmer()
+                        shimmerCardMovieMain.visibility = View.GONE
+                        containerPlayRandomMovie.containerCardMovie.visibility = View.VISIBLE
+                        containerPlayRandomMovie.customViewPlayCard.getTextNameView().text =
+                            randomMovie.movie.name ?: getString(R.string.no_name)
+                    }
+                    binding.containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(
+                        randomMovie.movie.poster?.url ?: ""
+                    )
+                }
+            }
+        }
+        viewModel.stateListMovie.observe(viewLifecycleOwner) { listMovie ->
+            when (listMovie) {
+                is HomeFragmentStateListMovie.Error -> {
+                    binding.root.isRefreshing = false
+                    requireContext().showToast(listMovie.error)
+                }
+
+                HomeFragmentStateListMovie.LoadingListMovie -> {
                     if (currentListEmpty) {
                         binding.shimmerScrollListMovie.startShimmer()
                         binding.shimmerScrollListMovie.visibility = View.VISIBLE
@@ -110,14 +140,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                HomeFragmentState.LoadingMovie -> {
-                    binding.apply {
-                        shimmerCardMovieMain.startShimmer()
-                        shimmerCardMovieMain.visibility = View.VISIBLE
-                    }
-                }
-
-                is HomeFragmentState.SuccessListMovie -> {
+                is HomeFragmentStateListMovie.SuccessListMovie -> {
                     binding.root.isRefreshing = false
                     if (currentListEmpty) {
                         binding.apply {
@@ -127,21 +150,10 @@ class HomeFragment : Fragment() {
                         }
                     }
                     val currentList = adapterMovieMain.currentList
-                    adapterMovieMain.submitList(currentList.plus(it.listMovie))
-                }
-
-                is HomeFragmentState.SuccessMovie -> {
-                    binding.root.isRefreshing = false
-                    binding.apply {
-                        shimmerCardMovieMain.stopShimmer()
-                        shimmerCardMovieMain.visibility = View.GONE
-                        containerPlayRandomMovie.containerCardMovie.visibility = View.VISIBLE
-                        containerPlayRandomMovie.customViewPlayCard.getTextNameView().text =
-                            it.movie.name ?: getString(R.string.no_name)
-                    }
-                    binding.containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(it.movie.poster?.url ?: "")
+                    adapterMovieMain.submitList(currentList.plus(listMovie.listMovie))
                 }
             }
+
         }
     }
 
