@@ -8,20 +8,20 @@
     app:cardCornerRadius="30dp">
 
     <ImageView
-        android:id="@+id/image_trending"
+        android:id="@+id/image_view_wallpaper_movie"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
     <com.example.searchmovie.presentation.customView.RatingCardView
-        android:id="@+id/card_rating"
+        android:id="@+id/custom_view_card_short_help_movie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_margin="16dp" />
 
     <TextView
-        android:id="@+id/text_name_card_movie"
+        android:id="@+id/text_view_name_movie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"

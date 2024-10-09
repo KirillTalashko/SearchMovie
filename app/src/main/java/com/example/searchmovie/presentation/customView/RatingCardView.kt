@@ -20,7 +20,7 @@ class RatingCardView @JvmOverloads constructor(
         radius = 40f
         containerLayout = findViewById(R.id.container_layout_rating_card)
         containerLayout.setPadding(20,15,20,15)
-        textRating = findViewById(R.id.text_rating)
+        textRating = findViewById(R.id.text_view_bottom_text)
     }
 
     fun getTextRating() : TextView{

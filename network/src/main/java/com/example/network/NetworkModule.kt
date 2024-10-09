@@ -1,8 +1,8 @@
-package com.example.searchmovie.di.modules
+package com.example.network
 
-import com.example.searchmovie.domain.api.MovieApi
-import com.example.searchmovie.domain.repositopy.MovieRepository
-import com.example.searchmovie.domain.repositopy.MovieRepositoryImpl
+import com.example.network.domain.repository.MovieRepository
+import com.example.network.domain.repository.MovieRepositoryImpl
+import com.example.network.domain.api.MovieApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor

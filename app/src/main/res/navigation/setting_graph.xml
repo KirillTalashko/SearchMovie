@@ -27,5 +27,5 @@
         android:id="@+id/cardMovieFragment"
         android:name="com.example.searchmovie.presentation.cardMovie.CardMovieFragment"
         android:label="fragment_card_Movie"
-        tools:layout="@layout/screen_duration_and_rating_movie" />
+        tools:layout="@layout/screen_time_and_rating_movie" />
 </navigation>

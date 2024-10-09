@@ -1,9 +1,9 @@
-package com.example.searchmovie.domain.api
+package com.example.network.domain.api
 
 
 
-import com.example.searchmovie.modelsMovie.Movie
-import com.example.searchmovie.modelsMovie.MovieResponse
+import com.example.network.modelsMovie.Movie
+import com.example.network.modelsMovie.MovieResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

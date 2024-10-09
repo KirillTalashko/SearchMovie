@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.extension.loadPhoto
-import com.example.searchmovie.core.utils.ParametersCustomView
+import com.example.searchmovie.core.utils.ValueHolderView
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.AdapterRelatedMovie
 import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
@@ -66,40 +66,40 @@ class CardMovieFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        binding.scrollSimilarMovie.layoutManager = LinearLayoutManager(
+        binding.rvScrollSimilarMovie.layoutManager = LinearLayoutManager(
             requireContext(),
             RecyclerView.HORIZONTAL, false
         )
-        binding.scrollSimilarMovie.adapter = adapter
+        binding.rvScrollSimilarMovie.adapter = adapter
         adapter.submitList(listOf("1", "2", "3", "4"))
     }
 
     private fun interactionWithView() {
-        binding.imageMovieInCardMovie.loadPhoto(url)
+        binding.imageViewPosterMovie.loadPhoto(url)
         viewModel.trackingReadMore.observe(viewLifecycleOwner) {
-            binding.infoMovie.setExpandableText(
+            binding.customViewInfoMovie.setExpandableText(
                 fullText = resources.getString(R.string.example_description_long),
                 isExpanded = it,
-                textColor = resources.getColor(R.color.black),
+                textColor = ContextCompat.getColor(requireContext(),R.color.black),
                 isUnderline = it,
                 onExpand = {viewModel.onReadMoreClicked()},
                 onCollapse = { viewModel.onLessMoreClicked() }
             )
         }
 
-        binding.infoMovie.setCharacteristics(
-            quantity = InfoMovie.QuantityCustomView.TIME,
-            settings = ParametersCustomView(
-                drawable = context?.let { ContextCompat.getDrawable(it, R.drawable.image_time) },
+        binding.customViewInfoMovie.setCharacteristics(
+            display = InfoMovie.DisplayOptionsCustomView.TIME,
+            owner = ValueHolderView(
+                drawable = ContextCompat.getDrawable(requireContext(),R.drawable.image_time),
                 firstText = getString(R.string.random_time),
                 secondText = getString(R.string.minutes)
             )
         )
 
-        binding.infoMovie.setCharacteristics(
-            quantity = InfoMovie.QuantityCustomView.RATING,
-            settings = ParametersCustomView(
-                drawable = context?.let { ContextCompat.getDrawable(it, R.drawable.image_star_gray) },
+        binding.customViewInfoMovie.setCharacteristics(
+            display = InfoMovie.DisplayOptionsCustomView.RATING,
+            owner = ValueHolderView(
+                drawable = ContextCompat.getDrawable(requireContext(),R.drawable.image_star_gray),
                 firstText = getString(R.string.text_rating_movie),
                 secondText = getString(R.string.text_rating)
             )

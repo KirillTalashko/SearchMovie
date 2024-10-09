@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/image_movie_in_cardMovie"
+            android:id="@+id/image_view_poster_movie"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:scaleType="centerCrop"
@@ -23,22 +23,22 @@
             android:layout_height="wrap_content"
             android:src="@drawable/play_movie"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@id/image_movie_in_cardMovie"
-            app:layout_constraintEnd_toEndOf="@id/image_movie_in_cardMovie"
-            app:layout_constraintStart_toStartOf="@id/image_movie_in_cardMovie"
-            app:layout_constraintTop_toTopOf="@id/image_movie_in_cardMovie" />
+            app:layout_constraintBottom_toBottomOf="@id/image_view_poster_movie"
+            app:layout_constraintEnd_toEndOf="@id/image_view_poster_movie"
+            app:layout_constraintStart_toStartOf="@id/image_view_poster_movie"
+            app:layout_constraintTop_toTopOf="@id/image_view_poster_movie" />
 
         <com.example.searchmovie.presentation.customView.InfoMovie
-            android:id="@+id/info_movie"
+            android:id="@+id/custom_view_info_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_movie_in_cardMovie" />
+            app:layout_constraintTop_toBottomOf="@id/image_view_poster_movie" />
 
         <TextView
-            android:id="@+id/similar_movie_text_in_card_movie"
+            android:id="@+id/text_view_similar_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
@@ -49,17 +49,17 @@
             android:textSize="16sp"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/info_movie" />
+            app:layout_constraintTop_toBottomOf="@id/custom_view_info_movie" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/scroll_similar_movie"
+            android:id="@+id/rv_scroll_similar_movie"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:visibility="visible"
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/similar_movie_text_in_card_movie"
+            app:layout_constraintTop_toBottomOf="@id/text_view_similar_movie"
             tools:itemCount="3"
             tools:listitem="@layout/screen_similar_movie" />
     </androidx.constraintlayout.widget.ConstraintLayout>

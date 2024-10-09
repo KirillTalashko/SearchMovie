@@ -1,5 +1,6 @@
 package com.example.searchmovie.presentation.home.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.extension.loadPhoto
+import com.example.searchmovie.core.extension.log
 import com.example.searchmovie.core.extension.showToast
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
@@ -42,6 +44,7 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        "onCreate Fragment".log()
         inject
     }
 
@@ -50,22 +53,21 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        "onCreateView Fragment".log()
         _binding = FragmentHomeBinding.inflate(inflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        "onViewCreated Fragment".log()
         initRecyclerView()
         observerViewModel()
         interactionWithView()
     }
 
     private fun interactionWithView() {
-        binding.cardViewMovie.restartStateButton.setOnClickListener {
-            viewModel.getRandomMovie()
-        }
-        binding.cardViewMovie.playCard.getImageView().setOnClickListener {
+        binding.containerPlayRandomMovie.customViewPlayCard.getImageView().setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCardMovieFragment())
         }
         binding.root.setOnRefreshListener {
@@ -75,14 +77,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        binding.scrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
-        binding.scrollTrendingMoviesMain.adapter = adapterMovieMain
-        binding.scrollTrendingMoviesMain.addOnScrollListener(object :
+        binding.rvScrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
+        binding.rvScrollTrendingMoviesMain.adapter = adapterMovieMain
+        binding.rvScrollTrendingMoviesMain.addOnScrollListener(object :
             RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager =
-                    binding.scrollTrendingMoviesMain.layoutManager as CenterZoomLayoutManager
+                    binding.rvScrollTrendingMoviesMain.layoutManager as CenterZoomLayoutManager
                 val totalItemCount = layoutManager.itemCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                 if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
@@ -98,22 +100,20 @@ class HomeFragment : Fragment() {
                 is HomeFragmentState.Error -> {
                     binding.root.isRefreshing = false
                     requireContext().showToast(it.error)
-                    binding.cardViewMovie.restartStateButton.visibility = View.VISIBLE
                 }
 
                 HomeFragmentState.LoadingListMovie -> {
                     if (currentListEmpty) {
                         binding.shimmerScrollListMovie.startShimmer()
                         binding.shimmerScrollListMovie.visibility = View.VISIBLE
-                        binding.scrollTrendingMoviesMain.visibility = View.GONE
+                        binding.rvScrollTrendingMoviesMain.visibility = View.GONE
                     }
                 }
 
                 HomeFragmentState.LoadingMovie -> {
                     binding.apply {
-                        cardViewMovie.restartStateButton.visibility = View.GONE
-                        shimmerPlayCard.startShimmer()
-                        shimmerPlayCard.visibility = View.VISIBLE
+                        shimmerCardMovieMain.startShimmer()
+                        shimmerCardMovieMain.visibility = View.VISIBLE
                     }
                 }
 
@@ -123,7 +123,7 @@ class HomeFragment : Fragment() {
                         binding.apply {
                             shimmerScrollListMovie.stopShimmer()
                             shimmerScrollListMovie.visibility = View.GONE
-                            scrollTrendingMoviesMain.visibility = View.VISIBLE
+                            rvScrollTrendingMoviesMain.visibility = View.VISIBLE
                         }
                     }
                     val currentList = adapterMovieMain.currentList
@@ -133,13 +133,13 @@ class HomeFragment : Fragment() {
                 is HomeFragmentState.SuccessMovie -> {
                     binding.root.isRefreshing = false
                     binding.apply {
-                        shimmerPlayCard.stopShimmer()
-                        shimmerPlayCard.visibility = View.GONE
-                        cardViewMovie.cardMovieMain.visibility = View.VISIBLE
-                        cardViewMovie.playCard.getTextNameView().text =
+                        shimmerCardMovieMain.stopShimmer()
+                        shimmerCardMovieMain.visibility = View.GONE
+                        containerPlayRandomMovie.containerCardMovie.visibility = View.VISIBLE
+                        containerPlayRandomMovie.customViewPlayCard.getTextNameView().text =
                             it.movie.name ?: getString(R.string.no_name)
                     }
-                    binding.cardViewMovie.imageMovie.loadPhoto(it.movie.poster?.url)
+                    binding.containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(it.movie.poster?.url ?: "")
                 }
             }
         }
@@ -147,6 +147,13 @@ class HomeFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        "onDestroy Fragment".log()
         _binding = null
     }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        "Config Fragment".log()
+    }
+
 }

@@ -10,7 +10,7 @@
     app:layout_constraintTop_toTopOf="@id/first_line">
 
         <TextView
-            android:id="@+id/release_date"
+            android:id="@+id/text_view_release_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/lato_bold"
@@ -21,7 +21,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/year_movie"
+            android:id="@+id/text_view_year_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/lato"
@@ -29,28 +29,28 @@
             android:textSize="@dimen/text_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/release_date" />
+            app:layout_constraintTop_toBottomOf="@id/text_view_release_date" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/middle_screen"
+            android:id="@+id/gl_middle_screen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
         <TextView
-            android:id="@+id/genre_movie"
+            android:id="@+id/text_view_genre_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/lato_bold"
             android:text="@string/genre"
             android:textColor="@color/black"
             android:textSize="@dimen/section_text_size"
-            app:layout_constraintStart_toStartOf="@id/middle_screen"
+            app:layout_constraintStart_toStartOf="@id/gl_middle_screen"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/first_button"
+            android:id="@+id/button_first_genre_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -60,19 +60,20 @@
             android:text="@string/comedy"
             android:textSize="@dimen/text_size"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/middle_screen"
-            app:layout_constraintTop_toBottomOf="@id/genre_movie" />
+            app:layout_constraintStart_toStartOf="@id/gl_middle_screen"
+            app:layout_constraintTop_toBottomOf="@id/text_view_genre_movie" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/last_button"
+            android:id="@+id/button_second_genre_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_strip"
             android:fontFamily="@font/lato"
+            android:layout_marginStart="10dp"
             android:minHeight="40dp"
             android:text="@string/thriller"
             android:textSize="@dimen/text_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/first_button" />
+            app:layout_constraintStart_toEndOf="@id/button_first_genre_movie" />
 </androidx.constraintlayout.widget.ConstraintLayout>

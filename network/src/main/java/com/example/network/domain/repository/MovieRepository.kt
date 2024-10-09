@@ -1,7 +1,7 @@
-package com.example.searchmovie.domain.repositopy
+package com.example.network.domain.repository
 
-import com.example.searchmovie.modelsMovie.Movie
-import com.example.searchmovie.modelsMovie.MovieResponse
+import com.example.network.modelsMovie.Movie
+import com.example.network.modelsMovie.MovieResponse
 import retrofit2.Response
 
 interface MovieRepository {

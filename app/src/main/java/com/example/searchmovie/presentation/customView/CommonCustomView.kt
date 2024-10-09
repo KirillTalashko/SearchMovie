@@ -28,7 +28,7 @@ class CommonCustomView @JvmOverloads constructor(
 
     fun setData(firstText : String?, secondText: String?, drawable: Drawable?){
         binding.apply {
-            imageViewCustomSmallImage.setImageDrawable(drawable)
+            imageViewSmallImage.setImageDrawable(drawable)
             textViewFirstText.text = firstText
             textViewSecondText.text = secondText
         }

@@ -8,25 +8,24 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.example.searchmovie.R
-import com.example.searchmovie.core.utils.ParametersCustomView
+import com.example.searchmovie.core.utils.ValueHolderView
 import com.example.searchmovie.core.utils.TextExpander
-import com.example.searchmovie.databinding.InformationMovieBinding
-import com.example.searchmovie.di.modules.CommonModule
+import com.example.searchmovie.databinding.ScreenInformationMovieBinding
 
 class InfoMovie @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    private var _binding: InformationMovieBinding? = null
+    private var _binding: ScreenInformationMovieBinding? = null
     private val binding
         get() = _binding!!
 
     init {
-        _binding = InformationMovieBinding.inflate(LayoutInflater.from(context), this)
+        _binding = ScreenInformationMovieBinding.inflate(LayoutInflater.from(context), this)
     }
 
     private fun setCustomText(text: SpannableString) {
-        binding.textDescriptionMovie.text = text
-        binding.textDescriptionMovie.movementMethod = LinkMovementMethod.getInstance()
+        binding.textViewDescriptionMovie.text = text
+        binding.textViewDescriptionMovie.movementMethod = LinkMovementMethod.getInstance()
     }
 
     fun setExpandableText(
@@ -44,7 +43,7 @@ class InfoMovie @JvmOverloads constructor(
                     textColor,
                     isUnderline,
                     onCollapse,
-                    resources.getString(R.string.read_less_text)
+                    ContextCompat.getString(context,R.string.read_less_text)
                 )
             } else {
                 TextExpander.getReadMoreText(
@@ -52,27 +51,28 @@ class InfoMovie @JvmOverloads constructor(
                     textColor,
                     isUnderline,
                     onExpand,
-                    resources.getString(R.string.read_more_text)
+                    ContextCompat.getString(context,R.string.read_more_text)
                 )
             }
         )
     }
 
-    fun setCharacteristics(quantity: QuantityCustomView, settings: ParametersCustomView) {
-        when (quantity) {
-            QuantityCustomView.TIME -> {
-                binding.customViewTimes.setData(
-                    firstText = settings.firstText,
-                    secondText = settings.secondText,
-                    drawable = settings.drawable
+    fun setCharacteristics(display: DisplayOptionsCustomView, owner: ValueHolderView) {
+        when (display) {
+            DisplayOptionsCustomView.TIME -> {
+                binding.customViewDurationMovie.setData(
+
+                    firstText = owner.firstText,
+                    secondText = owner.secondText,
+                    drawable = owner.drawable
                 )
             }
 
-            QuantityCustomView.RATING -> {
-                binding.customViewRating.setData(
-                    firstText = settings.firstText,
-                    secondText = settings.secondText,
-                    drawable = settings.drawable
+            DisplayOptionsCustomView.RATING -> {
+                binding.customViewRatingMovie.setData(
+                    firstText = owner.firstText,
+                    secondText = owner.secondText,
+                    drawable = owner.drawable
                 )
             }
         }
@@ -83,7 +83,7 @@ class InfoMovie @JvmOverloads constructor(
         _binding = null
     }
 
-    enum class QuantityCustomView() {
+    enum class DisplayOptionsCustomView {
         TIME,
         RATING
     }

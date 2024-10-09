@@ -4,8 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.searchmovie.databinding.ShowPopularMovieMainBinding
-import com.example.searchmovie.modelsMovie.Movie
+import com.example.searchmovie.databinding.ScreenCardPopularMovieBinding
+import com.example.network.modelsMovie.Movie
+
 
 
 class AdapterPopularHome : ListAdapter<Movie, ViewHolderPopularHome>(DIFF_CALLBACK) {
@@ -23,7 +24,7 @@ class AdapterPopularHome : ListAdapter<Movie, ViewHolderPopularHome>(DIFF_CALLBA
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderPopularHome {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = ShowPopularMovieMainBinding.inflate(layoutInflater,parent,false)
+        val view = ScreenCardPopularMovieBinding.inflate(layoutInflater,parent,false)
         return ViewHolderPopularHome(view)
     }
 
