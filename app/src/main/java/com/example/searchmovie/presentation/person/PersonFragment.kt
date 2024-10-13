@@ -1,9 +1,5 @@
 package com.example.searchmovie.presentation.person
 
-import com.example.searchmovie.core.utils.BaseFragment
-import com.example.searchmovie.databinding.FragmentPersonBinding
+import androidx.fragment.app.Fragment
 
-class PersonFragment :
-    BaseFragment<FragmentPersonBinding>(FragmentPersonBinding::inflate) {
-
-}
+class PersonFragment : Fragment()

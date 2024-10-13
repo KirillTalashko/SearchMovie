@@ -50,24 +50,35 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    
     // Navigation component
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    // Glide
     implementation (libs.glide)
+
     // ViewModel
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.process)
+
     //ShimmerFrameLayout
     implementation (libs.shimmer)
+
     // Dagger 2
     kapt (libs.dagger.compiler)
     implementation (libs.dagger)
+
     // SwipeRefreshLayout
     implementation(libs.androidx.swiperefreshlayout)
-    // Add network Model
-    implementation(project(":network"))
 
+    // network
+    implementation(project(":network"))
+    // database
+    implementation(project(":database"))
+    // common
+    implementation(project(":common"))
 
     //OkHttp
     implementation(libs.okhttp)

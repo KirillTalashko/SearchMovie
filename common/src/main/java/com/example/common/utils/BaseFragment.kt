@@ -1,4 +1,4 @@
-package com.example.searchmovie.core.utils
+package com.example.common.utils
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +13,7 @@ abstract class BaseFragment<T : ViewBinding>(
 
     private var _binding: T? = null
 
-    private val binding: T
+    val binding: T
         get() {
             return _binding!!
         }

@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.example.searchmovie.R
-import com.example.searchmovie.core.utils.ValueHolderView
-import com.example.searchmovie.core.utils.TextExpander
+import com.example.common.utils.TextExpander
+import com.example.common.utils.ValueHolderView
 import com.example.searchmovie.databinding.ScreenInformationMovieBinding
 
 class InfoMovie @JvmOverloads constructor(

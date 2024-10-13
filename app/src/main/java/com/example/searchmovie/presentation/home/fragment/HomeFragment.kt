@@ -1,18 +1,14 @@
 package com.example.searchmovie.presentation.home.fragment
 
-import android.content.res.Configuration
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.utils.BaseFragment
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.extension.loadPhoto
-import com.example.searchmovie.core.extension.log
 import com.example.searchmovie.core.extension.showToast
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
@@ -22,11 +18,7 @@ import com.example.searchmovie.presentation.home.viewModel.HomeFragmentStateRand
 import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
 import javax.inject.Inject
 
-class HomeFragment : Fragment() {
-
-    private var _binding: FragmentHomeBinding? = null
-    private val binding
-        get() = _binding!!
+class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
 
     private val adapterMovieMain = AdapterPopularHome()
     private val currentListEmpty: Boolean
@@ -45,23 +37,11 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        "onCreate Fragment".log()
         inject
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        "onCreateView Fragment".log()
-        _binding = FragmentHomeBinding.inflate(inflater)
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        "onViewCreated Fragment".log()
         initRecyclerView()
         observerViewModel()
         interactionWithView()
@@ -155,17 +135,6 @@ class HomeFragment : Fragment() {
             }
 
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        "onDestroy Fragment".log()
-        _binding = null
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        "Config Fragment".log()
     }
 
 }

@@ -1,18 +1,16 @@
 package com.example.searchmovie.presentation.cardMovie
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.utils.BaseFragment
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
+import com.example.common.utils.ValueHolderView
 import com.example.searchmovie.core.extension.loadPhoto
-import com.example.searchmovie.core.utils.ValueHolderView
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.AdapterRelatedMovie
 import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
@@ -20,11 +18,7 @@ import com.example.searchmovie.presentation.customView.InfoMovie
 
 import javax.inject.Inject
 
-class CardMovieFragment : Fragment() {
-
-    private var _binding: FragmentCardMovieBinding? = null
-    private val binding
-        get() = _binding!!
+class CardMovieFragment : BaseFragment<FragmentCardMovieBinding>(FragmentCardMovieBinding::inflate){
 
     private val adapter = AdapterRelatedMovie()
 
@@ -48,15 +42,6 @@ class CardMovieFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         inject
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentCardMovieBinding.inflate(inflater)
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,7 +75,7 @@ class CardMovieFragment : Fragment() {
         binding.customViewInfoMovie.setCharacteristics(
             display = InfoMovie.DisplayOptionsCustomView.TIME,
             owner = ValueHolderView(
-                drawable = ContextCompat.getDrawable(requireContext(),R.drawable.image_time),
+                drawable = ContextCompat.getDrawable(requireContext(), R.drawable.image_time),
                 firstText = getString(R.string.random_time),
                 secondText = getString(R.string.minutes)
             )
@@ -99,7 +84,7 @@ class CardMovieFragment : Fragment() {
         binding.customViewInfoMovie.setCharacteristics(
             display = InfoMovie.DisplayOptionsCustomView.RATING,
             owner = ValueHolderView(
-                drawable = ContextCompat.getDrawable(requireContext(),R.drawable.image_star_gray),
+                drawable = ContextCompat.getDrawable(requireContext(), R.drawable.image_star_gray),
                 firstText = getString(R.string.text_rating_movie),
                 secondText = getString(R.string.text_rating)
             )
