@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "SearchMovie"
 include(":app")
- 
+include(":network")
+include(":database")
+include(":common")

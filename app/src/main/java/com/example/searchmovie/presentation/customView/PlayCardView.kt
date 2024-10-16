@@ -21,10 +21,10 @@ class PlayCardView @JvmOverloads constructor(
     init {
         LayoutInflater.from(context).inflate(R.layout.screen_play_card, this, true)
         radius = 44f
-        textTrailerView = findViewById(R.id.text_watch_movie)
-        textNameView = findViewById(R.id.text_name_movie)
+        textTrailerView = findViewById(R.id.text_view_title_watch_movie)
+        textNameView = findViewById(R.id.text_view_name_in_card_play_movie)
         containerLayout = findViewById(R.id.container_layout_card)
-        imagePlayCard = findViewById(R.id.image_play_bottom)
+        imagePlayCard = findViewById(R.id.image_view_button_play_movie)
         containerLayout.setPadding(30, 30, 30, 30)
         marginChildView()
     }

@@ -1,31 +1,33 @@
 package com.example.searchmovie.presentation.home.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.utils.BaseFragment
+import com.example.network.modelsMovie.Movie
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
+import com.example.searchmovie.core.extension.loadPhoto
 import com.example.searchmovie.core.extension.showToast
-import com.example.searchmovie.core.utils.ImageHelper
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
 import com.example.searchmovie.presentation.home.adapter.AdapterPopularHome
-import com.example.searchmovie.presentation.home.viewModel.HomeFragmentState
+import com.example.searchmovie.presentation.home.adapter.OnClickGetModel
+import com.example.searchmovie.presentation.home.viewModel.HomeFragmentStateListMovie
+import com.example.searchmovie.presentation.home.viewModel.HomeFragmentStateRandomMovie
 import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
 import javax.inject.Inject
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
 
-    private var _binding: FragmentHomeBinding? = null
-    private val binding
-        get() = _binding!!
-
-    private val adapterMovieMain = AdapterPopularHome()
+    private val adapterMovieMain : AdapterPopularHome by lazy {
+        AdapterPopularHome(object : OnClickGetModel{
+            override fun getModelMovie(movie: Movie) {
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCardMovieFragment(infoMovie = movie))
+            }
+        }) }
     private val currentListEmpty: Boolean
         get() = adapterMovieMain.currentList.isEmpty()
 
@@ -40,19 +42,12 @@ class HomeFragment : Fragment() {
         ViewModelProvider(this, factory)[ViewModelRandomMovie::class.java]
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         inject
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentHomeBinding.inflate(inflater)
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -62,23 +57,21 @@ class HomeFragment : Fragment() {
     }
 
     private fun interactionWithView() {
-        binding.cardViewMovie.restartStateButton.setOnClickListener {
+        binding.root.setOnRefreshListener {
             viewModel.getRandomMovie()
-        }
-        binding.cardViewMovie.playCard.getImageView().setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCardMovieFragment())
+            viewModel.getListMovie()
         }
     }
 
     private fun initRecyclerView() {
-        binding.scrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
-        binding.scrollTrendingMoviesMain.adapter = adapterMovieMain
-        binding.scrollTrendingMoviesMain.addOnScrollListener(object :
+        binding.rvScrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
+        binding.rvScrollTrendingMoviesMain.adapter = adapterMovieMain
+        binding.rvScrollTrendingMoviesMain.addOnScrollListener(object :
             RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager =
-                    binding.scrollTrendingMoviesMain.layoutManager as CenterZoomLayoutManager
+                    binding.rvScrollTrendingMoviesMain.layoutManager as CenterZoomLayoutManager
                 val totalItemCount = layoutManager.itemCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                 if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
@@ -89,58 +82,69 @@ class HomeFragment : Fragment() {
     }
 
     private fun observerViewModel() {
-        viewModel.state.observe(viewLifecycleOwner) {
-            when (it) {
-                is HomeFragmentState.Error -> {
-                    //TODO("Сделать отдельный экран для этого состояния")
-                    requireContext().showToast(it.error)
-                    binding.cardViewMovie.restartStateButton.visibility = View.VISIBLE
+        viewModel.stateRandomMovie.observe(viewLifecycleOwner) { randomMovie ->
+            when (randomMovie) {
+                is HomeFragmentStateRandomMovie.Error -> {
+                    binding.root.isRefreshing = false
+                    requireContext().showToast(randomMovie.error)
+
                 }
 
-                HomeFragmentState.LoadingListMovie -> {
+                HomeFragmentStateRandomMovie.LoadingMovie -> {
+                    binding.apply {
+                        shimmerCardMovieMain.startShimmer()
+                        shimmerCardMovieMain.visibility = View.VISIBLE
+                    }
+                }
+
+                is HomeFragmentStateRandomMovie.SuccessMovie -> {
+                    binding.root.isRefreshing = false
+                    binding.apply {
+                        shimmerCardMovieMain.stopShimmer()
+                        shimmerCardMovieMain.visibility = View.GONE
+                        containerPlayRandomMovie.containerCardMovie.visibility = View.VISIBLE
+                        containerPlayRandomMovie.customViewPlayCard.getTextNameView().text =
+                            randomMovie.movie.name ?: getString(R.string.no_name)
+                    }
+                    binding.containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(
+                        randomMovie.movie.poster?.url ?: ""
+                    )
+                    binding.containerPlayRandomMovie.containerCardMovie.setOnClickListener{
+                        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCardMovieFragment(infoMovie = randomMovie.movie))
+                    }
+                }
+            }
+        }
+        viewModel.stateListMovie.observe(viewLifecycleOwner) { listMovie ->
+            when (listMovie) {
+                is HomeFragmentStateListMovie.Error -> {
+                    binding.root.isRefreshing = false
+                    requireContext().showToast(listMovie.error)
+                }
+
+                HomeFragmentStateListMovie.LoadingListMovie -> {
                     if (currentListEmpty) {
                         binding.shimmerScrollListMovie.startShimmer()
                         binding.shimmerScrollListMovie.visibility = View.VISIBLE
-                        binding.scrollTrendingMoviesMain.visibility = View.GONE
+                        binding.rvScrollTrendingMoviesMain.visibility = View.GONE
                     }
                 }
 
-                HomeFragmentState.LoadingMovie -> {
-                    binding.apply {
-                        cardViewMovie.restartStateButton.visibility = View.GONE
-                        shimmerPlayCard.startShimmer()
-                        shimmerPlayCard.visibility = View.VISIBLE
-                    }
-                }
-
-                is HomeFragmentState.SuccessListMovie -> {
+                is HomeFragmentStateListMovie.SuccessListMovie -> {
+                    binding.root.isRefreshing = false
                     if (currentListEmpty) {
                         binding.apply {
                             shimmerScrollListMovie.stopShimmer()
                             shimmerScrollListMovie.visibility = View.GONE
-                            scrollTrendingMoviesMain.visibility = View.VISIBLE
+                            rvScrollTrendingMoviesMain.visibility = View.VISIBLE
                         }
                     }
                     val currentList = adapterMovieMain.currentList
-                    adapterMovieMain.submitList(currentList.plus(it.listMovie))
-                }
-
-                is HomeFragmentState.SuccessMovie -> {
-                    binding.apply {
-                        shimmerPlayCard.stopShimmer()
-                        shimmerPlayCard.visibility = View.GONE
-                        cardViewMovie.cardMovieMain.visibility = View.VISIBLE
-                        cardViewMovie.playCard.getTextNameView().text =
-                            it.movie.name ?: getString(R.string.no_name)
-                    }
-                    ImageHelper().getPhoto(it.movie.poster?.url, binding.cardViewMovie.imageMovie)
+                    adapterMovieMain.submitList(currentList.plus(listMovie.listMovie))
                 }
             }
+
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
 }
