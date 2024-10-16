@@ -11,7 +11,7 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_cardMovieFragment"
-            app:destination="@id/cardMovieFragment"/>
+            app:destination="@id/cardMovieFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -27,5 +27,10 @@
         android:id="@+id/cardMovieFragment"
         android:name="com.example.searchmovie.presentation.cardMovie.CardMovieFragment"
         android:label="fragment_card_Movie"
-        tools:layout="@layout/screen_time_and_rating_movie" />
+        tools:layout="@layout/screen_time_and_rating_movie">
+        <argument
+            android:name="info_movie"
+            app:nullable="false"
+            app:argType="com.example.network.modelsMovie.Movie"/>
+    </fragment>
 </navigation>

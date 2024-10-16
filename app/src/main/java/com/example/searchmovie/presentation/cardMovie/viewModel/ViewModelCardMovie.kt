@@ -19,4 +19,6 @@ class ViewModelCardMovie : ViewModel() {
         _trackingReadMore.value = false
     }
 
+
+
 }

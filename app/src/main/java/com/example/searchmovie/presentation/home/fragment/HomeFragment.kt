@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.utils.BaseFragment
+import com.example.network.modelsMovie.Movie
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.extension.loadPhoto
@@ -13,6 +14,7 @@ import com.example.searchmovie.core.extension.showToast
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
 import com.example.searchmovie.presentation.home.adapter.AdapterPopularHome
+import com.example.searchmovie.presentation.home.adapter.OnClickGetModel
 import com.example.searchmovie.presentation.home.viewModel.HomeFragmentStateListMovie
 import com.example.searchmovie.presentation.home.viewModel.HomeFragmentStateRandomMovie
 import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
@@ -20,7 +22,12 @@ import javax.inject.Inject
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
 
-    private val adapterMovieMain = AdapterPopularHome()
+    private val adapterMovieMain : AdapterPopularHome by lazy {
+        AdapterPopularHome(object : OnClickGetModel{
+            override fun getModelMovie(movie: Movie) {
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCardMovieFragment(infoMovie = movie))
+            }
+        }) }
     private val currentListEmpty: Boolean
         get() = adapterMovieMain.currentList.isEmpty()
 
@@ -35,10 +42,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         ViewModelProvider(this, factory)[ViewModelRandomMovie::class.java]
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         inject
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,9 +57,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun interactionWithView() {
-        binding.containerPlayRandomMovie.customViewPlayCard.getImageView().setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCardMovieFragment())
-        }
         binding.root.setOnRefreshListener {
             viewModel.getRandomMovie()
             viewModel.getListMovie()
@@ -81,6 +87,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 is HomeFragmentStateRandomMovie.Error -> {
                     binding.root.isRefreshing = false
                     requireContext().showToast(randomMovie.error)
+
                 }
 
                 HomeFragmentStateRandomMovie.LoadingMovie -> {
@@ -102,6 +109,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     binding.containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(
                         randomMovie.movie.poster?.url ?: ""
                     )
+                    binding.containerPlayRandomMovie.containerCardMovie.setOnClickListener{
+                        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCardMovieFragment(infoMovie = randomMovie.movie))
+                    }
                 }
             }
         }

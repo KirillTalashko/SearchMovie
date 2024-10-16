@@ -4,21 +4,25 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.utils.BaseFragment
+import com.example.common.utils.ValueHolderView
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
-import com.example.common.utils.ValueHolderView
 import com.example.searchmovie.core.extension.loadPhoto
+import com.example.searchmovie.core.extension.log
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.AdapterRelatedMovie
 import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
 import com.example.searchmovie.presentation.customView.InfoMovie
-
 import javax.inject.Inject
 
-class CardMovieFragment : BaseFragment<FragmentCardMovieBinding>(FragmentCardMovieBinding::inflate){
+class CardMovieFragment :
+    BaseFragment<FragmentCardMovieBinding>(FragmentCardMovieBinding::inflate) {
+
+    private val argsMovie: CardMovieFragmentArgs by navArgs()
 
     private val adapter = AdapterRelatedMovie()
 
@@ -36,9 +40,6 @@ class CardMovieFragment : BaseFragment<FragmentCardMovieBinding>(FragmentCardMov
         )[ViewModelCardMovie::class.java]
     }
 
-    private val url =
-        "https://static.wikia.nocookie.net/d184dacd-7f49-43f8-a316-453d75ce8752/thumbnail-down/width/1280/height/720"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         inject
@@ -46,6 +47,9 @@ class CardMovieFragment : BaseFragment<FragmentCardMovieBinding>(FragmentCardMov
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        "${argsMovie.infoMovie.rating.imd}".log()
+        "${argsMovie.infoMovie.duration}".log()
+        "${argsMovie.infoMovie.genres?.size}".log()
         initRecyclerView()
         interactionWithView()
     }
@@ -60,35 +64,53 @@ class CardMovieFragment : BaseFragment<FragmentCardMovieBinding>(FragmentCardMov
     }
 
     private fun interactionWithView() {
-        binding.imageViewPosterMovie.loadPhoto(url)
+        binding.apply {
+            imageViewPosterMovie.loadPhoto(argsMovie.infoMovie.poster?.url ?: "")
+
+            customViewInfoMovie.setDataInfoMovie(
+                name = argsMovie.infoMovie.name ?: getString(R.string.no_name),
+                year = argsMovie.infoMovie.year.toString(),
+                genres = argsMovie.infoMovie.genres ?: emptyList()
+            )
+
+            customViewInfoMovie.setDataCustomView(
+                display = InfoMovie.DisplayOptionsCustomView.TIME,
+                owner = ValueHolderView(
+                    drawable = ContextCompat.getDrawable(requireContext(), R.drawable.image_time),
+                    firstText = argsMovie.infoMovie.duration.toString() ,
+                    secondText = getString(R.string.minutes)
+                )
+            )
+
+            customViewInfoMovie.setDataCustomView(
+                display = InfoMovie.DisplayOptionsCustomView.RATING,
+                owner = ValueHolderView(
+                    drawable = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.image_star_gray
+                    ),
+                    firstText = argsMovie.infoMovie.rating.imd.toString(),
+                    secondText = getString(R.string.text_rating)
+                )
+            )
+
+        }
+
+        textExpander()
+    }
+
+    private fun textExpander() {
         viewModel.trackingReadMore.observe(viewLifecycleOwner) {
             binding.customViewInfoMovie.setExpandableText(
-                fullText = resources.getString(R.string.example_description_long),
+                fullText = argsMovie.infoMovie.description ?: getString(R.string.no_description),
                 isExpanded = it,
-                textColor = ContextCompat.getColor(requireContext(),R.color.black),
+                textColor = ContextCompat.getColor(requireContext(), R.color.black),
                 isUnderline = it,
-                onExpand = {viewModel.onReadMoreClicked()},
+                onExpand = { viewModel.onReadMoreClicked() },
                 onCollapse = { viewModel.onLessMoreClicked() }
             )
         }
-
-        binding.customViewInfoMovie.setCharacteristics(
-            display = InfoMovie.DisplayOptionsCustomView.TIME,
-            owner = ValueHolderView(
-                drawable = ContextCompat.getDrawable(requireContext(), R.drawable.image_time),
-                firstText = getString(R.string.random_time),
-                secondText = getString(R.string.minutes)
-            )
-        )
-
-        binding.customViewInfoMovie.setCharacteristics(
-            display = InfoMovie.DisplayOptionsCustomView.RATING,
-            owner = ValueHolderView(
-                drawable = ContextCompat.getDrawable(requireContext(), R.drawable.image_star_gray),
-                firstText = getString(R.string.text_rating_movie),
-                secondText = getString(R.string.text_rating)
-            )
-        )
-        }
     }
+}
+
 

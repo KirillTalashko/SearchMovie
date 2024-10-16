@@ -41,7 +41,7 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
                 }
                     ?: run { _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.Error(NullPointerException().checkingResponse())) }
             } catch (e: Exception) {
-                e.message?.log()
+                "${e.message} randomMovie"
                 _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.Error(e.checkingResponse()))
             }
         }
@@ -63,6 +63,7 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
                     }
                         ?: run { _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.Error(NullPointerException().checkingResponse())) }
                 } catch (e: Exception) {
+                    "${e.message} listMovie".log()
                     _stateListMovie.postValue(HomeFragmentStateListMovie.Error(e.checkingResponse()))
 
                 } finally {

@@ -7,7 +7,7 @@
     <string name="text_rating">IMDb</string>
     <string name="text_rating_movie">7.0</string>
     <string name="no_name">Нет названия</string>
-    <string name="minutes">минуты</string>
+    <string name="minutes">минут</string>
     <string name="random_time">152</string>
     <string name="example_description_long">В мире, где роботы-трансформеры могут принимать облик автомобилей, Самуэль, обычный подросток, оказывается в центре грандиозного противостояния между добрыми автоботами и злыми десептиконами. Он знакомится с Оптимусом Праймом, лидером автоботов, и вместе они сражаются за спасение Земли от вторжения десептиконов, жаждущих захватить ее ресурсы. Фильм полон зрелищных экшн-сцен, невероятных спецэффектов и захватывающего сюжета, который понравится как детям, так и взрослым
 </string>
@@ -21,6 +21,7 @@
     <string name="description">Описание</string>
     <string name="read_less_text">...Read less</string>
     <string name="read_more_text">...Read more</string>
+    <string name="no_description">Описание к фильму отсутствует</string>
 
 
 </resources>

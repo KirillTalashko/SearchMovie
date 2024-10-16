@@ -38,4 +38,5 @@ class CenterZoomLayoutManager(context: Context) : LinearLayoutManager(
             //"endDistance $endDistance , childMidpoint $childMidpoint, distanceRelativeEdge $distanceRelativeEdge ".log()
         }
     }
+
 }

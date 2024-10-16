@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import com.example.searchmovie.R
 import com.example.common.utils.TextExpander
 import com.example.common.utils.ValueHolderView
+import com.example.network.modelsMovie.Genres
 import com.example.searchmovie.databinding.ScreenInformationMovieBinding
 
 class InfoMovie @JvmOverloads constructor(
@@ -21,6 +22,19 @@ class InfoMovie @JvmOverloads constructor(
 
     init {
         _binding = ScreenInformationMovieBinding.inflate(LayoutInflater.from(context), this)
+    }
+
+    fun setDataInfoMovie(name: String, year: String, genres: List<Genres?>){
+        binding.apply {
+            textViewNameInInfoMovie.text = name
+            containerDateAndGenreMovie.textViewYearMovie.text = year
+            if (genres.isEmpty()){
+                binding.containerDateAndGenreMovie.buttonFirstGenreMovie.visibility = GONE
+                binding.containerDateAndGenreMovie.buttonSecondGenreMovie.visibility = GONE
+            }
+            TODO("достать из списка items и отоброзить на разных View")
+            TODO("некорректно отображается рейтинг карточки")
+        }
     }
 
     private fun setCustomText(text: SpannableString) {
@@ -57,11 +71,10 @@ class InfoMovie @JvmOverloads constructor(
         )
     }
 
-    fun setCharacteristics(display: DisplayOptionsCustomView, owner: ValueHolderView) {
+    fun setDataCustomView(display: DisplayOptionsCustomView, owner: ValueHolderView) {
         when (display) {
             DisplayOptionsCustomView.TIME -> {
                 binding.customViewDurationMovie.setData(
-
                     firstText = owner.firstText,
                     secondText = owner.secondText,
                     drawable = owner.drawable

@@ -9,7 +9,7 @@ import com.example.network.modelsMovie.Movie
 
 
 
-class AdapterPopularHome : ListAdapter<Movie, ViewHolderPopularHome>(DIFF_CALLBACK) {
+class AdapterPopularHome(private val onClick:OnClickGetModel) : ListAdapter<Movie, ViewHolderPopularHome>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
@@ -25,7 +25,7 @@ class AdapterPopularHome : ListAdapter<Movie, ViewHolderPopularHome>(DIFF_CALLBA
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderPopularHome {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = ScreenCardPopularMovieBinding.inflate(layoutInflater,parent,false)
-        return ViewHolderPopularHome(view)
+        return ViewHolderPopularHome(view,onClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolderPopularHome, position: Int) {
