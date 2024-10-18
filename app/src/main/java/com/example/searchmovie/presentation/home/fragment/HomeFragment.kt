@@ -20,14 +20,10 @@ import com.example.searchmovie.presentation.home.viewModel.HomeFragmentStateRand
 import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
 import javax.inject.Inject
 
-class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
+    OnClickGetModel {
 
-    private val adapterMovieMain : AdapterPopularHome by lazy {
-        AdapterPopularHome(object : OnClickGetModel{
-            override fun getModelMovie(movie: Movie) {
-                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCardMovieFragment(infoMovie = movie))
-            }
-        }) }
+    private lateinit var adapterMovieMain: AdapterPopularHome
     private val currentListEmpty: Boolean
         get() = adapterMovieMain.currentList.isEmpty()
 
@@ -64,6 +60,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun initRecyclerView() {
+        adapterMovieMain = AdapterPopularHome(this)
         binding.rvScrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
         binding.rvScrollTrendingMoviesMain.adapter = adapterMovieMain
         binding.rvScrollTrendingMoviesMain.addOnScrollListener(object :
@@ -145,6 +142,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             }
 
         }
+    }
+
+    override fun getModelMovie(movie: Movie) {
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToCardMovieFragment(
+                infoMovie = movie
+            )
+        )
     }
 
 }

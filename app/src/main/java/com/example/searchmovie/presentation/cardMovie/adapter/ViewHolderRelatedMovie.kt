@@ -10,7 +10,6 @@ class ViewHolderRelatedMovie(private val binding: ScreenSimilarMovieBinding) :
     fun bind(item: String) {
         binding.textSimilarMovieSecond.text = item
         binding.imageSimilarMovieSecond.loadPhoto(url)
-
     }
 
     private val url =

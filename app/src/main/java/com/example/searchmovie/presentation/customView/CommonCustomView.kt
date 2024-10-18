@@ -22,15 +22,19 @@ class CommonCustomView @JvmOverloads constructor(
         val firstText = attributes.getString(R.styleable.CommonCustomView_first_text)
         val secondText = attributes.getString(R.styleable.CommonCustomView_second_text)
         val drawableRes = attributes.getDrawable(R.styleable.CommonCustomView_drawable_res)
+        val visible = attributes.getBoolean(R.styleable.CommonCustomView_visible, true)
         attributes.recycle()
-        setData(firstText,secondText,drawableRes)
+        setData(firstText, secondText, drawableRes, visible)
     }
 
-    fun setData(firstText : String?, secondText: String?, drawable: Drawable?){
+    fun setData(firstText: String?, secondText: String?, drawable: Drawable?, visible: Boolean) {
         binding.apply {
             imageViewSmallImage.setImageDrawable(drawable)
             textViewFirstText.text = firstText
             textViewSecondText.text = secondText
+            if (!visible) {
+                binding.root.visibility = GONE
+            }
         }
     }
 

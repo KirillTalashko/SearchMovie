@@ -4,7 +4,8 @@
     <string name="watch_trailer">Смотреть трейлер</string>
     <string name="name">Название</string>
     <string name="popular">Популярные</string>
-    <string name="text_rating">IMDb</string>
+    <string name="text_rating_imdb">IMDb</string>
+    <string name="text_rating_kp">KP</string>
     <string name="text_rating_movie">7.0</string>
     <string name="no_name">Нет названия</string>
     <string name="minutes">минут</string>
@@ -22,6 +23,7 @@
     <string name="read_less_text">...Read less</string>
     <string name="read_more_text">...Read more</string>
     <string name="no_description">Описание к фильму отсутствует</string>
+    <string name="no_genre">Без жанра</string>
 
 
 </resources>

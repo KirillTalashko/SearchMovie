@@ -44,8 +44,5 @@ class PlayCardView @JvmOverloads constructor(
      fun getTextNameView():TextView {
          return textNameView
      }
-    fun getImageView(): ImageView{
-        return imagePlayCard
-    }
 
 }

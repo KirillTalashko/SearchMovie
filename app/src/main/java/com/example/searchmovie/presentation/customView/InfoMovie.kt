@@ -7,11 +7,15 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.example.searchmovie.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.common.utils.TextExpander
 import com.example.common.utils.ValueHolderView
 import com.example.network.modelsMovie.Genres
+import com.example.searchmovie.R
+import com.example.searchmovie.core.extension.log
 import com.example.searchmovie.databinding.ScreenInformationMovieBinding
+import com.example.searchmovie.presentation.cardMovie.adapter.AdapterGenreMovie
 
 class InfoMovie @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -20,20 +24,25 @@ class InfoMovie @JvmOverloads constructor(
     private val binding
         get() = _binding!!
 
+    private val adapter: AdapterGenreMovie by lazy(LazyThreadSafetyMode.NONE) { AdapterGenreMovie() }
+
     init {
         _binding = ScreenInformationMovieBinding.inflate(LayoutInflater.from(context), this)
+        binding.apply {
+            containerDateAndGenreMovie.rvListGenre.layoutManager = LinearLayoutManager(
+                context,
+                RecyclerView.HORIZONTAL, false
+            )
+            containerDateAndGenreMovie.rvListGenre.adapter = adapter
+        }
     }
 
-    fun setDataInfoMovie(name: String, year: String, genres: List<Genres?>){
+    fun setDataInfoMovie(name: String, year: String, genres: List<Genres>) {
         binding.apply {
             textViewNameInInfoMovie.text = name
             containerDateAndGenreMovie.textViewYearMovie.text = year
-            if (genres.isEmpty()){
-                binding.containerDateAndGenreMovie.buttonFirstGenreMovie.visibility = GONE
-                binding.containerDateAndGenreMovie.buttonSecondGenreMovie.visibility = GONE
-            }
-            TODO("достать из списка items и отоброзить на разных View")
-            TODO("некорректно отображается рейтинг карточки")
+            adapter.submitList(genres)
+            "${adapter.currentList}".log()
         }
     }
 
@@ -76,16 +85,26 @@ class InfoMovie @JvmOverloads constructor(
             DisplayOptionsCustomView.TIME -> {
                 binding.customViewDurationMovie.setData(
                     firstText = owner.firstText,
-                    secondText = owner.secondText,
-                    drawable = owner.drawable
+                    secondText = owner.secondText, drawable = owner.drawable,
+                    visible = true
                 )
             }
 
-            DisplayOptionsCustomView.RATING -> {
-                binding.customViewRatingMovie.setData(
+            DisplayOptionsCustomView.RATING_IMDB -> {
+                binding.customViewRatingImdbMovie.setData(
                     firstText = owner.firstText,
                     secondText = owner.secondText,
-                    drawable = owner.drawable
+                    drawable = owner.drawable,
+                    visible = owner.firstText?.toFloat() != 0F
+                )
+            }
+
+            DisplayOptionsCustomView.RATING_KP -> {
+                binding.customViewRatingKpMovie.setData(
+                    firstText = owner.firstText,
+                    secondText = owner.secondText,
+                    drawable = owner.drawable,
+                    visible = owner.firstText?.toFloat() != 0F
                 )
             }
         }
@@ -98,7 +117,8 @@ class InfoMovie @JvmOverloads constructor(
 
     enum class DisplayOptionsCustomView {
         TIME,
-        RATING
+        RATING_IMDB,
+        RATING_KP
     }
 
 }

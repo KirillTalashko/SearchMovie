@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_genre_movie"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/button_strip"
+        android:fontFamily="@font/lato"
+        android:minHeight="40dp"
+        android:text="@string/thriller"
+        android:textSize="@dimen/text_size"
+        android:visibility="visible" />
+
+</FrameLayout>
