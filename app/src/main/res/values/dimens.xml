@@ -3,6 +3,7 @@
     <dimen name="margin_start_text">24dp</dimen>
     <dimen name="caption_text_size">24sp</dimen>
     <dimen name="section_text_size">16sp</dimen>
+    <dimen name="margin_top_text">10dp</dimen>
     <dimen name="text_size">12sp</dimen>
 
 </resources>

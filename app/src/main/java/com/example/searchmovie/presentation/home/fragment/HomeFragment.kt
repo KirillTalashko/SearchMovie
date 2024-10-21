@@ -106,8 +106,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     binding.containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(
                         randomMovie.movie.poster?.url ?: ""
                     )
-                    binding.containerPlayRandomMovie.containerCardMovie.setOnClickListener{
-                        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToCardMovieFragment(infoMovie = randomMovie.movie))
+                    binding.containerPlayRandomMovie.containerCardMovie.setOnClickListener {
+                        findNavController().navigate(
+                            HomeFragmentDirections.actionHomeFragmentToCardMovieFragment(
+                                infoMovie = randomMovie.movie
+                            )
+                        )
                     }
                 }
             }
@@ -138,6 +142,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     }
                     val currentList = adapterMovieMain.currentList
                     adapterMovieMain.submitList(currentList.plus(listMovie.listMovie))
+
                 }
             }
 

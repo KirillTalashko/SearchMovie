@@ -8,4 +8,4 @@ import kotlinx.parcelize.Parcelize
 data class Rating(
     @SerializedName("kp") val kp: Float,
     @SerializedName("imd") val imd: Float
-):Parcelable
+) : Parcelable

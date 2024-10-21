@@ -8,9 +8,4 @@ class MovieLocalRepositoryImpl(private val dataBase: MovieDatabase) : MovieLocal
         dataBase.getMovieDao().insertNewRandomMovie(movieEntity)
     }
 
-    override suspend fun insertListMovie(movieEntity: List<MovieEntity>) {
-        movieEntity.forEach {
-            dataBase.getMovieDao().insertNewRandomMovie(it)
-        }
-    }
 }

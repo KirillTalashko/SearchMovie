@@ -5,14 +5,15 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "random_movie")
 data class MovieEntity(
-     @PrimaryKey val id: Long,
-     val name: String,
-     val url: String,
-     val ratingIMDb: Float,
-     val duration:Short,
-     val year: Short,
-     val genres: String,
-     val type: Byte,
-     val description: String
-     //val similarMovies: список похожих фильмов
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    val idMovieKp: Long,
+    val name: String?,
+    val url: String?,
+    val ratingIMDb: Float = 0f,
+    val ratingKp: Float = 0f,
+    val duration: Int = 0,
+    val year: Int = 0,
+    val genres: List<String?>,
+    val type: Int = 0,
+    val description: String?,
 )

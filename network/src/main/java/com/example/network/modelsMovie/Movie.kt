@@ -14,6 +14,6 @@ data class Movie(
     @SerializedName("genres") val genres: List<Genres>?,
     @SerializedName("typeNumber") val type: Int,
     @SerializedName("description") val description: String?
-):Parcelable
+) : Parcelable
 
 

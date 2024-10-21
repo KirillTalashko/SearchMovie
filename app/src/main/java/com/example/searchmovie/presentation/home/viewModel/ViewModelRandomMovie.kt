@@ -4,14 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
 import com.example.searchmovie.core.extension.checkingResponse
-import com.example.searchmovie.core.extension.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel() {
+class ViewModelRandomMovie(
+    private val repository: MovieRepository,
+    private val localRepository: MovieLocalRepository
+) : ViewModel() {
 
     private var isLoading = false
     fun getIsLoading() = isLoading
@@ -38,10 +41,10 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
                 val response = repository.getRandomMovie()
                 response.body()?.let {
                     _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.SuccessMovie(it))
+                    //localRepository.insertMovie()
                 }
                     ?: run { _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.Error(NullPointerException().checkingResponse())) }
             } catch (e: Exception) {
-                "${e.message} randomMovie"
                 _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.Error(e.checkingResponse()))
             }
         }
@@ -63,7 +66,6 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
                     }
                         ?: run { _stateRandomMovie.postValue(HomeFragmentStateRandomMovie.Error(NullPointerException().checkingResponse())) }
                 } catch (e: Exception) {
-                    "${e.message} listMovie".log()
                     _stateListMovie.postValue(HomeFragmentStateListMovie.Error(e.checkingResponse()))
 
                 } finally {
@@ -72,4 +74,20 @@ class ViewModelRandomMovie(private val repository: MovieRepository) : ViewModel(
             }
         }
     }
+    /*private fun mapMovie(movie: Movie): MovieEntity{
+       return MovieEntity(
+           idMovieKp = movie.id,
+           name = movie.name ?: "",
+           url = movie.poster?.url ?: "",
+           ratingIMDb = movie.rating.imd,
+           ratingKp = movie.rating.kp,
+           duration = movie.duration,
+           year = movie.year,
+           genres = movie.genres.forEach {
+                                         it.genresName
+           },
+           type = movie.type,
+           description = movie.description ?: ""
+       )
+    }*/
 }

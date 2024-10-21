@@ -7,4 +7,4 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Genres(
     @SerializedName("name") val genresName: String?
-):Parcelable
+) : Parcelable

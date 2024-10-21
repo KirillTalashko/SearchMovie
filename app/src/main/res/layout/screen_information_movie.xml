@@ -77,20 +77,73 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/custom_view_duration_movie" />
 
-        <include
-            android:id="@+id/container_date_and_genre_movie"
-            layout="@layout/screen_date_and_genre_movie" />
+        <TextView
+            android:id="@+id/text_view_release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_start_text"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/lato_bold"
+            android:text="@string/release_date"
+            android:textColor="@color/black"
+            android:textSize="@dimen/section_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/first_line" />
+
+        <TextView
+            android:id="@+id/text_view_year_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_start_text"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/lato"
+            android:text="@string/year"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_release_date" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_middle_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <TextView
+            android:id="@+id/text_view_genre_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/lato_bold"
+            android:text="@string/genre"
+            android:textColor="@color/black"
+            android:textSize="@dimen/section_text_size"
+            app:layout_constraintStart_toStartOf="@id/gl_middle_screen"
+            app:layout_constraintTop_toTopOf="@id/first_line" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_genre"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/gl_middle_screen"
+            app:layout_constraintTop_toBottomOf="@id/text_view_genre_movie"
+            tools:itemCount="3"
+            tools:listitem="@layout/screen_button_genre_movie" />
 
         <View
             android:id="@+id/second_line"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_marginHorizontal="@dimen/margin_start_text"
-            android:layout_marginTop="10dp"
             android:background="@color/gray_shadow_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/container_date_and_genre_movie" />
+            app:layout_constraintTop_toBottomOf="@id/rv_list_genre" />
 
         <TextView
             android:id="@+id/text_view_title_description"
@@ -98,11 +151,11 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="12dp"
+            android:text="@string/description"
             android:textColor="@color/black"
             android:textSize="@dimen/section_text_size"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/second_line"
-            tools:text="@string/description" />
+            app:layout_constraintTop_toBottomOf="@id/second_line" />
 
         <TextView
             android:id="@+id/text_view_description_movie"

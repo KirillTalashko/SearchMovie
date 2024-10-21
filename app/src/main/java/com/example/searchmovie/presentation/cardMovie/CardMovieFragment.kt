@@ -7,17 +7,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import com.example.common.model.ValueHolderView
 import com.example.common.utils.BaseFragment
-import com.example.common.utils.ValueHolderView
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.extension.loadPhoto
+import com.example.searchmovie.core.extension.showToast
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.AdapterRelatedMovie
+import com.example.searchmovie.presentation.cardMovie.viewModel.CardMovieFragmentStateRelatedMovies
 import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
 import com.example.searchmovie.presentation.customView.InfoMovie
 import javax.inject.Inject
-import kotlin.math.floor
 
 class CardMovieFragment :
     BaseFragment<FragmentCardMovieBinding>(FragmentCardMovieBinding::inflate) {
@@ -26,7 +28,7 @@ class CardMovieFragment :
 
     private val adapterRelatedMovie = AdapterRelatedMovie()
 
-    private val inject by lazy {
+    private val inject by lazy(LazyThreadSafetyMode.NONE) {
         (requireContext().applicationContext as SearchMovieApp).appComponent.inject(this)
     }
 
@@ -52,17 +54,43 @@ class CardMovieFragment :
     }
 
     private fun initRecyclerView() {
-        binding.rvScrollSimilarMovie.layoutManager = LinearLayoutManager(
-            requireContext(),
-            RecyclerView.HORIZONTAL, false
-        )
+        viewModel.getListMovieByGenre(argsMovie.infoMovie)
         binding.rvScrollSimilarMovie.adapter = adapterRelatedMovie
-        adapterRelatedMovie.submitList(listOf("1", "2", "3", "4"))
+        viewModel.stateListMovieByGenre.observe(viewLifecycleOwner) {
+            when (it) {
+                is CardMovieFragmentStateRelatedMovies.Error -> {
+                    requireContext().showToast(it.error)
+                }
+
+                CardMovieFragmentStateRelatedMovies.LoadingRelatedMovies -> {
+                    Unit
+                }
+
+                is CardMovieFragmentStateRelatedMovies.SuccessRelatedMovies -> {
+                    val currentList = adapterRelatedMovie.currentList
+                    adapterRelatedMovie.submitList(currentList.plus(it.listMovie))
+                }
+            }
+        }
+        binding.rvScrollSimilarMovie.addOnScrollListener(
+            object : OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val layoutManager =
+                        binding.rvScrollSimilarMovie.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+                    if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
+                        viewModel.getListMovieByGenre(argsMovie.infoMovie)
+                    }
+                }
+            }
+        )
     }
 
     private fun interactionWithView() {
         binding.imageViewPosterMovie.loadPhoto(argsMovie.infoMovie.poster?.url ?: "")
-        setFields()
+        setCharacteristics()
         textExpander()
     }
 
@@ -79,7 +107,7 @@ class CardMovieFragment :
         }
     }
 
-    private fun setFields() {
+    private fun setCharacteristics() {
         binding.apply {
             customViewInfoMovie.setDataInfoMovie(
                 name = argsMovie.infoMovie.name ?: getString(R.string.no_name),
@@ -106,7 +134,7 @@ class CardMovieFragment :
                         requireContext(),
                         R.drawable.image_star_gray
                     ),
-                    firstText = floor(argsMovie.infoMovie.rating.imd * 10 / 10).toString(),
+                    firstText = argsMovie.infoMovie.rating.imd.toString(),
                     secondText = getString(R.string.text_rating_imdb)
                 )
             )
@@ -117,7 +145,7 @@ class CardMovieFragment :
                         requireContext(),
                         R.drawable.image_star_gray
                     ),
-                    firstText = floor(argsMovie.infoMovie.rating.kp * 10 / 10).toString(),
+                    firstText = argsMovie.infoMovie.rating.kp.toString(),
                     secondText = getString(R.string.text_rating_kp)
                 )
             )

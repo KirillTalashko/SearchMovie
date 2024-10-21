@@ -1,4 +1,4 @@
-package com.example.common.utils
+package com.example.common.model
 
 import android.graphics.drawable.Drawable
 

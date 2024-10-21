@@ -1,9 +1,8 @@
 package com.example.network.domain.api
 
 
-
-import com.example.network.modelsMovie.Movie
 import com.example.network.modelsMovie.ListMovie
+import com.example.network.modelsMovie.Movie
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,5 +16,13 @@ interface MovieApi {
         @Query("limit") limit: Int = 10,
         @Query("page") page: Int,
         @Query("rating.kp") ratingKp: String = "7-10"
+    ): Response<ListMovie>
+
+    @GET("v1.4/movie")
+    suspend fun getListMovieByGenre(
+        @Query("limit") limit: Int = 10,
+        @Query("page") page: Int,
+        @Query("rating.kp") ratingKp: String = "5-10",
+        @Query("genre") genre: List<String>? = null,
     ): Response<ListMovie>
 }

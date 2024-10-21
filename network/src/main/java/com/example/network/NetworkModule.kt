@@ -1,8 +1,8 @@
 package com.example.network
 
+import com.example.network.domain.api.MovieApi
 import com.example.network.domain.repository.MovieRepository
 import com.example.network.domain.repository.MovieRepositoryImpl
-import com.example.network.domain.api.MovieApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -18,7 +18,7 @@ import javax.inject.Singleton
 @Module
 class NetworkModule {
 
-    private val apiKey = "T89S8JR-Y5343QN-HCRHHVV-KATN0A8"
+    private val apiKey = "XMM6YTT-2EP4J36-KVCC1HQ-JAKVEF6"
     private val baseUrl = "https://api.kinopoisk.dev/"
 
     @Singleton
@@ -40,21 +40,25 @@ class NetworkModule {
             response ?: throw lastError ?: throw IOException("Ошибка получения данных")
         }
     }
+
     @Singleton
     @Provides
     @Named("key")
-    fun interceptorMovieApiKey(): Interceptor{
-        return Interceptor{chain ->
+    fun interceptorMovieApiKey(): Interceptor {
+        return Interceptor { chain ->
             val request = chain.request().newBuilder()
                 .addHeader("X-API-KEY", apiKey)
                 .build()
-             chain.proceed(request)
+            chain.proceed(request)
         }
     }
 
     @Singleton
     @Provides
-    fun provideOkhttp(interceptor: Interceptor, @Named("key") interceptorMovieApiKey: Interceptor): OkHttpClient {
+    fun provideOkhttp(
+        interceptor: Interceptor,
+        @Named("key") interceptorMovieApiKey: Interceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(interceptorMovieApiKey)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
@@ -65,7 +69,7 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return  Retrofit.Builder()
+        return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
@@ -80,7 +84,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideMovieRepository(movieApi: MovieApi) : MovieRepository {
+    fun provideMovieRepository(movieApi: MovieApi): MovieRepository {
         return MovieRepositoryImpl(movieApi)
     }
 

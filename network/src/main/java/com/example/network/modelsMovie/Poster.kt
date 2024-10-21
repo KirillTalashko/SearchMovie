@@ -7,4 +7,4 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Poster(
     @SerializedName("url") val url: String?
-):Parcelable
+) : Parcelable

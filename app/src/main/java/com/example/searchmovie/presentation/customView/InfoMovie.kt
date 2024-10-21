@@ -7,13 +7,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.common.model.ValueHolderView
 import com.example.common.utils.TextExpander
-import com.example.common.utils.ValueHolderView
 import com.example.network.modelsMovie.Genres
 import com.example.searchmovie.R
-import com.example.searchmovie.core.extension.log
 import com.example.searchmovie.databinding.ScreenInformationMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.AdapterGenreMovie
 
@@ -28,21 +25,14 @@ class InfoMovie @JvmOverloads constructor(
 
     init {
         _binding = ScreenInformationMovieBinding.inflate(LayoutInflater.from(context), this)
-        binding.apply {
-            containerDateAndGenreMovie.rvListGenre.layoutManager = LinearLayoutManager(
-                context,
-                RecyclerView.HORIZONTAL, false
-            )
-            containerDateAndGenreMovie.rvListGenre.adapter = adapter
-        }
+        binding.rvListGenre.adapter = adapter
     }
 
     fun setDataInfoMovie(name: String, year: String, genres: List<Genres>) {
         binding.apply {
             textViewNameInInfoMovie.text = name
-            containerDateAndGenreMovie.textViewYearMovie.text = year
+            textViewYearMovie.text = year
             adapter.submitList(genres)
-            "${adapter.currentList}".log()
         }
     }
 
