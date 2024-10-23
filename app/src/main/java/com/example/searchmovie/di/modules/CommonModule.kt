@@ -37,6 +37,9 @@ class CommonModule {
         }
     }
 
+
+    @Provides
+    @Singleton
     fun provideMovieLocalRepository(myApplication: SearchMovieApp): MovieLocalRepository {
         return MovieLocalRepositoryImpl(myApplication.dataBase)
     }

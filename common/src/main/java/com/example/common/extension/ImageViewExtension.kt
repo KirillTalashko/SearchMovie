@@ -1,13 +1,12 @@
-package com.example.searchmovie.core.extension
+package com.example.common.extension
 
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-
-import com.example.searchmovie.R
+import com.example.common.R
 
 
 fun ImageView.loadPhoto(
-    url: String,
+    url: String?,
     placeholder: Int = R.drawable.is_loading_white,
     error: Int = R.drawable.no_image
 ) {

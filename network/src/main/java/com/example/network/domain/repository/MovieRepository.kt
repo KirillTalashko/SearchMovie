@@ -11,6 +11,6 @@ interface MovieRepository {
     suspend fun getListMovieByGenre(
         page: Int,
         rating: String = "5-10",
-        genre: List<String>? = null,
+        genres: List<String>,
     ): Response<ListMovie>
 }

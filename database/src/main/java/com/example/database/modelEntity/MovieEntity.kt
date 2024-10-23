@@ -2,6 +2,7 @@ package com.example.database.modelEntity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 
 @Entity(tableName = "random_movie")
 data class MovieEntity(
@@ -13,7 +14,20 @@ data class MovieEntity(
     val ratingKp: Float = 0f,
     val duration: Int = 0,
     val year: Int = 0,
-    val genres: List<String?>,
+    val genres: List<String>?,
     val type: Int = 0,
     val description: String?,
 )
+
+class ConvertersGenres {
+
+    @TypeConverter
+    fun fromGenreList(listGenre: List<String>): String {
+        return listGenre.joinToString(separator = ",")
+    }
+
+    @TypeConverter
+    fun toGenreList(genre: String): List<String> {
+        return genre.split(",").map { it.trim() }
+    }
+}

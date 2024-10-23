@@ -1,4 +1,4 @@
-package com.example.searchmovie.core.extension
+package com.example.common.extension
 
 import android.content.Context
 import android.widget.Toast

@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.network.modelsMovie.Movie
 import com.example.searchmovie.databinding.ScreenSimilarMovieBinding
+import com.example.searchmovie.presentation.home.adapter.OnClickGetModel
 
-class AdapterRelatedMovie : ListAdapter<Movie, ViewHolderRelatedMovie>(DIFF_CALLBACK) {
+class AdapterRelatedMovie(private val onClick: OnClickGetModel) :
+    ListAdapter<Movie, ViewHolderRelatedMovie>(DIFF_CALLBACK) {
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
             override fun areItemsTheSame(oldItem: Movie, newItem: Movie) =
@@ -22,7 +24,7 @@ class AdapterRelatedMovie : ListAdapter<Movie, ViewHolderRelatedMovie>(DIFF_CALL
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderRelatedMovie {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = ScreenSimilarMovieBinding.inflate(layoutInflater,parent,false)
-        return ViewHolderRelatedMovie(view)
+        return ViewHolderRelatedMovie(view, onClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolderRelatedMovie, position: Int) {

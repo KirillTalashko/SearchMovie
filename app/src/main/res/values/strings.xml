@@ -10,10 +10,6 @@
     <string name="no_name">Нет названия</string>
     <string name="minutes">минут</string>
     <string name="random_time">152</string>
-    <string name="example_description_long">В мире, где роботы-трансформеры могут принимать облик автомобилей, Самуэль, обычный подросток, оказывается в центре грандиозного противостояния между добрыми автоботами и злыми десептиконами. Он знакомится с Оптимусом Праймом, лидером автоботов, и вместе они сражаются за спасение Земли от вторжения десептиконов, жаждущих захватить ее ресурсы. Фильм полон зрелищных экшн-сцен, невероятных спецэффектов и захватывающего сюжета, который понравится как детям, так и взрослым
-</string>
-    <string name="example_description_small">Роботы-инопланетяне трансформируются в машины и сражаются за Землю в эпическом бою с участием юного героя.
-</string>
     <string name="year">2023</string>
     <string name="release_date">Дата выхода</string>
     <string name="genre">Жанр</string>
@@ -24,6 +20,7 @@
     <string name="read_more_text">...Read more</string>
     <string name="no_description">Описание к фильму отсутствует</string>
     <string name="no_genre">Без жанра</string>
+    <string name="similar_movies">Похожие фильмы</string>
 
 
 </resources>

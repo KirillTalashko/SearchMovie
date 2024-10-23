@@ -2,15 +2,16 @@ package com.example.searchmovie.presentation.home.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.extension.loadPhoto
+import com.example.common.extension.showToast
 import com.example.common.utils.BaseFragment
 import com.example.network.modelsMovie.Movie
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
-import com.example.searchmovie.core.extension.loadPhoto
-import com.example.searchmovie.core.extension.showToast
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
 import com.example.searchmovie.presentation.home.adapter.AdapterPopularHome
@@ -34,10 +35,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    private val viewModel: ViewModelRandomMovie by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(this, factory)[ViewModelRandomMovie::class.java]
-    }
-
+    private val viewModel: ViewModelRandomMovie by viewModels<ViewModelRandomMovie> { factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +102,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                             randomMovie.movie.name ?: getString(R.string.no_name)
                     }
                     binding.containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(
-                        randomMovie.movie.poster?.url ?: ""
+                        randomMovie.movie.poster?.url
                     )
                     binding.containerPlayRandomMovie.containerCardMovie.setOnClickListener {
                         findNavController().navigate(

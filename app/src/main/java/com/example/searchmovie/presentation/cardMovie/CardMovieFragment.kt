@@ -3,30 +3,35 @@ package com.example.searchmovie.presentation.cardMovie
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import com.example.common.extension.loadPhoto
+import com.example.common.extension.reduceToDecimals
+import com.example.common.extension.showToast
 import com.example.common.model.ValueHolderView
 import com.example.common.utils.BaseFragment
+import com.example.network.modelsMovie.Movie
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
-import com.example.searchmovie.core.extension.loadPhoto
-import com.example.searchmovie.core.extension.showToast
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.AdapterRelatedMovie
 import com.example.searchmovie.presentation.cardMovie.viewModel.CardMovieFragmentStateRelatedMovies
 import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
 import com.example.searchmovie.presentation.customView.InfoMovie
+import com.example.searchmovie.presentation.home.adapter.OnClickGetModel
 import javax.inject.Inject
 
 class CardMovieFragment :
-    BaseFragment<FragmentCardMovieBinding>(FragmentCardMovieBinding::inflate) {
+    BaseFragment<FragmentCardMovieBinding>(FragmentCardMovieBinding::inflate), OnClickGetModel {
 
     private val argsMovie: CardMovieFragmentArgs by navArgs()
 
-    private val adapterRelatedMovie = AdapterRelatedMovie()
+    private lateinit var adapterRelatedMovie: AdapterRelatedMovie
 
     private val inject by lazy(LazyThreadSafetyMode.NONE) {
         (requireContext().applicationContext as SearchMovieApp).appComponent.inject(this)
@@ -35,12 +40,7 @@ class CardMovieFragment :
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    private val viewModel: ViewModelCardMovie by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(
-            this,
-            factory
-        )[ViewModelCardMovie::class.java]
-    }
+    private val viewModel: ViewModelCardMovie by viewModels<ViewModelCardMovie> { factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +55,7 @@ class CardMovieFragment :
 
     private fun initRecyclerView() {
         viewModel.getListMovieByGenre(argsMovie.infoMovie)
+        adapterRelatedMovie = AdapterRelatedMovie(this)
         binding.rvScrollSimilarMovie.adapter = adapterRelatedMovie
         viewModel.stateListMovieByGenre.observe(viewLifecycleOwner) {
             when (it) {
@@ -89,7 +90,7 @@ class CardMovieFragment :
     }
 
     private fun interactionWithView() {
-        binding.imageViewPosterMovie.loadPhoto(argsMovie.infoMovie.poster?.url ?: "")
+        binding.imageViewPosterMovie.loadPhoto(argsMovie.infoMovie.poster?.url)
         setCharacteristics()
         textExpander()
     }
@@ -134,7 +135,7 @@ class CardMovieFragment :
                         requireContext(),
                         R.drawable.image_star_gray
                     ),
-                    firstText = argsMovie.infoMovie.rating.imd.toString(),
+                    firstText = argsMovie.infoMovie.rating.imd.reduceToDecimals().toString(),
                     secondText = getString(R.string.text_rating_imdb)
                 )
             )
@@ -145,11 +146,19 @@ class CardMovieFragment :
                         requireContext(),
                         R.drawable.image_star_gray
                     ),
-                    firstText = argsMovie.infoMovie.rating.kp.toString(),
+                    firstText = argsMovie.infoMovie.rating.kp.reduceToDecimals().toString(),
                     secondText = getString(R.string.text_rating_kp)
                 )
             )
         }
+    }
+
+    override fun getModelMovie(movie: Movie) {
+        findNavController().navigate(
+            CardMovieFragmentDirections.cardMovieFragmentToCardMovieFragment(
+                infoMovie = movie
+            )
+        )
     }
 }
 

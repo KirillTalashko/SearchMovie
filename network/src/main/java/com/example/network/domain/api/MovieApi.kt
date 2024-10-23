@@ -23,6 +23,6 @@ interface MovieApi {
         @Query("limit") limit: Int = 10,
         @Query("page") page: Int,
         @Query("rating.kp") ratingKp: String = "5-10",
-        @Query("genre") genre: List<String>? = null,
+        @Query("genres.name") genre: List<String>,
     ): Response<ListMovie>
 }

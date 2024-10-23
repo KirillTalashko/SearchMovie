@@ -5,9 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.common.extension.checkingResponse
+import com.example.common.extension.convectInJsonForResponse
 import com.example.network.domain.repository.MovieRepository
 import com.example.network.modelsMovie.Movie
-import com.example.searchmovie.core.extension.checkingResponse
+import com.example.searchmovie.core.ConvectorListGenreToString.Companion.mapperGenre
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -47,6 +49,8 @@ class ViewModelCardMovie(private val repositoryImpl: MovieRepository) : ViewMode
                     val response = withContext(Dispatchers.IO) {
                         repositoryImpl.getListMovieByGenre(
                             page = page,
+                            genres = mapperGenre(movie.genres),
+                            rating = movie.rating.kp.convectInJsonForResponse()
                         )
                     }
                     response.body()?.let {

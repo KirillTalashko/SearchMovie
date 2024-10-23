@@ -18,12 +18,12 @@ class MovieRepositoryImpl(private val movieApi: MovieApi) : MovieRepository {
     override suspend fun getListMovieByGenre(
         page: Int,
         rating: String,
-        genre: List<String>?
+        genres: List<String>
     ): Response<ListMovie> {
         return movieApi.getListMovieByGenre(
             page = page,
             ratingKp = rating,
-            genre = genre
+            genre = genres
         )
     }
 

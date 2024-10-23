@@ -27,7 +27,10 @@
         android:id="@+id/cardMovieFragment"
         android:name="com.example.searchmovie.presentation.cardMovie.CardMovieFragment"
         android:label="fragment_card_Movie"
-        tools:layout="@layout/screen_time_and_rating_movie">
+        tools:layout="@layout/fragment_card_movie">
+        <action
+            android:id="@+id/cardMovieFragment_to_cardMovieFragment"
+            app:destination="@id/cardMovieFragment" />
         <argument
             android:name="info_movie"
             app:nullable="false"

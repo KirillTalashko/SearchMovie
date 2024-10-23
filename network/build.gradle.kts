@@ -42,14 +42,16 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-     // okHttp
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
-    implementation (libs.converter.gson)
-    // Retrofit 2
-    implementation (libs.retrofit)
+
     // Dagger 2
     kapt (libs.dagger.compiler)
     implementation (libs.dagger)
 
+    //OkHttp
+    api(libs.okhttp)
+    api(libs.logging.interceptor)
+    api(libs.converter.gson)
+
+    //Retrofit
+    implementation(libs.retrofit)
 }
