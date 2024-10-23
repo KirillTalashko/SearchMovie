@@ -1,8 +1,9 @@
 package com.example.searchmovie.di
 
+import com.example.database.di.DatabaseModule
+import com.example.network.NetworkModule
 import com.example.searchmovie.di.modules.CommonModule
 import com.example.searchmovie.di.modules.ContextModule
-import com.example.network.NetworkModule
 import com.example.searchmovie.presentation.cardMovie.CardMovieFragment
 import com.example.searchmovie.presentation.home.fragment.HomeFragment
 import dagger.Component
@@ -14,7 +15,8 @@ import javax.inject.Singleton
     modules = [
         CommonModule::class,
         ContextModule::class,
-        NetworkModule::class
+        NetworkModule::class,
+        DatabaseModule::class
     ]
 )
 interface AppComponent {

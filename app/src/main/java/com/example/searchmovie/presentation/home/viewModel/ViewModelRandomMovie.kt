@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.common.extension.checkingResponse
 import com.example.common.extension.log
+import com.example.common.utils.GetAttributes
 import com.example.database.modelEntity.MovieEntity
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
 import com.example.network.modelsMovie.Movie
+import com.example.searchmovie.R
 import com.example.searchmovie.core.ConvectorListGenreToString.Companion.mapperGenre
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,7 +19,8 @@ import kotlinx.coroutines.withContext
 
 class ViewModelRandomMovie(
     private val repository: MovieRepository,
-    private val localRepository: MovieLocalRepository
+    private val localRepository: MovieLocalRepository,
+    private val attributes: GetAttributes
 ) : ViewModel() {
 
     private var isLoading = false
@@ -106,7 +109,7 @@ class ViewModelRandomMovie(
         return MovieEntity(
             id = 0,
             idMovieKp = movie.id,
-            name = movie.name ?: "Нет названия",
+            name = movie.name ?: attributes.getAttrs(R.string.no_name),
             url = movie.poster?.url,
             ratingIMDb = movie.rating.imd,
             ratingKp = movie.rating.kp,
@@ -114,7 +117,7 @@ class ViewModelRandomMovie(
             year = movie.year,
             genres = mapperGenre(movie.genres),
             type = movie.type,
-            description = movie.description
+            description = movie.description ?: attributes.getAttrs(R.string.no_description)
         )
     }
 
