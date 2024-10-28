@@ -15,14 +15,7 @@ interface MovieApi {
     suspend fun getListMovie(
         @Query("limit") limit: Int = 10,
         @Query("page") page: Int,
-        @Query("rating.kp") ratingKp: String = "7-10"
-    ): Response<ListMovie>
-
-    @GET("v1.4/movie")
-    suspend fun getListMovieByGenre(
-        @Query("limit") limit: Int = 10,
-        @Query("page") page: Int,
-        @Query("rating.kp") ratingKp: String = "5-10",
-        @Query("genres.name") genre: List<String>,
+        @Query("rating.kp") ratingKp: String,
+        @Query("genres.name") genres: List<String>,
     ): Response<ListMovie>
 }

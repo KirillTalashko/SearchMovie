@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.common.extension.checkingResponse
-import com.example.common.extension.convectInJsonForResponse
+import com.example.common.extension.convectInJsonForRequest
 import com.example.network.domain.repository.MovieRepository
 import com.example.network.modelsMovie.Movie
-import com.example.searchmovie.core.ConvectorListGenreToString.Companion.mapperGenre
+import com.example.searchmovie.core.extension.mapperInListString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -47,10 +47,10 @@ class ViewModelCardMovie(private val repositoryImpl: MovieRepository) : ViewMode
             viewModelScope.launch {
                 try {
                     val response = withContext(Dispatchers.IO) {
-                        repositoryImpl.getListMovieByGenre(
+                        repositoryImpl.getListMovie(
                             page = page,
-                            genres = mapperGenre(movie.genres),
-                            rating = movie.rating.kp.convectInJsonForResponse()
+                            genres = movie.genres.mapperInListString(),
+                            rating = movie.rating.kp.convectInJsonForRequest()
                         )
                     }
                     response.body()?.let {

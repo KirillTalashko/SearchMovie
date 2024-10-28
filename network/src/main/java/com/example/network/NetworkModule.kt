@@ -12,13 +12,14 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 class NetworkModule {
 
-    private val apiKey = "XMM6YTT-2EP4J36-KVCC1HQ-JAKVEF6"
+    private val apiKey = "T89S8JR-Y5343QN-HCRHHVV-KATN0A8"
     private val baseUrl = "https://api.kinopoisk.dev/"
 
     @Singleton
@@ -60,6 +61,8 @@ class NetworkModule {
         @Named("key") interceptorMovieApiKey: Interceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
+            .callTimeout(5, TimeUnit.SECONDS)
+            .connectTimeout(5, TimeUnit.SECONDS)
             .addInterceptor(interceptorMovieApiKey)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor(interceptor)
