@@ -17,6 +17,7 @@ data class MovieEntity(
     val genres: List<String>?,
     val type: Int = 0,
     val description: String?,
+    val date: Long = System.currentTimeMillis()
 )
 
 class ConvertersGenres {

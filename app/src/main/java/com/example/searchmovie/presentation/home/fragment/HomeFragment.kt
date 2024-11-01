@@ -16,7 +16,7 @@ import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
 import com.example.searchmovie.presentation.home.adapter.AdapterPopularHome
 import com.example.searchmovie.presentation.home.adapter.OnClickGetModel
-import com.example.searchmovie.presentation.home.viewModel.StateListMovieMainFragment
+import com.example.searchmovie.presentation.home.viewModel.MoviesMainFragmentState
 import com.example.searchmovie.presentation.home.viewModel.StateRandomMovieMainFragment
 import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
 import javax.inject.Inject
@@ -80,9 +80,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         viewModel.stateRandomMovie.observe(viewLifecycleOwner) { movie ->
             when (movie) {
                 is StateRandomMovieMainFragment.Error -> {
+                    //TODO("Тост отрабатывает даже если пришел seccess, если пытаюсь сохранить фильм в базу данных")
                     binding.root.isRefreshing = false
                     requireContext().showToast(movie.error)
-
                 }
 
                 StateRandomMovieMainFragment.LoadingMovie -> {
@@ -94,6 +94,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
                 is StateRandomMovieMainFragment.SuccessMovie -> {
                     binding.root.isRefreshing = false
+                    //TODO("Приходит 2 ответа и тост отрабатывает 2 раза")
                     binding.apply {
                         shimmerCardMovieMain.stopShimmer()
                         shimmerCardMovieMain.visibility = View.GONE
@@ -116,12 +117,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             }
             viewModel.stateListMovie.observe(viewLifecycleOwner) { listMovie ->
                 when (listMovie) {
-                    is StateListMovieMainFragment.Error -> {
+                    is MoviesMainFragmentState.Error -> {
                         binding.root.isRefreshing = false
                         requireContext().showToast(listMovie.error)
+                        //TODO("Тост отрабатывает даже если пришел seccess, если пытаюсь сохранить фильм в базу данных")
                     }
 
-                    StateListMovieMainFragment.LoadingListMovie -> {
+                    MoviesMainFragmentState.LoadingListMovie -> {
                         if (currentListEmpty) {
                             binding.apply {
                                 shimmerScrollListMovie.startShimmer()
@@ -131,7 +133,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         }
                     }
 
-                    is StateListMovieMainFragment.SuccessListMovie -> {
+                    is MoviesMainFragmentState.SuccessListMovie -> {
                         binding.root.isRefreshing = false
                         if (currentListEmpty) {
                             binding.apply {
@@ -140,6 +142,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                                 rvScrollTrendingMoviesMain.visibility = View.VISIBLE
                             }
                         }
+                        if (!listMovie.isLoading) {
+                            requireContext().showToast("Данные взяты с базы данных")
+                        }
+                        //TODO("Приходит 2 ответа и тост отрабатывает 2 раза")
                         val currentList = adapterMovieMain.currentList
                         adapterMovieMain.submitList(currentList.plus(listMovie.listMovie))
                     }

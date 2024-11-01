@@ -13,7 +13,7 @@ interface MovieApi {
 
     @GET("v1.4/movie")
     suspend fun getListMovie(
-        @Query("limit") limit: Int = 10,
+        @Query("limit") limit: Int,
         @Query("page") page: Int,
         @Query("rating.kp") ratingKp: String,
         @Query("genres.name") genres: List<String>,

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.common.extension.checkingResponse
 import com.example.common.extension.convectInJsonForRequest
+import com.example.common.utils.Const
 import com.example.network.domain.repository.MovieRepository
 import com.example.network.modelsMovie.Movie
 import com.example.searchmovie.core.extension.mapperInListString
@@ -48,6 +49,7 @@ class ViewModelCardMovie(private val repositoryImpl: MovieRepository) : ViewMode
                 try {
                     val response = withContext(Dispatchers.IO) {
                         repositoryImpl.getListMovie(
+                            limit = Const.LIMIT,
                             page = page,
                             genres = movie.genres.mapperInListString(),
                             rating = movie.rating.kp.convectInJsonForRequest()

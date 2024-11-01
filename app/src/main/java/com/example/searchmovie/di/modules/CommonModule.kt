@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
 import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
+import com.example.searchmovie.presentation.home.useCase.MovieUseCase
+import com.example.searchmovie.presentation.home.useCase.MovieUseCaseImpl
 import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
 import dagger.Module
 import dagger.Provides
@@ -17,14 +19,14 @@ class CommonModule {
     @Singleton
     @Provides
     fun provideViewModelFactory(
+        useCase: MovieUseCase,
         repository: MovieRepository,
-        localRepository: MovieLocalRepository,
     ): ViewModelProvider.Factory {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(ViewModelRandomMovie::class.java)) {
                     @Suppress("UNCHECKED_CAST")
-                    return ViewModelRandomMovie(repository, localRepository) as T
+                    return ViewModelRandomMovie(useCase) as T
                 }
                 if (modelClass.isAssignableFrom(ViewModelCardMovie::class.java)) {
                     @Suppress("UNCHECKED_CAST")
@@ -33,5 +35,13 @@ class CommonModule {
                 throw IllegalArgumentException("Unknown ViewModel class")
             }
         }
+    }
+
+    @Provides
+    fun provideUseCase(
+        repository: MovieRepository,
+        localRepository: MovieLocalRepository
+    ): MovieUseCase {
+        return MovieUseCaseImpl(repository, localRepository)
     }
 }

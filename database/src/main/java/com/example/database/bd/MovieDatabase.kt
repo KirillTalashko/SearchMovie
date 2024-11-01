@@ -9,7 +9,7 @@ import com.example.database.modelEntity.MovieEntity
 
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [
         MovieEntity::class,
     ]
@@ -22,5 +22,4 @@ abstract class MovieDatabase : RoomDatabase() {
     companion object {
         const val DATABASE_NAME = "movieDao.bd"
     }
-
 }

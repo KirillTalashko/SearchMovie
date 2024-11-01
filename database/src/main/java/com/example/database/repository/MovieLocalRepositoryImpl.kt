@@ -15,5 +15,4 @@ class MovieLocalRepositoryImpl(private val movieDao: MovieDao) : MovieLocalRepos
     override suspend fun getListMovie(limit: Int, step: Int): List<MovieEntity> {
         return movieDao.getListMovie(limit, step)
     }
-
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.database.bd.MovieDatabase
 import com.example.database.dao.MovieDao
+import com.example.database.migration.Migration_1_2_Impl
 import com.example.database.repository.MovieLocalRepository
 import com.example.database.repository.MovieLocalRepositoryImpl
 import dagger.Module
@@ -20,7 +21,7 @@ class DatabaseModule {
             context,
             MovieDatabase::class.java,
             MovieDatabase.DATABASE_NAME
-        ).build()
+        ).addMigrations(Migration_1_2_Impl).build()
     }
 
     @Provides

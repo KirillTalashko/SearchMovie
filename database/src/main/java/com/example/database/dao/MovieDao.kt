@@ -15,10 +15,9 @@ interface MovieDao {
     @Query("SELECT * FROM RANDOM_MOVIE WHERE ID > :step LIMIT :limit")
     fun getListMovie(limit: Int, step: Int): List<MovieEntity>
 
-
     @Query("SELECT * FROM RANDOM_MOVIE ORDER BY RANDOM() % (SELECT COUNT(ID) FROM RANDOM_MOVIE)")
     fun getRandomMovie(): MovieEntity
-    
+
     @Delete(entity = MovieEntity::class)
     fun deleteMovies(movie: MovieEntity)
 }
