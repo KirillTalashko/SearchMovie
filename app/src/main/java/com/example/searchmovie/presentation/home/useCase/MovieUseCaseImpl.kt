@@ -3,16 +3,16 @@ package com.example.searchmovie.presentation.home.useCase
 import androidx.lifecycle.MutableLiveData
 import com.example.common.extension.checkingError
 import com.example.common.extension.checkingResponse
-import com.example.common.extension.log
 import com.example.common.utils.Const
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
 import com.example.network.modelsMovie.Movie
-import com.example.searchmovie.core.extension.mapperInListMovie
-import com.example.searchmovie.core.extension.mapperInMovie
-import com.example.searchmovie.core.extension.mapperInMovieEntity
+import com.example.searchmovie.core.NetworkManager
+import com.example.searchmovie.core.extension.toListMovieUi
+import com.example.searchmovie.core.extension.toMovieEntity
+import com.example.searchmovie.core.extension.toMovieUi
+import com.example.searchmovie.presentation.home.viewModel.MovieMainFragmentState
 import com.example.searchmovie.presentation.home.viewModel.MoviesMainFragmentState
-import com.example.searchmovie.presentation.home.viewModel.StateRandomMovieMainFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,47 +22,44 @@ import javax.inject.Inject
 
 class MovieUseCaseImpl @Inject constructor(
     private val apiRepository: MovieRepository,
-    private val localRepository: MovieLocalRepository
+    private val localRepository: MovieLocalRepository,
+    private val networkManager: NetworkManager
 ) : MovieUseCase {
 
     private var jobGetMovie: Job? = null
     private var jobGetMoves: Job? = null
-
-    private val _stateRandomMovie = MutableLiveData<StateRandomMovieMainFragment>()
+    private val _stateRandomMovie = MutableLiveData<MovieMainFragmentState>()
     private val _stateListMovie = MutableLiveData<MoviesMainFragmentState>()
-
     private var isLoading = false
     private var page = 1
     private var step = 0
     override fun getMovie() {
         jobGetMovie?.cancel()
-        _stateRandomMovie.value = (StateRandomMovieMainFragment.LoadingMovie)
+        _stateRandomMovie.value = (MovieMainFragmentState.LoadingMovie)
         jobGetMovie = CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
             try {
+                //"${networkManager.isConnect()}".log()
                 val response = apiRepository.getRandomMovie()
                 response.body()?.let {
-                    _stateRandomMovie.postValue(StateRandomMovieMainFragment.SuccessMovie(it))
-                    "Movie c сервера".log()
-                    //saveMovieInDatabase(it)
-                    //TODO("база данныз закрыта")
+                    _stateRandomMovie.postValue(MovieMainFragmentState.SuccessMovie(it.toMovieUi()))
+                    saveMovieInDatabase(it)
                 } ?: run {
                     _stateRandomMovie.postValue(
-                        StateRandomMovieMainFragment.Error(
+                        MovieMainFragmentState.Error(
                             NullPointerException().checkingResponse()
                         )
                     )
                 }
             } catch (e: Exception) {
                 if (e.checkingError()) {
-                    "Movie c бд".log()
                     val movie = localRepository.getRandomMovie()
                     _stateRandomMovie.postValue(
-                        StateRandomMovieMainFragment.SuccessMovie(
-                            movie.mapperInMovie()
+                        MovieMainFragmentState.SuccessMovie(
+                            movie.toMovieUi()
                         )
                     )
                 } else {
-                    _stateRandomMovie.postValue(StateRandomMovieMainFragment.Error(e.checkingResponse()))
+                    _stateRandomMovie.postValue(MovieMainFragmentState.Error(e.checkingResponse()))
                 }
             }
         }
@@ -85,13 +82,11 @@ class MovieUseCaseImpl @Inject constructor(
                         val currentList = listMovie.movie.orEmpty()
                         _stateListMovie.postValue(
                             MoviesMainFragmentState.SuccessListMovie(
-                                listMovie = currentList,
+                                listMovie = currentList.toListMovieUi(),
                                 isLoading = true
                             )
                         )
-                        //saveMovieInDatabase(currentList)
-                        //TODO("база данныз закрыта")
-                        "Movies с сервера".log()
+                        saveMovieInDatabase(currentList)
                         page++
                     } ?: run {
                         _stateListMovie.postValue(
@@ -102,14 +97,13 @@ class MovieUseCaseImpl @Inject constructor(
                     }
                 } catch (e: Exception) {
                     if (e.checkingError()) {
-                        "Movies с бд".log()
                         val listMovieFromDatabase = localRepository.getListMovie(
                             Const.LIMIT,
                             step
                         )
                         _stateListMovie.postValue(
                             MoviesMainFragmentState.SuccessListMovie(
-                                listMovie = listMovieFromDatabase.mapperInListMovie(),
+                                listMovie = listMovieFromDatabase.toListMovieUi(),
                                 isLoading = false
                             )
                         )
@@ -119,23 +113,22 @@ class MovieUseCaseImpl @Inject constructor(
                     }
                 } finally {
                     isLoading = false
-
                 }
             }
         }
     }
 
     private suspend fun saveMovieInDatabase(movie: Movie) {
-        localRepository.insertMovie(movie.mapperInMovieEntity())
+        localRepository.insertMovie(movie.toMovieEntity())
     }
 
     private suspend fun saveMovieInDatabase(movies: List<Movie>) {
         movies.forEach { movie ->
-            localRepository.insertMovie(movie.mapperInMovieEntity())
+            localRepository.insertMovie(movie.toMovieEntity())
         }
     }
 
-    override fun getStateResponseMovie(): MutableLiveData<StateRandomMovieMainFragment> {
+    override fun getStateResponseMovie(): MutableLiveData<MovieMainFragmentState> {
         return _stateRandomMovie
     }
 

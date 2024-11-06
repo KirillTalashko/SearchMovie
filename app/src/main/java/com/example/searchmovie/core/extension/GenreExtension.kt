@@ -2,7 +2,7 @@ package com.example.searchmovie.core.extension
 
 import com.example.network.modelsMovie.Genres
 
-fun List<String>?.mapperInListGenre(): List<Genres> {
+fun List<String>?.toListGenres(): List<Genres> {
     val newGenreList = mutableListOf<Genres>()
     this?.forEach {
         newGenreList.add(Genres(it))
@@ -10,7 +10,7 @@ fun List<String>?.mapperInListGenre(): List<Genres> {
     return newGenreList
 }
 
-fun List<Genres>?.mapperInListString(): List<String> {
+fun List<Genres>?.toListString(): List<String> {
     val newListString = mutableListOf<String>()
     this?.forEach { genres ->
         genres.genresName?.let {

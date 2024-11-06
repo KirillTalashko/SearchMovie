@@ -15,12 +15,15 @@ import com.example.common.extension.reduceToDecimals
 import com.example.common.extension.showToast
 import com.example.common.model.ValueHolderView
 import com.example.common.utils.BaseFragment
-import com.example.network.modelsMovie.Movie
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
+import com.example.searchmovie.core.extension.toListMovieUi
+import com.example.searchmovie.core.extension.toMovie
+import com.example.searchmovie.core.extension.toMovieUi
+import com.example.searchmovie.core.model.MovieUi
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.AdapterRelatedMovie
-import com.example.searchmovie.presentation.cardMovie.viewModel.CardMovieFragmentStateRelatedMovies
+import com.example.searchmovie.presentation.cardMovie.viewModel.MovieCardMovieFragmentState
 import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
 import com.example.searchmovie.presentation.customView.InfoMovie
 import com.example.searchmovie.presentation.home.adapter.OnClickGetModel
@@ -54,22 +57,22 @@ class CardMovieFragment :
     }
 
     private fun initRecyclerView() {
-        viewModel.getListMovieByGenre(argsMovie.infoMovie)
+        viewModel.getListMovieByGenre(argsMovie.infoMovie.toMovieUi())
         adapterRelatedMovie = AdapterRelatedMovie(this)
         binding.rvScrollSimilarMovie.adapter = adapterRelatedMovie
         viewModel.stateListMovieByGenre.observe(viewLifecycleOwner) {
             when (it) {
-                is CardMovieFragmentStateRelatedMovies.Error -> {
+                is MovieCardMovieFragmentState.Error -> {
                     requireContext().showToast(it.error)
                 }
 
-                CardMovieFragmentStateRelatedMovies.LoadingRelatedMovies -> {
+                MovieCardMovieFragmentState.LoadingRelatedMovies -> {
                     Unit
                 }
 
-                is CardMovieFragmentStateRelatedMovies.SuccessRelatedMovies -> {
+                is MovieCardMovieFragmentState.SuccessRelatedMovies -> {
                     val currentList = adapterRelatedMovie.currentList
-                    adapterRelatedMovie.submitList(currentList.plus(it.listMovie))
+                    adapterRelatedMovie.submitList(currentList.plus(it.listMovie.toListMovieUi()))
                 }
             }
         }
@@ -82,7 +85,7 @@ class CardMovieFragment :
                     val totalItemCount = layoutManager.itemCount
                     val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                     if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
-                        viewModel.getListMovieByGenre(argsMovie.infoMovie)
+                        viewModel.getListMovieByGenre(argsMovie.infoMovie.toMovieUi())
                     }
                 }
             }
@@ -153,10 +156,10 @@ class CardMovieFragment :
         }
     }
 
-    override fun getModelMovie(movie: Movie) {
+    override fun getModelMovie(movie: MovieUi) {
         findNavController().navigate(
             CardMovieFragmentDirections.cardMovieFragmentToCardMovieFragment(
-                infoMovie = movie
+                infoMovie = movie.toMovie()
             )
         )
     }

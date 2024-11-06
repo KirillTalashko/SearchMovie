@@ -1,9 +1,11 @@
 package com.example.searchmovie.di.modules
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
+import com.example.searchmovie.core.NetworkManager
 import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
 import com.example.searchmovie.presentation.home.useCase.MovieUseCase
 import com.example.searchmovie.presentation.home.useCase.MovieUseCaseImpl
@@ -40,8 +42,16 @@ class CommonModule {
     @Provides
     fun provideUseCase(
         repository: MovieRepository,
-        localRepository: MovieLocalRepository
+        localRepository: MovieLocalRepository,
+        networkManager: NetworkManager
     ): MovieUseCase {
-        return MovieUseCaseImpl(repository, localRepository)
+        return MovieUseCaseImpl(repository, localRepository, networkManager)
+    }
+
+    @Provides
+    fun provideNetworkManager(
+        context: Context,
+    ): NetworkManager {
+        return NetworkManager(context)
     }
 }

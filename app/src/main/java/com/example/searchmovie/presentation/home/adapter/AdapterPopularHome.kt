@@ -4,19 +4,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.example.searchmovie.core.model.MovieUi
 import com.example.searchmovie.databinding.ScreenCardPopularMovieBinding
-import com.example.network.modelsMovie.Movie
 
 
-
-class AdapterPopularHome(private val onClick:OnClickGetModel) : ListAdapter<Movie, ViewHolderPopularHome>(DIFF_CALLBACK) {
+class AdapterPopularHome(private val onClick: OnClickGetModel) :
+    ListAdapter<MovieUi, ViewHolderPopularHome>(DIFF_CALLBACK) {
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
-            override fun areItemsTheSame(oldItem: Movie, newItem: Movie) =
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieUi>() {
+            override fun areItemsTheSame(oldItem: MovieUi, newItem: MovieUi) =
                 oldItem == newItem
 
-            override fun areContentsTheSame(oldItem: Movie, newItem: Movie) =
+            override fun areContentsTheSame(oldItem: MovieUi, newItem: MovieUi) =
                 oldItem == newItem
         }
     }

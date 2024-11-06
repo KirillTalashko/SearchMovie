@@ -9,8 +9,8 @@ import com.example.common.extension.checkingResponse
 import com.example.common.extension.convectInJsonForRequest
 import com.example.common.utils.Const
 import com.example.network.domain.repository.MovieRepository
-import com.example.network.modelsMovie.Movie
-import com.example.searchmovie.core.extension.mapperInListString
+import com.example.searchmovie.core.extension.toListString
+import com.example.searchmovie.core.model.MovieUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,9 +26,9 @@ class ViewModelCardMovie(private val repositoryImpl: MovieRepository) : ViewMode
     val trackingReadMore: LiveData<Boolean>
         get() = _trackingReadMore
 
-    private var _stateListMovieByGenre = MutableLiveData<CardMovieFragmentStateRelatedMovies>()
+    private var _stateListMovieByGenre = MutableLiveData<MovieCardMovieFragmentState>()
 
-    val stateListMovieByGenre: LiveData<CardMovieFragmentStateRelatedMovies>
+    val stateListMovieByGenre: LiveData<MovieCardMovieFragmentState>
         get() = _stateListMovieByGenre
 
     fun onReadMoreClicked() {
@@ -41,37 +41,37 @@ class ViewModelCardMovie(private val repositoryImpl: MovieRepository) : ViewMode
 
     private var page = 1
 
-    fun getListMovieByGenre(movie: Movie) {
+    fun getListMovieByGenre(movie: MovieUi) {
         if (!isLoading) {
             isLoading = true
-            _stateListMovieByGenre.value = CardMovieFragmentStateRelatedMovies.LoadingRelatedMovies
+            _stateListMovieByGenre.value = MovieCardMovieFragmentState.LoadingRelatedMovies
             viewModelScope.launch {
                 try {
                     val response = withContext(Dispatchers.IO) {
                         repositoryImpl.getListMovie(
                             limit = Const.LIMIT,
                             page = page,
-                            genres = movie.genres.mapperInListString(),
+                            genres = movie.genres.toListString(),
                             rating = movie.rating.kp.convectInJsonForRequest()
                         )
                     }
                     response.body()?.let {
                         val currentList = it.movie.orEmpty()
                         _stateListMovieByGenre.postValue(
-                            CardMovieFragmentStateRelatedMovies.SuccessRelatedMovies(
+                            MovieCardMovieFragmentState.SuccessRelatedMovies(
                                 currentList
                             )
                         )
                         page++
                     } ?: run {
                         _stateListMovieByGenre.postValue(
-                            CardMovieFragmentStateRelatedMovies.Error(
+                            MovieCardMovieFragmentState.Error(
                                 NullPointerException().checkingResponse()
                             )
                         )
                     }
                 } catch (e: Exception) {
-                    _stateListMovieByGenre.postValue(CardMovieFragmentStateRelatedMovies.Error(e.checkingResponse()))
+                    _stateListMovieByGenre.postValue(MovieCardMovieFragmentState.Error(e.checkingResponse()))
                 } finally {
                     isLoading = false
                 }

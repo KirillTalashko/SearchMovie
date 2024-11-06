@@ -4,8 +4,9 @@ import com.example.database.modelEntity.MovieEntity
 import com.example.network.modelsMovie.Movie
 import com.example.network.modelsMovie.Poster
 import com.example.network.modelsMovie.Rating
+import com.example.searchmovie.core.model.MovieUi
 
-fun MovieEntity.mapperInMovie(): Movie {
+fun MovieEntity.toMovie(): Movie {
     return Movie(
         id = this.idMovieKp,
         name = this.name,
@@ -13,16 +14,30 @@ fun MovieEntity.mapperInMovie(): Movie {
         rating = Rating(this.ratingKp, this.ratingIMDb),
         duration = this.duration,
         year = this.year,
-        genres = this.genres.mapperInListGenre(),
+        genres = this.genres.toListGenres(),
         type = this.type,
         description = this.description
     )
 }
 
-fun List<MovieEntity>.mapperInListMovie(): List<Movie> {
-    val newListMovie = mutableListOf<Movie>()
-    this.forEach {
-        newListMovie.add(it.mapperInMovie())
+fun MovieEntity.toMovieUi(): MovieUi {
+    return MovieUi(
+        id = this.idMovieKp,
+        name = this.name,
+        poster = Poster(this.url),
+        rating = Rating(this.ratingKp, this.ratingIMDb),
+        duration = this.duration,
+        year = this.year,
+        genres = this.genres.toListGenres(),
+        type = this.type,
+        description = this.description
+    )
+}
+
+fun List<MovieEntity>.toListMovieUi(): List<MovieUi> {
+    val newListMovieUi = mutableListOf<MovieUi>()
+    this.forEach { movieEntity ->
+        newListMovieUi.add(movieEntity.toMovieUi())
     }
-    return newListMovie
+    return newListMovieUi
 }

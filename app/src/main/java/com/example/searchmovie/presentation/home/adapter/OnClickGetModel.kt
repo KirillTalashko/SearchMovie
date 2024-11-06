@@ -1,7 +1,8 @@
 package com.example.searchmovie.presentation.home.adapter
 
-import com.example.network.modelsMovie.Movie
+import com.example.searchmovie.core.model.MovieUi
+
 
 interface OnClickGetModel {
-    fun getModelMovie(movie: Movie)
+    fun getModelMovie(movie: MovieUi)
 }

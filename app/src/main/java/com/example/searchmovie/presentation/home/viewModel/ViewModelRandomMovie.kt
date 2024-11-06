@@ -9,7 +9,7 @@ class ViewModelRandomMovie @Inject constructor(
     private val useCase: MovieUseCase
 ) : ViewModel() {
     fun getIsLoading() = useCase.getTheListenerState()
-    val stateRandomMovie: LiveData<StateRandomMovieMainFragment>
+    val stateRandomMovie: LiveData<MovieMainFragmentState>
         get() = useCase.getStateResponseMovie()
 
     val stateListMovie: LiveData<MoviesMainFragmentState>
