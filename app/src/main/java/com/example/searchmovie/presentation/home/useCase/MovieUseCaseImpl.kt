@@ -3,6 +3,7 @@ package com.example.searchmovie.presentation.home.useCase
 import androidx.lifecycle.MutableLiveData
 import com.example.common.extension.checkingError
 import com.example.common.extension.checkingResponse
+import com.example.common.extension.log
 import com.example.common.utils.Const
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
@@ -38,7 +39,8 @@ class MovieUseCaseImpl @Inject constructor(
         _stateRandomMovie.value = (MovieMainFragmentState.LoadingMovie)
         jobGetMovie = CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
             try {
-                //"${networkManager.isConnect()}".log()
+                //TODO("не корректно работает NetworkManager")
+                "пришло ${networkManager.isConnect()}".log()
                 val response = apiRepository.getRandomMovie()
                 response.body()?.let {
                     _stateRandomMovie.postValue(MovieMainFragmentState.SuccessMovie(it.toMovieUi()))
