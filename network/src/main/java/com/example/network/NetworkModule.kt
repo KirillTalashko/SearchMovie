@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @Module
 class NetworkModule {
 
-    private val apiKey = "T89S8JR-Y5343QN-HCRHHVV-KATN0A8"
+    private val apiKey = "XMM6YTT-2EP4J36-KVCC1HQ-JAKVEF6"
     private val baseUrl = "https://api.kinopoisk.dev/"
 
     @Singleton

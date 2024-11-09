@@ -1,12 +1,13 @@
-package com.example.searchmovie.presentation.home.adapter
+package com.example.searchmovie.presentation.home.viewHolder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.extension.loadPhoto
 import com.example.searchmovie.core.model.MovieUi
+import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.ScreenCardPopularMovieBinding
 import kotlin.math.floor
 
-class ViewHolderPopularHome(
+class MoviesPopularViewHolder(
     private val binding: ScreenCardPopularMovieBinding,
     private val onClick: OnClickGetModel
 ) :
@@ -16,7 +17,7 @@ class ViewHolderPopularHome(
     init {
         binding.root.setOnClickListener {
             movie?.let { movie ->
-                onClick.getModelMovie(movie)
+                onClick.getMovieModel(movie)
             }
         }
 
@@ -25,7 +26,7 @@ class ViewHolderPopularHome(
     fun bind(item: MovieUi) {
         movie = item
         binding.textViewNameMovie.text = item.name
-        binding.customViewCardShortHelpMovie.getTextRating().text =
+        binding.customViewCardShortHelpMovie.getMovieRatingTextView().text =
             (floor(item.rating.kp * 10) / 10).toString()
         binding.imageViewWallpaperMovie.loadPhoto(item.poster?.url)
     }

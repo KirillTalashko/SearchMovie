@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <com.example.searchmovie.presentation.customView.RatingCardView
+    <com.example.searchmovie.presentation.customView.MovieRatingCustomView
         android:id="@+id/custom_view_card_short_help_movie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

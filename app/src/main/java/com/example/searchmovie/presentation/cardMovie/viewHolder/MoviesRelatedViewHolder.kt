@@ -1,13 +1,13 @@
-package com.example.searchmovie.presentation.cardMovie.adapter
+package com.example.searchmovie.presentation.cardMovie.viewHolder
 
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.extension.loadPhoto
 import com.example.searchmovie.core.model.MovieUi
+import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.ScreenSimilarMovieBinding
-import com.example.searchmovie.presentation.home.adapter.OnClickGetModel
 
-class ViewHolderRelatedMovie(
+class MoviesRelatedViewHolder(
     private val binding: ScreenSimilarMovieBinding,
     private val onClick: OnClickGetModel
 ) :
@@ -18,7 +18,7 @@ class ViewHolderRelatedMovie(
     init {
         binding.root.setOnClickListener {
             movie?.let { movie ->
-                onClick.getModelMovie(movie)
+                onClick.getMovieModel(movie)
             }
         }
     }

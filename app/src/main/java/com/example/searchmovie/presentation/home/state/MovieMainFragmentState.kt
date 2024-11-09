@@ -1,4 +1,4 @@
-package com.example.searchmovie.presentation.home.viewModel
+package com.example.searchmovie.presentation.home.state
 
 import com.example.searchmovie.core.model.MovieUi
 

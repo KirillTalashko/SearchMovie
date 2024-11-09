@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <com.example.searchmovie.presentation.customView.PlayCardView
+    <com.example.searchmovie.presentation.customView.MovieButtonPlayCustomView
         android:id="@+id/custom_view_play_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

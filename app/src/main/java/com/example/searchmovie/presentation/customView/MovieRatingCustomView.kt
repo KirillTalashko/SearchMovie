@@ -9,21 +9,21 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.searchmovie.R
 
 
-class RatingCardView @JvmOverloads constructor(
+class MovieRatingCustomView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : CardView(context,attrs,defStyleAttr) {
     private  var containerLayout: ConstraintLayout
-    private val textRating : TextView
+    private val movieRating: TextView
 
     init {
         LayoutInflater.from(context).inflate(R.layout.screen_rating_card, this, true)
         radius = 40f
         containerLayout = findViewById(R.id.container_layout_rating_card)
         containerLayout.setPadding(20,15,20,15)
-        textRating = findViewById(R.id.text_view_bottom_text)
+        movieRating = findViewById(R.id.text_view_bottom_text)
     }
 
-    fun getTextRating() : TextView{
-        return textRating
+    fun getMovieRatingTextView(): TextView {
+        return movieRating
     }
 }

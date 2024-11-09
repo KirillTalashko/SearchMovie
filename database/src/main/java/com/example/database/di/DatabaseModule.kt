@@ -21,7 +21,9 @@ class DatabaseModule {
             context,
             MovieDatabase::class.java,
             MovieDatabase.DATABASE_NAME
-        ).addMigrations(Migration_1_2_Impl).build()
+        )
+            .addMigrations(Migration_1_2_Impl)
+            .build()
     }
 
     @Provides

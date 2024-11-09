@@ -2,29 +2,39 @@ package com.example.searchmovie.presentation.home.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.searchmovie.presentation.home.state.MovieMainFragmentState
+import com.example.searchmovie.presentation.home.state.MoviesMainFragmentState
 import com.example.searchmovie.presentation.home.useCase.MovieUseCase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ViewModelRandomMovie @Inject constructor(
     private val useCase: MovieUseCase
 ) : ViewModel() {
-    fun getIsLoading() = useCase.getTheListenerState()
+    fun getIsLoading() = useCase.getListenerLoadingMovie()
     val stateRandomMovie: LiveData<MovieMainFragmentState>
-        get() = useCase.getStateResponseMovie()
+        get() = useCase.getMovieState().asLiveData()
 
     val stateListMovie: LiveData<MoviesMainFragmentState>
-        get() = useCase.getStateResponseListMovie()
+        get() = useCase.getMoviesState().asLiveData()
 
     init {
-        getRandomMovie()
-        getListMovie()
+        getMovie()
+        getMovies()
     }
 
-    fun getRandomMovie() {
-        useCase.getMovie()
+    fun getMovie() {
+        viewModelScope.launch(Dispatchers.IO) {
+            useCase.getMovie()
+        }
     }
 
-    fun getListMovie() {
-        useCase.getListMovie()
+    fun getMovies() {
+        viewModelScope.launch(Dispatchers.IO) {
+            useCase.getMovies()
+        }
     }
 }

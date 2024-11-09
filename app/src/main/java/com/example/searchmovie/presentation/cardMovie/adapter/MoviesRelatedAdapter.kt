@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.searchmovie.core.model.MovieUi
+import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.ScreenSimilarMovieBinding
-import com.example.searchmovie.presentation.home.adapter.OnClickGetModel
+import com.example.searchmovie.presentation.cardMovie.viewHolder.MoviesRelatedViewHolder
 
-class AdapterRelatedMovie(private val onClick: OnClickGetModel) :
-    ListAdapter<MovieUi, ViewHolderRelatedMovie>(DIFF_CALLBACK) {
+class MoviesRelatedAdapter(private val onClick: OnClickGetModel) :
+    ListAdapter<MovieUi, MoviesRelatedViewHolder>(DIFF_CALLBACK) {
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieUi>() {
             override fun areItemsTheSame(oldItem: MovieUi, newItem: MovieUi) =
@@ -21,13 +22,13 @@ class AdapterRelatedMovie(private val onClick: OnClickGetModel) :
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderRelatedMovie {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesRelatedViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = ScreenSimilarMovieBinding.inflate(layoutInflater,parent,false)
-        return ViewHolderRelatedMovie(view, onClick)
+        return MoviesRelatedViewHolder(view, onClick)
     }
 
-    override fun onBindViewHolder(holder: ViewHolderRelatedMovie, position: Int) {
+    override fun onBindViewHolder(holder: MoviesRelatedViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
     }

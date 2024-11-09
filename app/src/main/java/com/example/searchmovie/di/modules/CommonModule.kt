@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
-import com.example.searchmovie.core.NetworkManager
-import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
+import com.example.searchmovie.core.manager.NetworkManager
+import com.example.searchmovie.presentation.cardMovie.viewModel.CardMovieFragmentViewModel
 import com.example.searchmovie.presentation.home.useCase.MovieUseCase
 import com.example.searchmovie.presentation.home.useCase.MovieUseCaseImpl
 import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
@@ -30,9 +30,9 @@ class CommonModule {
                     @Suppress("UNCHECKED_CAST")
                     return ViewModelRandomMovie(useCase) as T
                 }
-                if (modelClass.isAssignableFrom(ViewModelCardMovie::class.java)) {
+                if (modelClass.isAssignableFrom(CardMovieFragmentViewModel::class.java)) {
                     @Suppress("UNCHECKED_CAST")
-                    return ViewModelCardMovie(repository) as T
+                    return CardMovieFragmentViewModel(repository) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }

@@ -1,24 +1,17 @@
 package com.example.searchmovie.presentation.home.useCase
 
-import androidx.lifecycle.MutableLiveData
-import com.example.common.extension.checkingError
-import com.example.common.extension.checkingResponse
 import com.example.common.extension.log
 import com.example.common.utils.Const
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
 import com.example.network.modelsMovie.Movie
-import com.example.searchmovie.core.NetworkManager
 import com.example.searchmovie.core.extension.toListMovieUi
 import com.example.searchmovie.core.extension.toMovieEntity
 import com.example.searchmovie.core.extension.toMovieUi
-import com.example.searchmovie.presentation.home.viewModel.MovieMainFragmentState
-import com.example.searchmovie.presentation.home.viewModel.MoviesMainFragmentState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import com.example.searchmovie.core.manager.NetworkManager
+import com.example.searchmovie.presentation.home.state.MovieMainFragmentState
+import com.example.searchmovie.presentation.home.state.MoviesMainFragmentState
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 class MovieUseCaseImpl @Inject constructor(
@@ -27,96 +20,116 @@ class MovieUseCaseImpl @Inject constructor(
     private val networkManager: NetworkManager
 ) : MovieUseCase {
 
-    private var jobGetMovie: Job? = null
-    private var jobGetMoves: Job? = null
-    private val _stateRandomMovie = MutableLiveData<MovieMainFragmentState>()
-    private val _stateListMovie = MutableLiveData<MoviesMainFragmentState>()
+    private val _stateRandomMovie =
+        MutableStateFlow<MovieMainFragmentState>(MovieMainFragmentState.LoadingMovie)
+    private val _stateListMovie =
+        MutableStateFlow<MoviesMainFragmentState>(MoviesMainFragmentState.LoadingListMovie)
+
     private var isLoading = false
     private var page = 1
     private var step = 0
-    override fun getMovie() {
-        jobGetMovie?.cancel()
-        _stateRandomMovie.value = (MovieMainFragmentState.LoadingMovie)
-        jobGetMovie = CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-            try {
-                //TODO("не корректно работает NetworkManager")
-                "пришло ${networkManager.isConnect()}".log()
-                val response = apiRepository.getRandomMovie()
-                response.body()?.let {
-                    _stateRandomMovie.postValue(MovieMainFragmentState.SuccessMovie(it.toMovieUi()))
-                    saveMovieInDatabase(it)
-                } ?: run {
-                    _stateRandomMovie.postValue(
-                        MovieMainFragmentState.Error(
-                            NullPointerException().checkingResponse()
-                        )
-                    )
-                }
-            } catch (e: Exception) {
-                if (e.checkingError()) {
-                    val movie = localRepository.getRandomMovie()
-                    _stateRandomMovie.postValue(
-                        MovieMainFragmentState.SuccessMovie(
-                            movie.toMovieUi()
-                        )
-                    )
-                } else {
-                    _stateRandomMovie.postValue(MovieMainFragmentState.Error(e.checkingResponse()))
-                }
-            }
+
+    override suspend fun getMovie() {
+        " movie ${networkManager.isConnect()}".log()
+        if (networkManager.isConnect()) {
+            getMovieNetwork()
+        } else {
+            getMovieLocal()
         }
     }
 
-    override fun getListMovie() {
-        jobGetMoves?.cancel()
-        if (!isLoading) {
-            isLoading = true
-            _stateListMovie.value = MoviesMainFragmentState.LoadingListMovie
-            jobGetMoves = CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
-                try {
-                    val response = apiRepository.getListMovie(
-                        limit = Const.LIMIT,
-                        page = page,
-                        rating = "5-10",
-                        genres = emptyList()
+    override suspend fun getMovies() {
+        " movies ${networkManager.isConnect()}".log()
+        if (networkManager.isConnect()) {
+            getMoviesNetwork()
+        } else {
+            getMoviesLocal()
+        }
+    }
+
+    private suspend fun getMovieNetwork() {
+        try {
+            "метод getMovieNetwork".log()
+            _stateRandomMovie.emit(MovieMainFragmentState.LoadingMovie)
+            val repository = apiRepository.getRandomMovie()
+            repository.body()?.let { movie ->
+                _stateRandomMovie.emit(MovieMainFragmentState.SuccessMovie(movie.toMovieUi()))
+                saveMovieInDatabase(movie)
+            } ?: _stateRandomMovie.emit(MovieMainFragmentState.Error("список пуст"))
+        } catch (networkException: Exception) {
+            _stateRandomMovie.emit(MovieMainFragmentState.Error(networkException.message!!))
+        }
+    }
+
+    private suspend fun getMovieLocal() {
+        try {
+            "метод getMovieLocal".log()
+            _stateRandomMovie.emit(MovieMainFragmentState.LoadingMovie)
+            val movie = localRepository.getRandomMovie()
+            _stateRandomMovie.emit(
+                MovieMainFragmentState.SuccessMovie(
+                    movie.toMovieUi()
+                )
+            )
+        } catch (localException: Exception) {
+            _stateRandomMovie.emit(MovieMainFragmentState.Error(localException.message!!))
+        }
+    }
+
+    private suspend fun getMoviesNetwork() {
+        try {
+            "метод getMoviesNetwork".log()
+            if (!isLoading) {
+                isLoading = true
+                _stateListMovie.emit(MoviesMainFragmentState.LoadingListMovie)
+                val response = apiRepository.getListMovie(
+                    limit = Const.LIMIT,
+                    page = page,
+                    rating = "5-10",
+                    genres = emptyList()
+                )
+                response.body()?.let { movies ->
+                    val currentList = movies.movie.orEmpty()
+                    _stateListMovie.emit(
+                        MoviesMainFragmentState.SuccessListMovie(
+                            listMovie = currentList.toListMovieUi(),
+                            isLoading = true
+                        )
                     )
-                    response.body()?.let { listMovie ->
-                        val currentList = listMovie.movie.orEmpty()
-                        _stateListMovie.postValue(
-                            MoviesMainFragmentState.SuccessListMovie(
-                                listMovie = currentList.toListMovieUi(),
-                                isLoading = true
-                            )
-                        )
-                        saveMovieInDatabase(currentList)
-                        page++
-                    } ?: run {
-                        _stateListMovie.postValue(
-                            MoviesMainFragmentState.Error(
-                                NullPointerException().checkingResponse()
-                            )
-                        )
-                    }
-                } catch (e: Exception) {
-                    if (e.checkingError()) {
-                        val listMovieFromDatabase = localRepository.getListMovie(
-                            Const.LIMIT,
-                            step
-                        )
-                        _stateListMovie.postValue(
-                            MoviesMainFragmentState.SuccessListMovie(
-                                listMovie = listMovieFromDatabase.toListMovieUi(),
-                                isLoading = false
-                            )
-                        )
-                        step += Const.LIMIT
-                    } else {
-                        _stateListMovie.postValue(MoviesMainFragmentState.Error(e.checkingResponse()))
-                    }
-                } finally {
-                    isLoading = false
+                    saveMovieInDatabase(currentList)
+                    page++
+                } ?: run {
+                    _stateListMovie.emit(MoviesMainFragmentState.Error("список пуст"))
                 }
             }
+        } catch (networkException: Exception) {
+            _stateListMovie.emit(MoviesMainFragmentState.Error(networkException.message!!))
+        } finally {
+            isLoading = false
+        }
+    }
+
+    private suspend fun getMoviesLocal() {
+        try {
+            "метод getMoviesLocal".log()
+            if (!isLoading) {
+                isLoading = true
+                val moviesFromDatabase = localRepository.getListMovie(
+                    limit = Const.LIMIT,
+                    step = step
+                )
+                _stateListMovie.emit(
+                    MoviesMainFragmentState.SuccessListMovie(
+                        listMovie = moviesFromDatabase.toListMovieUi(),
+                        isLoading = false
+                    )
+                )
+                step += Const.LIMIT
+            }
+        } catch (localException: Exception) {
+            _stateListMovie.emit(MoviesMainFragmentState.Error(localException.message!!))
+        } finally {
+            isLoading = false
         }
     }
 
@@ -130,15 +143,15 @@ class MovieUseCaseImpl @Inject constructor(
         }
     }
 
-    override fun getStateResponseMovie(): MutableLiveData<MovieMainFragmentState> {
+    override fun getMovieState(): MutableStateFlow<MovieMainFragmentState> {
         return _stateRandomMovie
     }
 
-    override fun getStateResponseListMovie(): MutableLiveData<MoviesMainFragmentState> {
+    override fun getMoviesState(): MutableStateFlow<MoviesMainFragmentState> {
         return _stateListMovie
     }
 
-    override fun getTheListenerState(): Boolean {
+    override fun getListenerLoadingMovie(): Boolean {
         return isLoading
     }
 }

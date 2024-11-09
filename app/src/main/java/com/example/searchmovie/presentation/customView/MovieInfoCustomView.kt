@@ -12,16 +12,16 @@ import com.example.common.utils.TextExpander
 import com.example.network.modelsMovie.Genres
 import com.example.searchmovie.R
 import com.example.searchmovie.databinding.ScreenInformationMovieBinding
-import com.example.searchmovie.presentation.cardMovie.adapter.AdapterGenreMovie
+import com.example.searchmovie.presentation.cardMovie.adapter.MovieGenresAdapter
 
-class InfoMovie @JvmOverloads constructor(
+class MovieInfoCustomView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private var _binding: ScreenInformationMovieBinding? = null
     private val binding
         get() = _binding!!
 
-    private val adapter: AdapterGenreMovie by lazy(LazyThreadSafetyMode.NONE) { AdapterGenreMovie() }
+    private val adapter: MovieGenresAdapter by lazy(LazyThreadSafetyMode.NONE) { MovieGenresAdapter() }
 
     init {
         _binding = ScreenInformationMovieBinding.inflate(LayoutInflater.from(context), this)

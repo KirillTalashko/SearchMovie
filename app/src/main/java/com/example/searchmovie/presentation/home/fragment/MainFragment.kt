@@ -7,25 +7,26 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.extension.loadPhoto
+import com.example.common.extension.log
 import com.example.common.extension.showToast
 import com.example.common.utils.BaseFragment
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.extension.toMovie
 import com.example.searchmovie.core.model.MovieUi
+import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
-import com.example.searchmovie.presentation.home.adapter.AdapterPopularHome
-import com.example.searchmovie.presentation.home.adapter.OnClickGetModel
-import com.example.searchmovie.presentation.home.viewModel.MovieMainFragmentState
-import com.example.searchmovie.presentation.home.viewModel.MoviesMainFragmentState
+import com.example.searchmovie.presentation.home.adapter.MoviesPopularAdapter
+import com.example.searchmovie.presentation.home.state.MovieMainFragmentState
+import com.example.searchmovie.presentation.home.state.MoviesMainFragmentState
 import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
 import javax.inject.Inject
 
-class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
+class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
     OnClickGetModel {
 
-    private lateinit var adapterMovieMain: AdapterPopularHome
+    private lateinit var adapterMovieMain: MoviesPopularAdapter
     private val currentListEmpty: Boolean
         get() = adapterMovieMain.currentList.isEmpty()
 
@@ -53,13 +54,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private fun interactionWithView() {
         binding.root.setOnRefreshListener {
-            viewModel.getRandomMovie()
-            viewModel.getListMovie()
+            viewModel.getMovie()
+            viewModel.getMovies()
         }
     }
 
     private fun initRecyclerView() {
-        adapterMovieMain = AdapterPopularHome(this)
+        adapterMovieMain = MoviesPopularAdapter(this)
         binding.rvScrollTrendingMoviesMain.layoutManager = CenterZoomLayoutManager(requireContext())
         binding.rvScrollTrendingMoviesMain.adapter = adapterMovieMain
         binding.rvScrollTrendingMoviesMain.addOnScrollListener(object :
@@ -71,7 +72,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 val totalItemCount = layoutManager.itemCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                 if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
-                    viewModel.getListMovie()
+                    viewModel.getMovies()
                 }
             }
         })
@@ -99,14 +100,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         shimmerCardMovieMain.visibility = View.GONE
                         containerPlayRandomMovie.containerCardMovie.visibility = View.VISIBLE
 
-                        containerPlayRandomMovie.customViewPlayCard.getTextNameView().text =
+                        containerPlayRandomMovie.customViewPlayCard.getMovieNameTextView().text =
                             state.movie.name ?: getString(R.string.no_name)
                         containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(
                             state.movie.poster?.url
                         )
                         containerPlayRandomMovie.containerCardMovie.setOnClickListener {
                             findNavController().navigate(
-                                HomeFragmentDirections.actionHomeFragmentToCardMovieFragment(
+                                MainFragmentDirections.actionMainFragmentToCardMovieFragment(
                                     infoMovie = state.movie.toMovie()
                                 )
                             )
@@ -132,6 +133,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     }
 
                     is MoviesMainFragmentState.SuccessListMovie -> {
+                        "пришел seccess".log()
                         binding.root.isRefreshing = false
                         if (currentListEmpty) {
                             binding.apply {
@@ -151,9 +153,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
     }
 
-    override fun getModelMovie(movie: MovieUi) {
+    override fun getMovieModel(movie: MovieUi) {
         findNavController().navigate(
-            HomeFragmentDirections.actionHomeFragmentToCardMovieFragment(
+            MainFragmentDirections.actionMainFragmentToCardMovieFragment(
                 infoMovie = movie.toMovie()
             )
         )

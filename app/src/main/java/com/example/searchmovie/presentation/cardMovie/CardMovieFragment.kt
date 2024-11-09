@@ -21,12 +21,12 @@ import com.example.searchmovie.core.extension.toListMovieUi
 import com.example.searchmovie.core.extension.toMovie
 import com.example.searchmovie.core.extension.toMovieUi
 import com.example.searchmovie.core.model.MovieUi
+import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
-import com.example.searchmovie.presentation.cardMovie.adapter.AdapterRelatedMovie
-import com.example.searchmovie.presentation.cardMovie.viewModel.MovieCardMovieFragmentState
-import com.example.searchmovie.presentation.cardMovie.viewModel.ViewModelCardMovie
-import com.example.searchmovie.presentation.customView.InfoMovie
-import com.example.searchmovie.presentation.home.adapter.OnClickGetModel
+import com.example.searchmovie.presentation.cardMovie.adapter.MoviesRelatedAdapter
+import com.example.searchmovie.presentation.cardMovie.state.MovieCardMovieFragmentState
+import com.example.searchmovie.presentation.cardMovie.viewModel.CardMovieFragmentViewModel
+import com.example.searchmovie.presentation.customView.MovieInfoCustomView
 import javax.inject.Inject
 
 class CardMovieFragment :
@@ -34,7 +34,7 @@ class CardMovieFragment :
 
     private val argsMovie: CardMovieFragmentArgs by navArgs()
 
-    private lateinit var adapterRelatedMovie: AdapterRelatedMovie
+    private lateinit var adapterRelatedMovie: MoviesRelatedAdapter
 
     private val inject by lazy(LazyThreadSafetyMode.NONE) {
         (requireContext().applicationContext as SearchMovieApp).appComponent.inject(this)
@@ -43,7 +43,7 @@ class CardMovieFragment :
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    private val viewModel: ViewModelCardMovie by viewModels<ViewModelCardMovie> { factory }
+    private val viewModel: CardMovieFragmentViewModel by viewModels<CardMovieFragmentViewModel> { factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +58,7 @@ class CardMovieFragment :
 
     private fun initRecyclerView() {
         viewModel.getListMovieByGenre(argsMovie.infoMovie.toMovieUi())
-        adapterRelatedMovie = AdapterRelatedMovie(this)
+        adapterRelatedMovie = MoviesRelatedAdapter(this)
         binding.rvScrollSimilarMovie.adapter = adapterRelatedMovie
         viewModel.stateListMovieByGenre.observe(viewLifecycleOwner) {
             when (it) {
@@ -66,13 +66,13 @@ class CardMovieFragment :
                     requireContext().showToast(it.error)
                 }
 
-                MovieCardMovieFragmentState.LoadingRelatedMovies -> {
+                MovieCardMovieFragmentState.LoadingMoviesRelated -> {
                     Unit
                 }
 
-                is MovieCardMovieFragmentState.SuccessRelatedMovies -> {
+                is MovieCardMovieFragmentState.SuccessMoviesRelated -> {
                     val currentList = adapterRelatedMovie.currentList
-                    adapterRelatedMovie.submitList(currentList.plus(it.listMovie.toListMovieUi()))
+                    adapterRelatedMovie.submitList(currentList.plus(it.movies.toListMovieUi()))
                 }
             }
         }
@@ -120,7 +120,7 @@ class CardMovieFragment :
             )
 
             customViewInfoMovie.setDataCustomView(
-                display = InfoMovie.DisplayOptionsCustomView.TIME,
+                display = MovieInfoCustomView.DisplayOptionsCustomView.TIME,
                 owner = ValueHolderView(
                     drawable = ContextCompat.getDrawable(
                         requireContext(),
@@ -132,7 +132,7 @@ class CardMovieFragment :
             )
 
             customViewInfoMovie.setDataCustomView(
-                display = InfoMovie.DisplayOptionsCustomView.RATING_IMDB,
+                display = MovieInfoCustomView.DisplayOptionsCustomView.RATING_IMDB,
                 owner = ValueHolderView(
                     drawable = ContextCompat.getDrawable(
                         requireContext(),
@@ -143,7 +143,7 @@ class CardMovieFragment :
                 )
             )
             customViewInfoMovie.setDataCustomView(
-                display = InfoMovie.DisplayOptionsCustomView.RATING_KP,
+                display = MovieInfoCustomView.DisplayOptionsCustomView.RATING_KP,
                 owner = ValueHolderView(
                     drawable = ContextCompat.getDrawable(
                         requireContext(),
@@ -156,7 +156,7 @@ class CardMovieFragment :
         }
     }
 
-    override fun getModelMovie(movie: MovieUi) {
+    override fun getMovieModel(movie: MovieUi) {
         findNavController().navigate(
             CardMovieFragmentDirections.cardMovieFragmentToCardMovieFragment(
                 infoMovie = movie.toMovie()

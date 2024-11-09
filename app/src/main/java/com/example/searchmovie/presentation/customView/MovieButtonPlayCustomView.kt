@@ -9,7 +9,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.searchmovie.R
 
-class PlayCardView @JvmOverloads constructor(
+class MovieButtonPlayCustomView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : CardView(context, attrs, defStyleAttr) {
 
@@ -41,7 +41,7 @@ class PlayCardView @JvmOverloads constructor(
             layoutParams = it
         }
     }
-     fun getTextNameView():TextView {
+    fun getMovieNameTextView(): TextView {
          return textNameView
      }
 

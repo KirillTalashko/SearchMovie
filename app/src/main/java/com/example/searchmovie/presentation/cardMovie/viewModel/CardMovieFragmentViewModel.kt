@@ -11,11 +11,12 @@ import com.example.common.utils.Const
 import com.example.network.domain.repository.MovieRepository
 import com.example.searchmovie.core.extension.toListString
 import com.example.searchmovie.core.model.MovieUi
+import com.example.searchmovie.presentation.cardMovie.state.MovieCardMovieFragmentState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ViewModelCardMovie(private val repositoryImpl: MovieRepository) : ViewModel() {
+class CardMovieFragmentViewModel(private val repositoryImpl: MovieRepository) : ViewModel() {
 
     private var isLoading = false
     fun getIsLoading() = isLoading
@@ -44,7 +45,7 @@ class ViewModelCardMovie(private val repositoryImpl: MovieRepository) : ViewMode
     fun getListMovieByGenre(movie: MovieUi) {
         if (!isLoading) {
             isLoading = true
-            _stateListMovieByGenre.value = MovieCardMovieFragmentState.LoadingRelatedMovies
+            _stateListMovieByGenre.value = MovieCardMovieFragmentState.LoadingMoviesRelated
             viewModelScope.launch {
                 try {
                     val response = withContext(Dispatchers.IO) {
@@ -58,7 +59,7 @@ class ViewModelCardMovie(private val repositoryImpl: MovieRepository) : ViewMode
                     response.body()?.let {
                         val currentList = it.movie.orEmpty()
                         _stateListMovieByGenre.postValue(
-                            MovieCardMovieFragmentState.SuccessRelatedMovies(
+                            MovieCardMovieFragmentState.SuccessMoviesRelated(
                                 currentList
                             )
                         )
