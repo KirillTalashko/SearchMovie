@@ -79,11 +79,11 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun observerViewModel() {
-        viewModel.stateRandomMovie.observe(viewLifecycleOwner) { state ->
-            when (state) {
+        viewModel.stateRandomMovie.observe(viewLifecycleOwner) { movieState ->
+            when (movieState) {
                 is MovieMainFragmentState.Error -> {
                     binding.root.isRefreshing = false
-                    requireContext().showToast(state.error)
+                    requireContext().showToast(movieState.error)
                 }
 
                 MovieMainFragmentState.LoadingMovie -> {
@@ -94,6 +94,7 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 }
 
                 is MovieMainFragmentState.SuccessMovie -> {
+                    "пришел seccess movie".log()
                     binding.root.isRefreshing = false
                     binding.apply {
                         shimmerCardMovieMain.stopShimmer()
@@ -101,25 +102,25 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         containerPlayRandomMovie.containerCardMovie.visibility = View.VISIBLE
 
                         containerPlayRandomMovie.customViewPlayCard.getMovieNameTextView().text =
-                            state.movie.name ?: getString(R.string.no_name)
+                            movieState.movie.name ?: getString(R.string.no_name)
                         containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(
-                            state.movie.poster?.url
+                            movieState.movie.poster?.url
                         )
                         containerPlayRandomMovie.containerCardMovie.setOnClickListener {
                             findNavController().navigate(
                                 MainFragmentDirections.actionMainFragmentToCardMovieFragment(
-                                    infoMovie = state.movie.toMovie()
+                                    infoMovie = movieState.movie.toMovie()
                                 )
                             )
                         }
                     }
                 }
             }
-            viewModel.stateListMovie.observe(viewLifecycleOwner) { listMovie ->
-                when (listMovie) {
+            viewModel.stateListMovie.observe(viewLifecycleOwner) { moviesState ->
+                when (moviesState) {
                     is MoviesMainFragmentState.Error -> {
                         binding.root.isRefreshing = false
-                        requireContext().showToast(listMovie.error)
+                        requireContext().showToast(moviesState.error)
                     }
 
                     MoviesMainFragmentState.LoadingListMovie -> {
@@ -133,7 +134,7 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     }
 
                     is MoviesMainFragmentState.SuccessListMovie -> {
-                        "пришел seccess".log()
+                        "пришел seccess movies".log()
                         binding.root.isRefreshing = false
                         if (currentListEmpty) {
                             binding.apply {
@@ -142,11 +143,11 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                                 rvScrollTrendingMoviesMain.visibility = View.VISIBLE
                             }
                         }
-                        if (!listMovie.isLoading) {
+                        if (!moviesState.isLoading) {
                             requireContext().showToast("Данные взяты с базы данных")
                         }
                         val currentList = adapterMovieMain.currentList
-                        adapterMovieMain.submitList(currentList.plus(listMovie.listMovie))
+                        adapterMovieMain.submitList(currentList.plus(moviesState.listMovie))
                     }
                 }
             }

@@ -14,6 +14,7 @@ import javax.inject.Inject
 class ViewModelRandomMovie @Inject constructor(
     private val useCase: MovieUseCase
 ) : ViewModel() {
+
     fun getIsLoading() = useCase.getListenerLoadingMovie()
     val stateRandomMovie: LiveData<MovieMainFragmentState>
         get() = useCase.getMovieState().asLiveData()
@@ -25,7 +26,6 @@ class ViewModelRandomMovie @Inject constructor(
         getMovie()
         getMovies()
     }
-
     fun getMovie() {
         viewModelScope.launch(Dispatchers.IO) {
             useCase.getMovie()

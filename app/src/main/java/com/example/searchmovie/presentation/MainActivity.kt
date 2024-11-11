@@ -19,6 +19,11 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.bottomsNavMenu.setupWithNavController((supportFragmentManager.findFragmentById(R.id.container_main) as NavHostFragment).navController)
+        /*lifecycleScope.launch {
+            ErrorManager.errorMassage.collect {
+                this@MainActivity.showToast(it)
+            }
+        }*/
     }
 
     override fun onDestroy() {

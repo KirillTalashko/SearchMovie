@@ -30,7 +30,7 @@ class MovieUseCaseImpl @Inject constructor(
     private var step = 0
 
     override suspend fun getMovie() {
-        " movie ${networkManager.isConnect()}".log()
+        " movie isConnect ${networkManager.isConnect()}".log()
         if (networkManager.isConnect()) {
             getMovieNetwork()
         } else {
@@ -39,7 +39,7 @@ class MovieUseCaseImpl @Inject constructor(
     }
 
     override suspend fun getMovies() {
-        " movies ${networkManager.isConnect()}".log()
+        " movies icConnect ${networkManager.isConnect()}".log()
         if (networkManager.isConnect()) {
             getMoviesNetwork()
         } else {

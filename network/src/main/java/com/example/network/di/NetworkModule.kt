@@ -1,4 +1,4 @@
-package com.example.network
+package com.example.network.di
 
 import com.example.network.domain.api.MovieApi
 import com.example.network.domain.repository.MovieRepository
@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @Module
 class NetworkModule {
 
-    private val apiKey = "XMM6YTT-2EP4J36-KVCC1HQ-JAKVEF6"
+    private val apiKey = "T89S8JR-Y5343QN-HCRHHVV-KATN0A8"
     private val baseUrl = "https://api.kinopoisk.dev/"
 
     @Singleton

@@ -1,7 +1,7 @@
 package com.example.searchmovie.di
 
 import com.example.database.di.DatabaseModule
-import com.example.network.NetworkModule
+import com.example.network.di.NetworkModule
 import com.example.searchmovie.di.modules.CommonModule
 import com.example.searchmovie.di.modules.ContextModule
 import com.example.searchmovie.presentation.cardMovie.CardMovieFragment
