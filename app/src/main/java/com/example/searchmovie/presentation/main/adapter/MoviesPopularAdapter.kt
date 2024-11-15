@@ -1,4 +1,4 @@
-package com.example.searchmovie.presentation.home.adapter
+package com.example.searchmovie.presentation.main.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.example.searchmovie.core.model.MovieUi
 import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.ScreenCardPopularMovieBinding
-import com.example.searchmovie.presentation.home.viewHolder.MoviesPopularViewHolder
+import com.example.searchmovie.presentation.main.viewHolder.MoviesPopularViewHolder
 
 
 class MoviesPopularAdapter(private val onClick: OnClickGetModel) :

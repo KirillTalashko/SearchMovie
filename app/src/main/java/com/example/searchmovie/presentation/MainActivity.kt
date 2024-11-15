@@ -2,10 +2,15 @@ package com.example.searchmovie.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.common.extension.showToast
 import com.example.searchmovie.R
+import com.example.searchmovie.core.utils.ErrorManager
 import com.example.searchmovie.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,17 +18,21 @@ class MainActivity : AppCompatActivity() {
     private val binding
         get() = _binding!!
 
+    @Inject
+    lateinit var errorManager: ErrorManager
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.bottomsNavMenu.setupWithNavController((supportFragmentManager.findFragmentById(R.id.container_main) as NavHostFragment).navController)
-        /*lifecycleScope.launch {
-            ErrorManager.errorMassage.collect {
-                this@MainActivity.showToast(it)
+        errorManager = ErrorManager(this)
+        lifecycleScope.launch {
+            errorManager.errorMassage.collect { massage ->
+                this@MainActivity.showToast(massage)
             }
-        }*/
+        }
     }
 
     override fun onDestroy() {

@@ -1,4 +1,4 @@
-package com.example.searchmovie.presentation.home.fragment
+package com.example.searchmovie.presentation.main.fragment
 
 import android.os.Bundle
 import android.view.View
@@ -17,10 +17,10 @@ import com.example.searchmovie.core.model.MovieUi
 import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.FragmentHomeBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
-import com.example.searchmovie.presentation.home.adapter.MoviesPopularAdapter
-import com.example.searchmovie.presentation.home.state.MovieMainFragmentState
-import com.example.searchmovie.presentation.home.state.MoviesMainFragmentState
-import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
+import com.example.searchmovie.presentation.main.adapter.MoviesPopularAdapter
+import com.example.searchmovie.presentation.main.state.MovieMainFragmentState
+import com.example.searchmovie.presentation.main.state.MoviesMainFragmentState
+import com.example.searchmovie.presentation.main.viewModel.ViewModelRandomMovie
 import javax.inject.Inject
 
 class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
@@ -94,7 +94,6 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 }
 
                 is MovieMainFragmentState.SuccessMovie -> {
-                    "пришел seccess movie".log()
                     binding.root.isRefreshing = false
                     binding.apply {
                         shimmerCardMovieMain.stopShimmer()
@@ -116,43 +115,44 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     }
                 }
             }
-            viewModel.stateListMovie.observe(viewLifecycleOwner) { moviesState ->
-                when (moviesState) {
-                    is MoviesMainFragmentState.Error -> {
-                        binding.root.isRefreshing = false
-                        requireContext().showToast(moviesState.error)
-                    }
+        }
+        viewModel.stateListMovie.observe(viewLifecycleOwner) { moviesState ->
+            when (moviesState) {
+                is MoviesMainFragmentState.Error -> {
+                    binding.root.isRefreshing = false
+                    requireContext().showToast(moviesState.error)
+                }
 
-                    MoviesMainFragmentState.LoadingListMovie -> {
-                        if (currentListEmpty) {
-                            binding.apply {
-                                shimmerScrollListMovie.startShimmer()
-                                shimmerScrollListMovie.visibility = View.VISIBLE
-                                rvScrollTrendingMoviesMain.visibility = View.GONE
-                            }
+                MoviesMainFragmentState.LoadingListMovie -> {
+                    if (currentListEmpty) {
+                        binding.apply {
+                            shimmerScrollListMovie.startShimmer()
+                            shimmerScrollListMovie.visibility = View.VISIBLE
+                            rvScrollTrendingMoviesMain.visibility = View.GONE
                         }
                     }
+                }
 
-                    is MoviesMainFragmentState.SuccessListMovie -> {
-                        "пришел seccess movies".log()
-                        binding.root.isRefreshing = false
-                        if (currentListEmpty) {
-                            binding.apply {
-                                shimmerScrollListMovie.stopShimmer()
-                                shimmerScrollListMovie.visibility = View.GONE
-                                rvScrollTrendingMoviesMain.visibility = View.VISIBLE
-                            }
+                is MoviesMainFragmentState.SuccessListMovie -> {
+                    "isLoading ${moviesState.isLoading}".log()
+                    binding.root.isRefreshing = false
+                    if (currentListEmpty) {
+                        binding.apply {
+                            shimmerScrollListMovie.stopShimmer()
+                            shimmerScrollListMovie.visibility = View.GONE
+                            rvScrollTrendingMoviesMain.visibility = View.VISIBLE
                         }
-                        if (!moviesState.isLoading) {
-                            requireContext().showToast("Данные взяты с базы данных")
-                        }
-                        val currentList = adapterMovieMain.currentList
-                        adapterMovieMain.submitList(currentList.plus(moviesState.listMovie))
                     }
+                    if (!moviesState.isLoading) {
+                        requireContext().showToast("Данные взяты с базы данных")
+                    }
+                    val currentList = adapterMovieMain.currentList
+                    adapterMovieMain.submitList(currentList.plus(moviesState.listMovie))
                 }
             }
         }
     }
+
 
     override fun getMovieModel(movie: MovieUi) {
         findNavController().navigate(

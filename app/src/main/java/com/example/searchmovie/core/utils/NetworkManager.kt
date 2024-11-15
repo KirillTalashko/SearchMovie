@@ -1,4 +1,4 @@
-package com.example.searchmovie.core.manager
+package com.example.searchmovie.core.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

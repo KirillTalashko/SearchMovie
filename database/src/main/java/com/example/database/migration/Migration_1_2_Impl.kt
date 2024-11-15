@@ -8,7 +8,7 @@ object Migration_1_2_Impl : Migration(1, 2) {
         db.execSQL(
             "CREATE TABLE IF NOT EXISTS `random_movie_new` " +
                     "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    " `idMovieKP` INTEGER NOT NULL, " +
+                    "`idMovieKp` INTEGER NOT NULL, " +
                     "`name` TEXT, `url` TEXT," +
                     "`ratingIMDb` REAL NOT NULL DEFAULT 0, " +
                     "`ratingKp` REAL NOT NULL DEFAULT 0, " +

@@ -1,4 +1,4 @@
-package com.example.searchmovie.presentation.home.viewHolder
+package com.example.searchmovie.presentation.main.viewHolder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.extension.loadPhoto

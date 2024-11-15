@@ -62,6 +62,7 @@ class NetworkModule {
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(1, TimeUnit.MINUTES)
             .addInterceptor(interceptorMovieApiKey)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor(interceptor)

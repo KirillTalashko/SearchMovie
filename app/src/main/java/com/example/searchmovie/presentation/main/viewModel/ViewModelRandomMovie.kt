@@ -1,12 +1,12 @@
-package com.example.searchmovie.presentation.home.viewModel
+package com.example.searchmovie.presentation.main.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.searchmovie.presentation.home.state.MovieMainFragmentState
-import com.example.searchmovie.presentation.home.state.MoviesMainFragmentState
-import com.example.searchmovie.presentation.home.useCase.MovieUseCase
+import com.example.searchmovie.presentation.main.state.MovieMainFragmentState
+import com.example.searchmovie.presentation.main.state.MoviesMainFragmentState
+import com.example.searchmovie.presentation.main.useCase.MovieUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,12 +15,12 @@ class ViewModelRandomMovie @Inject constructor(
     private val useCase: MovieUseCase
 ) : ViewModel() {
 
-    fun getIsLoading() = useCase.getListenerLoadingMovie()
+    fun getIsLoading() = useCase.isLoading
     val stateRandomMovie: LiveData<MovieMainFragmentState>
-        get() = useCase.getMovieState().asLiveData()
+        get() = useCase.stateRandomMovie.asLiveData()
 
     val stateListMovie: LiveData<MoviesMainFragmentState>
-        get() = useCase.getMoviesState().asLiveData()
+        get() = useCase.stateListMovie.asLiveData()
 
     init {
         getMovie()

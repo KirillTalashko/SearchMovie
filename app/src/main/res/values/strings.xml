@@ -21,6 +21,8 @@
     <string name="no_description">Описание к фильму отсутствует</string>
     <string name="no_genre">Без жанра</string>
     <string name="similar_movies">Похожие фильмы</string>
+    <string name="network_date">Данные были взяты с интернета</string>
+    <string name="local_date">Данные иил часть данных были взяты с локальной базы данных</string>
 
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.searchmovie.presentation.home.useCase
+package com.example.searchmovie.presentation.main.useCase
 
 import com.example.common.extension.log
 import com.example.common.utils.Const
@@ -8,28 +8,31 @@ import com.example.network.modelsMovie.Movie
 import com.example.searchmovie.core.extension.toListMovieUi
 import com.example.searchmovie.core.extension.toMovieEntity
 import com.example.searchmovie.core.extension.toMovieUi
-import com.example.searchmovie.core.manager.NetworkManager
-import com.example.searchmovie.presentation.home.state.MovieMainFragmentState
-import com.example.searchmovie.presentation.home.state.MoviesMainFragmentState
+import com.example.searchmovie.core.utils.ErrorManager
+import com.example.searchmovie.core.utils.NetworkManager
+import com.example.searchmovie.presentation.main.state.MovieMainFragmentState
+import com.example.searchmovie.presentation.main.state.MoviesMainFragmentState
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
-class MovieUseCaseImpl @Inject constructor(
+class MovieUseCase @Inject constructor(
     private val apiRepository: MovieRepository,
     private val localRepository: MovieLocalRepository,
-    private val networkManager: NetworkManager
-) : MovieUseCase {
+    private val networkManager: NetworkManager,
+    private val errorManager: ErrorManager
+) {
 
-    private val _stateRandomMovie =
+    val stateRandomMovie =
         MutableStateFlow<MovieMainFragmentState>(MovieMainFragmentState.LoadingMovie)
-    private val _stateListMovie =
+    val stateListMovie =
         MutableStateFlow<MoviesMainFragmentState>(MoviesMainFragmentState.LoadingListMovie)
 
-    private var isLoading = false
+    var isLoading = false
+    private var localData = false
     private var page = 1
     private var step = 0
 
-    override suspend fun getMovie() {
+    suspend fun getMovie() {
         " movie isConnect ${networkManager.isConnect()}".log()
         if (networkManager.isConnect()) {
             getMovieNetwork()
@@ -38,7 +41,7 @@ class MovieUseCaseImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMovies() {
+    suspend fun getMovies() {
         " movies icConnect ${networkManager.isConnect()}".log()
         if (networkManager.isConnect()) {
             getMoviesNetwork()
@@ -49,39 +52,39 @@ class MovieUseCaseImpl @Inject constructor(
 
     private suspend fun getMovieNetwork() {
         try {
-            "метод getMovieNetwork".log()
-            _stateRandomMovie.emit(MovieMainFragmentState.LoadingMovie)
+            stateRandomMovie.emit(MovieMainFragmentState.LoadingMovie)
             val repository = apiRepository.getRandomMovie()
             repository.body()?.let { movie ->
-                _stateRandomMovie.emit(MovieMainFragmentState.SuccessMovie(movie.toMovieUi()))
+                stateRandomMovie.emit(MovieMainFragmentState.SuccessMovie(movie.toMovieUi()))
+                errorManager.dataObserver.emit(ErrorManager.DataErrorOrigin.NETWORK)
                 saveMovieInDatabase(movie)
-            } ?: _stateRandomMovie.emit(MovieMainFragmentState.Error("список пуст"))
+            } ?: stateRandomMovie.emit(MovieMainFragmentState.Error("список пуст"))
         } catch (networkException: Exception) {
-            _stateRandomMovie.emit(MovieMainFragmentState.Error(networkException.message!!))
+            getMovieLocal()
         }
     }
 
     private suspend fun getMovieLocal() {
         try {
-            "метод getMovieLocal".log()
-            _stateRandomMovie.emit(MovieMainFragmentState.LoadingMovie)
+            stateRandomMovie.emit(MovieMainFragmentState.LoadingMovie)
+            errorManager.dataObserver.emit(ErrorManager.DataErrorOrigin.DATABASE)
             val movie = localRepository.getRandomMovie()
-            _stateRandomMovie.emit(
+            stateRandomMovie.emit(
                 MovieMainFragmentState.SuccessMovie(
                     movie.toMovieUi()
                 )
             )
         } catch (localException: Exception) {
-            _stateRandomMovie.emit(MovieMainFragmentState.Error(localException.message!!))
+            localException.message?.log()
+            stateRandomMovie.emit(MovieMainFragmentState.Error(localException.message!!))
         }
     }
 
     private suspend fun getMoviesNetwork() {
         try {
-            "метод getMoviesNetwork".log()
             if (!isLoading) {
                 isLoading = true
-                _stateListMovie.emit(MoviesMainFragmentState.LoadingListMovie)
+                stateListMovie.emit(MoviesMainFragmentState.LoadingListMovie)
                 val response = apiRepository.getListMovie(
                     limit = Const.LIMIT,
                     page = page,
@@ -90,20 +93,21 @@ class MovieUseCaseImpl @Inject constructor(
                 )
                 response.body()?.let { movies ->
                     val currentList = movies.movie.orEmpty()
-                    _stateListMovie.emit(
+                    stateListMovie.emit(
                         MoviesMainFragmentState.SuccessListMovie(
                             listMovie = currentList.toListMovieUi(),
                             isLoading = true
                         )
                     )
+                    errorManager.dataObserver.emit(ErrorManager.DataErrorOrigin.NETWORK)
                     saveMovieInDatabase(currentList)
                     page++
                 } ?: run {
-                    _stateListMovie.emit(MoviesMainFragmentState.Error("список пуст"))
+                    stateListMovie.emit(MoviesMainFragmentState.Error("список пуст"))
                 }
             }
         } catch (networkException: Exception) {
-            _stateListMovie.emit(MoviesMainFragmentState.Error(networkException.message!!))
+            getMoviesLocal()
         } finally {
             isLoading = false
         }
@@ -111,14 +115,14 @@ class MovieUseCaseImpl @Inject constructor(
 
     private suspend fun getMoviesLocal() {
         try {
-            "метод getMoviesLocal".log()
             if (!isLoading) {
+                errorManager.dataObserver.emit(ErrorManager.DataErrorOrigin.DATABASE)
                 isLoading = true
                 val moviesFromDatabase = localRepository.getListMovie(
                     limit = Const.LIMIT,
                     step = step
                 )
-                _stateListMovie.emit(
+                stateListMovie.emit(
                     MoviesMainFragmentState.SuccessListMovie(
                         listMovie = moviesFromDatabase.toListMovieUi(),
                         isLoading = false
@@ -127,7 +131,7 @@ class MovieUseCaseImpl @Inject constructor(
                 step += Const.LIMIT
             }
         } catch (localException: Exception) {
-            _stateListMovie.emit(MoviesMainFragmentState.Error(localException.message!!))
+            stateListMovie.emit(MoviesMainFragmentState.Error(localException.message!!))
         } finally {
             isLoading = false
         }
@@ -141,17 +145,5 @@ class MovieUseCaseImpl @Inject constructor(
         movies.forEach { movie ->
             localRepository.insertMovie(movie.toMovieEntity())
         }
-    }
-
-    override fun getMovieState(): MutableStateFlow<MovieMainFragmentState> {
-        return _stateRandomMovie
-    }
-
-    override fun getMoviesState(): MutableStateFlow<MoviesMainFragmentState> {
-        return _stateListMovie
-    }
-
-    override fun getListenerLoadingMovie(): Boolean {
-        return isLoading
     }
 }

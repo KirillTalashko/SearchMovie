@@ -5,7 +5,7 @@ import com.example.network.di.NetworkModule
 import com.example.searchmovie.di.modules.CommonModule
 import com.example.searchmovie.di.modules.ContextModule
 import com.example.searchmovie.presentation.cardMovie.CardMovieFragment
-import com.example.searchmovie.presentation.home.fragment.MainFragment
+import com.example.searchmovie.presentation.main.fragment.MainFragment
 import dagger.Component
 import javax.inject.Singleton
 

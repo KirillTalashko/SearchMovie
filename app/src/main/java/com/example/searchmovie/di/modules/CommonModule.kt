@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
-import com.example.searchmovie.core.manager.NetworkManager
+import com.example.searchmovie.core.utils.ErrorManager
+import com.example.searchmovie.core.utils.NetworkManager
 import com.example.searchmovie.presentation.cardMovie.viewModel.CardMovieFragmentViewModel
-import com.example.searchmovie.presentation.home.useCase.MovieUseCase
-import com.example.searchmovie.presentation.home.useCase.MovieUseCaseImpl
-import com.example.searchmovie.presentation.home.viewModel.ViewModelRandomMovie
+import com.example.searchmovie.presentation.main.useCase.MovieUseCase
+import com.example.searchmovie.presentation.main.viewModel.ViewModelRandomMovie
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -43,9 +43,10 @@ class CommonModule {
     fun provideUseCase(
         repository: MovieRepository,
         localRepository: MovieLocalRepository,
-        networkManager: NetworkManager
+        networkManager: NetworkManager,
+        errorManager: ErrorManager
     ): MovieUseCase {
-        return MovieUseCaseImpl(repository, localRepository, networkManager)
+        return MovieUseCase(repository, localRepository, networkManager, errorManager)
     }
 
     @Provides
@@ -53,5 +54,10 @@ class CommonModule {
         context: Context,
     ): NetworkManager {
         return NetworkManager(context)
+    }
+
+    @Provides
+    fun provideErrorManager(context: Context): ErrorManager {
+        return ErrorManager(context)
     }
 }
