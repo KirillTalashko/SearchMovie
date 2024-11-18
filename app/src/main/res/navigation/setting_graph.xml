@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/setting_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/mainFragment">
     <fragment
-        android:id="@+id/homeFragment"
+        android:id="@+id/mainFragment"
         android:name="com.example.searchmovie.presentation.main.fragment.MainFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home">
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_cardMovieFragment"
             app:destination="@id/cardMovieFragment" />
@@ -34,6 +34,6 @@
         <argument
             android:name="info_movie"
             app:nullable="false"
-            app:argType="com.example.network.modelsMovie.Movie"/>
+            app:argType="com.example.searchmovie.core.model.MovieUi" />
     </fragment>
 </navigation>

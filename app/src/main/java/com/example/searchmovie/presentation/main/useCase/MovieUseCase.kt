@@ -2,12 +2,14 @@ package com.example.searchmovie.presentation.main.useCase
 
 import com.example.common.extension.log
 import com.example.common.utils.Const
+import com.example.common.utils.DataErrorOrigin
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
 import com.example.network.modelsMovie.Movie
 import com.example.searchmovie.core.extension.toListMovieUi
 import com.example.searchmovie.core.extension.toMovieEntity
 import com.example.searchmovie.core.extension.toMovieUi
+import com.example.searchmovie.core.utils.ErrorDialog
 import com.example.searchmovie.core.utils.ErrorManager
 import com.example.searchmovie.core.utils.NetworkManager
 import com.example.searchmovie.presentation.main.state.MovieMainFragmentState
@@ -19,7 +21,8 @@ class MovieUseCase @Inject constructor(
     private val apiRepository: MovieRepository,
     private val localRepository: MovieLocalRepository,
     private val networkManager: NetworkManager,
-    private val errorManager: ErrorManager
+    private val errorManager: ErrorManager,
+    private val errorDialog: ErrorDialog
 ) {
 
     val stateRandomMovie =
@@ -28,60 +31,76 @@ class MovieUseCase @Inject constructor(
         MutableStateFlow<MoviesMainFragmentState>(MoviesMainFragmentState.LoadingListMovie)
 
     var isLoading = false
-    private var localData = false
     private var page = 1
     private var step = 0
 
     suspend fun getMovie() {
-        " movie isConnect ${networkManager.isConnect()}".log()
-        if (networkManager.isConnect()) {
+        " movie icConnect ${networkManager.isConnect()} и isLocalData ${errorDialog.getIsLocalData()}".log()
+        if (networkManager.isConnect() && !errorDialog.getIsLocalData()) {
             getMovieNetwork()
-        } else {
+        } else if (!networkManager.isConnect() && errorDialog.getIsLocalData()) {
             getMovieLocal()
+        } else {
+            stateRandomMovie.emit(MovieMainFragmentState.Error(DataErrorOrigin.NETWORK))
         }
     }
 
     suspend fun getMovies() {
-        " movies icConnect ${networkManager.isConnect()}".log()
-        if (networkManager.isConnect()) {
+        " movies icConnect ${networkManager.isConnect()} и isLocalData ${errorDialog.getIsLocalData()}".log()
+        if (networkManager.isConnect() && !errorDialog.getIsLocalData()) {
             getMoviesNetwork()
-        } else {
+        } else if (!networkManager.isConnect() && errorDialog.getIsLocalData()) {
             getMoviesLocal()
+        } else {
+            stateListMovie.emit(MoviesMainFragmentState.Error(DataErrorOrigin.NETWORK))
         }
     }
 
     private suspend fun getMovieNetwork() {
         try {
+            "Зашел в метод getMovieNetwork".log()
+            errorManager.postError(DataErrorOrigin.NETWORK)
             stateRandomMovie.emit(MovieMainFragmentState.LoadingMovie)
             val repository = apiRepository.getRandomMovie()
             repository.body()?.let { movie ->
-                stateRandomMovie.emit(MovieMainFragmentState.SuccessMovie(movie.toMovieUi()))
-                errorManager.dataObserver.emit(ErrorManager.DataErrorOrigin.NETWORK)
+                stateRandomMovie.emit(
+                    MovieMainFragmentState.SuccessMovie(
+                        movie = movie.toMovieUi(),
+                        isLocalDate = false
+                    )
+                )
                 saveMovieInDatabase(movie)
-            } ?: stateRandomMovie.emit(MovieMainFragmentState.Error("список пуст"))
+            } ?: run {
+                stateRandomMovie.emit(MovieMainFragmentState.Error(DataErrorOrigin.NETWORK))
+                errorManager.postError(DataErrorOrigin.NETWORK)
+            }
         } catch (networkException: Exception) {
-            getMovieLocal()
+            stateRandomMovie.emit(MovieMainFragmentState.Error(DataErrorOrigin.NETWORK))
+            //errorManager.postError(networkException,DataErrorOrigin.NETWORK)
         }
     }
 
     private suspend fun getMovieLocal() {
         try {
+            "Зашел в метод getMovieLocal".log()
             stateRandomMovie.emit(MovieMainFragmentState.LoadingMovie)
-            errorManager.dataObserver.emit(ErrorManager.DataErrorOrigin.DATABASE)
+            errorManager.postError(DataErrorOrigin.DATABASE)
             val movie = localRepository.getRandomMovie()
             stateRandomMovie.emit(
                 MovieMainFragmentState.SuccessMovie(
-                    movie.toMovieUi()
+                    movie = movie.toMovieUi(),
+                    isLocalDate = true
                 )
             )
         } catch (localException: Exception) {
-            localException.message?.log()
-            stateRandomMovie.emit(MovieMainFragmentState.Error(localException.message!!))
+            "DATABASE MOVIE ${localException.message}".log()
+            stateRandomMovie.emit(MovieMainFragmentState.Error(DataErrorOrigin.DATABASE))
         }
     }
 
     private suspend fun getMoviesNetwork() {
         try {
+            "Зашел в метод getMoviesNetwork".log()
             if (!isLoading) {
                 isLoading = true
                 stateListMovie.emit(MoviesMainFragmentState.LoadingListMovie)
@@ -96,17 +115,18 @@ class MovieUseCase @Inject constructor(
                     stateListMovie.emit(
                         MoviesMainFragmentState.SuccessListMovie(
                             listMovie = currentList.toListMovieUi(),
-                            isLoading = true
+                            isLocalData = false
                         )
                     )
-                    errorManager.dataObserver.emit(ErrorManager.DataErrorOrigin.NETWORK)
                     saveMovieInDatabase(currentList)
                     page++
                 } ?: run {
-                    stateListMovie.emit(MoviesMainFragmentState.Error("список пуст"))
+                    stateListMovie.emit(MoviesMainFragmentState.Error(DataErrorOrigin.NETWORK))
+                    errorManager.postError(DataErrorOrigin.NETWORK)
                 }
             }
         } catch (networkException: Exception) {
+            "NETWORK MOVIES ${networkException.message}".log()
             getMoviesLocal()
         } finally {
             isLoading = false
@@ -115,8 +135,9 @@ class MovieUseCase @Inject constructor(
 
     private suspend fun getMoviesLocal() {
         try {
+            "Зашел в метод getMoviesLocal".log()
+            errorManager.postError(DataErrorOrigin.DATABASE)
             if (!isLoading) {
-                errorManager.dataObserver.emit(ErrorManager.DataErrorOrigin.DATABASE)
                 isLoading = true
                 val moviesFromDatabase = localRepository.getListMovie(
                     limit = Const.LIMIT,
@@ -125,13 +146,14 @@ class MovieUseCase @Inject constructor(
                 stateListMovie.emit(
                     MoviesMainFragmentState.SuccessListMovie(
                         listMovie = moviesFromDatabase.toListMovieUi(),
-                        isLoading = false
+                        isLocalData = true
                     )
                 )
                 step += Const.LIMIT
             }
         } catch (localException: Exception) {
-            stateListMovie.emit(MoviesMainFragmentState.Error(localException.message!!))
+            "DATABASE MOVIES ${localException.message}".log()
+            stateListMovie.emit(MoviesMainFragmentState.Error(DataErrorOrigin.DATABASE))
         } finally {
             isLoading = false
         }

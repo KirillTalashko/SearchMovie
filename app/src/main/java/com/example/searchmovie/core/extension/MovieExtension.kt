@@ -32,21 +32,8 @@ fun Movie.toMovieUi(): MovieUi {
         year = this.year,
         genres = this.genres,
         type = this.type,
-        description = this.description
-    )
-}
-
-fun MovieUi.toMovie(): Movie {
-    return Movie(
-        id = this.id,
-        name = this.name,
-        poster = Poster(this.poster?.url),
-        rating = Rating(this.rating.kp, this.rating.imd),
-        duration = this.duration,
-        year = this.year,
-        genres = this.genres,
-        type = this.type,
-        description = this.description
+        description = this.description,
+        date = null
     )
 }
 

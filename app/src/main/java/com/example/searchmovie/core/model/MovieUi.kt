@@ -1,21 +1,24 @@
 package com.example.searchmovie.core.model
 
+import android.os.Parcelable
 import com.example.network.modelsMovie.Genres
 import com.example.network.modelsMovie.Poster
 import com.example.network.modelsMovie.Rating
-import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class MovieUi(
-    @SerializedName("id") val id: Long,
-    @SerializedName("name") val name: String?,
-    @SerializedName("poster") val poster: Poster?,
-    @SerializedName("rating") val rating: Rating,
-    @SerializedName("movieLength") val duration: Int,
-    @SerializedName("year") val year: Int,
-    @SerializedName("genres") val genres: List<Genres>?,
-    @SerializedName("typeNumber") val type: Int,
-    @SerializedName("description") val description: String?
-)
+    val id: Long,
+    val name: String?,
+    val poster: Poster?,
+    val rating: Rating,
+    val duration: Int,
+    val year: Int,
+    val genres: List<Genres>?,
+    val type: Int,
+    val description: String?,
+    val date: Long?
+) : Parcelable
 
 
 

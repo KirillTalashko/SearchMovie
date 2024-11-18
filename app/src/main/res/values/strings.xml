@@ -23,6 +23,11 @@
     <string name="similar_movies">Похожие фильмы</string>
     <string name="network_date">Данные были взяты с интернета</string>
     <string name="local_date">Данные иил часть данных были взяты с локальной базы данных</string>
+    <string name="positive_option">Ок</string>
+    <string name="negative_option">Отмена</string>
+    <string name="no_internet">Отсутсвует интеренет</string>
+    <string name="show_random_movie">Показать рандомный фильм с локальной базы данных?</string>
+    <string name="show_selection_of_movies">Показать подборку фильмов с локальной базы данных?</string>
 
 
 </resources>

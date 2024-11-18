@@ -8,14 +8,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.extension.loadPhoto
 import com.example.common.extension.log
-import com.example.common.extension.showToast
 import com.example.common.utils.BaseFragment
+import com.example.common.utils.DataErrorOrigin
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
-import com.example.searchmovie.core.extension.toMovie
 import com.example.searchmovie.core.model.MovieUi
+import com.example.searchmovie.core.utils.ErrorDialog
 import com.example.searchmovie.core.utils.OnClickGetModel
-import com.example.searchmovie.databinding.FragmentHomeBinding
+import com.example.searchmovie.databinding.FragmentMainBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
 import com.example.searchmovie.presentation.main.adapter.MoviesPopularAdapter
 import com.example.searchmovie.presentation.main.state.MovieMainFragmentState
@@ -23,7 +23,7 @@ import com.example.searchmovie.presentation.main.state.MoviesMainFragmentState
 import com.example.searchmovie.presentation.main.viewModel.ViewModelRandomMovie
 import javax.inject.Inject
 
-class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
+class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::inflate),
     OnClickGetModel {
 
     private lateinit var adapterMovieMain: MoviesPopularAdapter
@@ -37,7 +37,15 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var errorDialogMovie: ErrorDialog
+
+    @Inject
+    lateinit var errorDialogMovies: ErrorDialog
+
     private val viewModel: ViewModelRandomMovie by viewModels<ViewModelRandomMovie> { factory }
+
+    private var isLocalDate: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +65,8 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             viewModel.getMovie()
             viewModel.getMovies()
         }
+        errorDialogMovie = ErrorDialog(true, { viewModel.getMovie() })
+        errorDialogMovies = ErrorDialog(false, { viewModel.getMovies() })
     }
 
     private fun initRecyclerView() {
@@ -83,7 +93,9 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             when (movieState) {
                 is MovieMainFragmentState.Error -> {
                     binding.root.isRefreshing = false
-                    requireContext().showToast(movieState.error)
+                    if (movieState.dataErrorOrigin == DataErrorOrigin.NETWORK) {
+                        errorDialogMovie.show(childFragmentManager, ErrorDialog.TAG)
+                    }
                 }
 
                 MovieMainFragmentState.LoadingMovie -> {
@@ -99,7 +111,10 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         shimmerCardMovieMain.stopShimmer()
                         shimmerCardMovieMain.visibility = View.GONE
                         containerPlayRandomMovie.containerCardMovie.visibility = View.VISIBLE
-
+                        if (movieState.isLocalDate) {
+                            containerPlayRandomMovie.imageViewLocalDateMovie.visibility =
+                                View.VISIBLE
+                        }
                         containerPlayRandomMovie.customViewPlayCard.getMovieNameTextView().text =
                             movieState.movie.name ?: getString(R.string.no_name)
                         containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(
@@ -108,7 +123,7 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         containerPlayRandomMovie.containerCardMovie.setOnClickListener {
                             findNavController().navigate(
                                 MainFragmentDirections.actionMainFragmentToCardMovieFragment(
-                                    infoMovie = movieState.movie.toMovie()
+                                    infoMovie = movieState.movie
                                 )
                             )
                         }
@@ -120,7 +135,9 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             when (moviesState) {
                 is MoviesMainFragmentState.Error -> {
                     binding.root.isRefreshing = false
-                    requireContext().showToast(moviesState.error)
+                    if (moviesState.dataErrorOrigin == DataErrorOrigin.NETWORK) {
+                        errorDialogMovies.show(childFragmentManager, ErrorDialog.TAG)
+                    }
                 }
 
                 MoviesMainFragmentState.LoadingListMovie -> {
@@ -134,7 +151,7 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 }
 
                 is MoviesMainFragmentState.SuccessListMovie -> {
-                    "isLoading ${moviesState.isLoading}".log()
+                    "isLoading ${moviesState.isLocalData}".log()
                     binding.root.isRefreshing = false
                     if (currentListEmpty) {
                         binding.apply {
@@ -143,9 +160,7 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                             rvScrollTrendingMoviesMain.visibility = View.VISIBLE
                         }
                     }
-                    if (!moviesState.isLoading) {
-                        requireContext().showToast("Данные взяты с базы данных")
-                    }
+                    isLocalDate = moviesState.isLocalData
                     val currentList = adapterMovieMain.currentList
                     adapterMovieMain.submitList(currentList.plus(moviesState.listMovie))
                 }
@@ -157,9 +172,13 @@ class MainFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     override fun getMovieModel(movie: MovieUi) {
         findNavController().navigate(
             MainFragmentDirections.actionMainFragmentToCardMovieFragment(
-                infoMovie = movie.toMovie()
+                infoMovie = movie
             )
         )
+    }
+
+    override fun isLocalData(): Boolean? {
+        return isLocalDate
     }
 
 }

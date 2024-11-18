@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.common.extension.checkingResponse
 import com.example.common.extension.convectInJsonForRequest
+import com.example.common.extension.networkErrorHandler
 import com.example.common.utils.Const
 import com.example.network.domain.repository.MovieRepository
 import com.example.searchmovie.core.extension.toListString
@@ -66,13 +66,16 @@ class CardMovieFragmentViewModel(private val repositoryImpl: MovieRepository) : 
                         page++
                     } ?: run {
                         _stateListMovieByGenre.postValue(
-                            MovieCardMovieFragmentState.Error(
-                                NullPointerException().checkingResponse()
-                            )
+                            NullPointerException().networkErrorHandler()?.let {
+                                MovieCardMovieFragmentState.Error(
+                                    it
+                                )
+                            }
                         )
                     }
                 } catch (e: Exception) {
-                    _stateListMovieByGenre.postValue(MovieCardMovieFragmentState.Error(e.checkingResponse()))
+                    _stateListMovieByGenre.postValue(e.networkErrorHandler()
+                        ?.let { MovieCardMovieFragmentState.Error(it) })
                 } finally {
                     isLoading = false
                 }

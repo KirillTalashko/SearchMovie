@@ -26,6 +26,7 @@ class ViewModelRandomMovie @Inject constructor(
         getMovie()
         getMovies()
     }
+
     fun getMovie() {
         viewModelScope.launch(Dispatchers.IO) {
             useCase.getMovie()

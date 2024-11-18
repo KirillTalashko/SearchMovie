@@ -18,8 +18,6 @@ import com.example.common.utils.BaseFragment
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.extension.toListMovieUi
-import com.example.searchmovie.core.extension.toMovie
-import com.example.searchmovie.core.extension.toMovieUi
 import com.example.searchmovie.core.model.MovieUi
 import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
@@ -44,6 +42,7 @@ class CardMovieFragment :
     lateinit var factory: ViewModelProvider.Factory
 
     private val viewModel: CardMovieFragmentViewModel by viewModels<CardMovieFragmentViewModel> { factory }
+    private var isLocalDate: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +56,7 @@ class CardMovieFragment :
     }
 
     private fun initRecyclerView() {
-        viewModel.getListMovieByGenre(argsMovie.infoMovie.toMovieUi())
+        viewModel.getListMovieByGenre(argsMovie.infoMovie)
         adapterRelatedMovie = MoviesRelatedAdapter(this)
         binding.rvScrollSimilarMovie.adapter = adapterRelatedMovie
         viewModel.stateListMovieByGenre.observe(viewLifecycleOwner) {
@@ -85,7 +84,7 @@ class CardMovieFragment :
                     val totalItemCount = layoutManager.itemCount
                     val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                     if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
-                        viewModel.getListMovieByGenre(argsMovie.infoMovie.toMovieUi())
+                        viewModel.getListMovieByGenre(argsMovie.infoMovie)
                     }
                 }
             }
@@ -159,9 +158,13 @@ class CardMovieFragment :
     override fun getMovieModel(movie: MovieUi) {
         findNavController().navigate(
             CardMovieFragmentDirections.cardMovieFragmentToCardMovieFragment(
-                infoMovie = movie.toMovie()
+                infoMovie = movie
             )
         )
+    }
+
+    override fun isLocalData(): Boolean? {
+        return isLocalDate
     }
 }
 

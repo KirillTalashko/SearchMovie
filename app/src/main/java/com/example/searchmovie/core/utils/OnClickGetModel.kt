@@ -5,4 +5,5 @@ import com.example.searchmovie.core.model.MovieUi
 
 interface OnClickGetModel {
     fun getMovieModel(movie: MovieUi)
+    fun isLocalData(): Boolean?
 }

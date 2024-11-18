@@ -1,11 +1,8 @@
 package com.example.network.modelsMovie
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
 
-@Parcelize
 data class Movie(
     @SerializedName("id") val id: Long,
     @SerializedName("name") val name: String?,
@@ -16,6 +13,6 @@ data class Movie(
     @SerializedName("genres") val genres: List<Genres>?,
     @SerializedName("typeNumber") val type: Int,
     @SerializedName("description") val description: String?
-) : Parcelable
+)
 
 

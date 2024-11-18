@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
+import com.example.searchmovie.core.utils.ErrorDialog
 import com.example.searchmovie.core.utils.ErrorManager
 import com.example.searchmovie.core.utils.NetworkManager
+import com.example.searchmovie.presentation.cardMovie.useCase.MovieCardUseCase
 import com.example.searchmovie.presentation.cardMovie.viewModel.CardMovieFragmentViewModel
 import com.example.searchmovie.presentation.main.useCase.MovieUseCase
 import com.example.searchmovie.presentation.main.viewModel.ViewModelRandomMovie
@@ -44,9 +46,16 @@ class CommonModule {
         repository: MovieRepository,
         localRepository: MovieLocalRepository,
         networkManager: NetworkManager,
-        errorManager: ErrorManager
+        errorManager: ErrorManager,
+        errorDialog: ErrorDialog
     ): MovieUseCase {
-        return MovieUseCase(repository, localRepository, networkManager, errorManager)
+        return MovieUseCase(
+            apiRepository = repository,
+            localRepository = localRepository,
+            networkManager = networkManager,
+            errorManager = errorManager,
+            errorDialog = errorDialog
+        )
     }
 
     @Provides
@@ -60,4 +69,19 @@ class CommonModule {
     fun provideErrorManager(context: Context): ErrorManager {
         return ErrorManager(context)
     }
+
+    @Provides
+    fun provideUseCaseMovieCard(
+        repository: MovieRepository,
+        localRepository: MovieLocalRepository,
+        networkManager: NetworkManager
+    ): MovieCardUseCase {
+        return MovieCardUseCase(repository, localRepository, networkManager)
+    }
+
+    @Provides
+    fun provideErrorDialog(): ErrorDialog {
+        return ErrorDialog()
+    }
+
 }

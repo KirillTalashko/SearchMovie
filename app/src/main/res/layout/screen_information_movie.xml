@@ -9,6 +9,19 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/text_view_local_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:fontFamily="@font/lato_bold"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/section_text_size"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/name" />
+
+        <TextView
             android:id="@+id/text_view_name_in_info_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

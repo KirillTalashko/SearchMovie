@@ -1,47 +1,55 @@
 package com.example.common.extension
 
+import android.database.sqlite.SQLiteException
 import java.io.IOException
-import java.io.InterruptedIOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-fun Exception.checkingResponse(): String {
+fun Exception.networkErrorHandler(): String? {
     return when (this) {
         is NullPointerException -> {
-            return "Список пуст"
+            this.localizedMessage
         }
 
         is SocketTimeoutException -> {
-            return "Истекло время ожидания от сервера"
+            this.localizedMessage
         }
 
         is UnknownHostException -> {
-            return "Нет соединения с сервером"
-        }
-
-        else -> "Нет соединения с сервером"
-    }
-}
-
-fun Exception.checkingError(): Boolean {
-    return when (this) {
-        is UnknownHostException -> {
-            true
-        }
-
-        is SocketTimeoutException -> {
-            true
-        }
-
-        is InterruptedIOException -> {
-            true
+            this.localizedMessage
         }
 
         is IOException -> {
-            true
+            this.localizedMessage
         }
 
-        else -> false
+        is IllegalArgumentException -> {
+            this.localizedMessage
+        }
+
+        is IllegalStateException -> {
+            this.localizedMessage
+        }
+
+        else -> "The error is not network related + ${this.localizedMessage}"
+    }
+}
+
+fun Exception.databaseErrorHandler(): String? {
+    return when (this) {
+        is SQLiteException -> {
+            this.localizedMessage
+        }
+
+        is IllegalStateException -> {
+            this.localizedMessage
+        }
+
+        is RuntimeException -> {
+            this.localizedMessage
+        }
+
+        else -> "The error is not database related + ${this.localizedMessage}"
     }
 
 }

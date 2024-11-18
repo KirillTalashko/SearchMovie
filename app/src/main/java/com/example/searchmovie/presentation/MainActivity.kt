@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.common.extension.log
 import com.example.common.extension.showToast
 import com.example.searchmovie.R
 import com.example.searchmovie.core.utils.ErrorManager
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private val binding
         get() = _binding!!
 
+
     @Inject
     lateinit var errorManager: ErrorManager
 
@@ -28,9 +30,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.bottomsNavMenu.setupWithNavController((supportFragmentManager.findFragmentById(R.id.container_main) as NavHostFragment).navController)
         errorManager = ErrorManager(this)
+        displayErrors()
+    }
+
+    private fun displayErrors() {
         lifecycleScope.launch {
-            errorManager.errorMassage.collect { massage ->
+            errorManager.errorMessage.collect { massage ->
                 this@MainActivity.showToast(massage)
+                massage.log()
             }
         }
     }

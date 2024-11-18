@@ -13,6 +13,15 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
+    <ImageView
+        android:id="@+id/image_view_local_date_movies"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:layout_margin="24dp"
+        android:src="@drawable/ic_network_error"
+        android:visibility="gone" />
+
     <com.example.searchmovie.presentation.customView.MovieRatingCustomView
         android:id="@+id/custom_view_card_short_help_movie"
         android:layout_width="wrap_content"
