@@ -51,5 +51,34 @@ fun Exception.databaseErrorHandler(): String? {
 
         else -> "The error is not database related + ${this.localizedMessage}"
     }
+}
 
+suspend fun Exception.isCheckErrorNetwork(action: suspend () -> Unit) {
+    return when (this) {
+        is NullPointerException -> {
+            action.invoke()
+        }
+
+        is SocketTimeoutException -> {
+            action.invoke()
+        }
+
+        is UnknownHostException -> {
+            action.invoke()
+        }
+
+        is IOException -> {
+            action.invoke()
+        }
+
+        is IllegalArgumentException -> {
+            action.invoke()
+        }
+
+        is IllegalStateException -> {
+            action.invoke()
+        }
+
+        else -> Unit
+    }
 }

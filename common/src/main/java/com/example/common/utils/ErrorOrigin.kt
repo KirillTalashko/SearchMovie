@@ -1,6 +1,6 @@
 package com.example.common.utils
 
-enum class DataErrorOrigin {
+enum class ErrorOrigin {
     NETWORK,
     DATABASE
 }

@@ -38,4 +38,16 @@ class ViewModelRandomMovie @Inject constructor(
             useCase.getMovies()
         }
     }
+
+    fun getLocalMovie() {
+        viewModelScope.launch(Dispatchers.IO) {
+            useCase.getMovieLocal()
+        }
+    }
+
+    fun getLocalMovies() {
+        viewModelScope.launch(Dispatchers.IO) {
+            useCase.getMoviesLocal()
+        }
+    }
 }

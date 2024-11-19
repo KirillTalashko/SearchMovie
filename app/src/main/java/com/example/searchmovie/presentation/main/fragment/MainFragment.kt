@@ -4,16 +4,19 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.extension.loadPhoto
 import com.example.common.extension.log
+import com.example.common.model.DataDisplayMode
 import com.example.common.utils.BaseFragment
-import com.example.common.utils.DataErrorOrigin
+import com.example.common.utils.DisplayMode
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.model.MovieUi
 import com.example.searchmovie.core.utils.ErrorDialog
+import com.example.searchmovie.core.utils.ErrorManager
 import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.FragmentMainBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
@@ -21,6 +24,7 @@ import com.example.searchmovie.presentation.main.adapter.MoviesPopularAdapter
 import com.example.searchmovie.presentation.main.state.MovieMainFragmentState
 import com.example.searchmovie.presentation.main.state.MoviesMainFragmentState
 import com.example.searchmovie.presentation.main.viewModel.ViewModelRandomMovie
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::inflate),
@@ -38,10 +42,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     lateinit var factory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var errorDialogMovie: ErrorDialog
-
-    @Inject
-    lateinit var errorDialogMovies: ErrorDialog
+    lateinit var errorManager: ErrorManager
 
     private val viewModel: ViewModelRandomMovie by viewModels<ViewModelRandomMovie> { factory }
 
@@ -65,8 +66,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             viewModel.getMovie()
             viewModel.getMovies()
         }
-        errorDialogMovie = ErrorDialog(true, { viewModel.getMovie() })
-        errorDialogMovies = ErrorDialog(false, { viewModel.getMovies() })
+        errorWatch()
     }
 
     private fun initRecyclerView() {
@@ -93,9 +93,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             when (movieState) {
                 is MovieMainFragmentState.Error -> {
                     binding.root.isRefreshing = false
-                    if (movieState.dataErrorOrigin == DataErrorOrigin.NETWORK) {
-                        errorDialogMovie.show(childFragmentManager, ErrorDialog.TAG)
-                    }
                 }
 
                 MovieMainFragmentState.LoadingMovie -> {
@@ -135,9 +132,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             when (moviesState) {
                 is MoviesMainFragmentState.Error -> {
                     binding.root.isRefreshing = false
-                    if (moviesState.dataErrorOrigin == DataErrorOrigin.NETWORK) {
-                        errorDialogMovies.show(childFragmentManager, ErrorDialog.TAG)
-                    }
                 }
 
                 MoviesMainFragmentState.LoadingListMovie -> {
@@ -163,6 +157,39 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                     isLocalDate = moviesState.isLocalData
                     val currentList = adapterMovieMain.currentList
                     adapterMovieMain.submitList(currentList.plus(moviesState.listMovie))
+                }
+            }
+        }
+    }
+
+    private fun errorWatch() {
+        errorManager = ErrorManager(requireContext())
+        lifecycleScope.launch {
+            errorManager.errorMessageDialog.collect { dialogParameter ->
+                if (dialogParameter.isEnabled) {
+                    when (dialogParameter.displayMode) {
+                        DisplayMode.MOVIE -> ErrorDialog(
+                            DataDisplayMode(
+                                title = getString(R.string.no_internet),
+                                description = getString(R.string.show_random_movie)
+                            )
+                        ) { viewModel.getLocalMovie() }.show(
+                            childFragmentManager,
+                            ErrorDialog.TAG_LOCAL_DATA
+                        )
+
+                        DisplayMode.MOVIES -> ErrorDialog(
+                            DataDisplayMode(
+                                title = getString(R.string.no_internet),
+                                description = getString(R.string.show_selection_of_movies)
+                            )
+                        ) { viewModel.getLocalMovies() }.show(
+                            childFragmentManager,
+                            ErrorDialog.TAG_LOCAL_DATA
+                        )
+
+                        else -> Unit
+                    }
                 }
             }
         }

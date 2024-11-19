@@ -4,46 +4,29 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.example.common.model.DataDisplayMode
 import com.example.searchmovie.R
 
 class ErrorDialog(
-    private val isMovieOrMovies: Boolean? = null,
-    private val getMovie: (() -> Unit)? = null,
-    private val getMovies: (() -> Unit)? = null
+    private val dataDisplayMode: DataDisplayMode,
+    private val action: (() -> Unit)? = null
 ) : DialogFragment() {
 
     companion object {
-        const val TAG = "ShowMovieFromDatabase"
+        const val TAG_LOCAL_DATA = "ShowMovieFromDatabase"
     }
-
-    private var isLocalData = false
-
-    fun getIsLocalData() = isLocalData
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         AlertDialog.Builder(requireContext())
-            .setTitle(getString(R.string.no_internet))
-            .setMessage(
-                if (isMovieOrMovies == true) {
-                    getString(R.string.show_random_movie)
-                } else {
-                    getString(R.string.show_selection_of_movies)
-                }
-            )
+            .setTitle(dataDisplayMode.title)
+            .setMessage(dataDisplayMode.description)
             .setCancelable(true)
             .setPositiveButton(getString(R.string.positive_option)) { dialog, _ ->
-                isLocalData = true
-                if (isMovieOrMovies == true) {
-                    getMovie
-                } else {
-                    getMovies
-                }
-                isLocalData = false
-                dialog.cancel()
+                action?.invoke()
+                dialog.dismiss()
             }
             .setNegativeButton(getString(R.string.negative_option)) { dialog, _ ->
-                isLocalData = false
-                dialog.cancel()
+                dialog.dismiss()
             }
             .create()
 }
