@@ -5,9 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.example.common.extension.log
-import com.example.common.extension.showToast
 import com.example.searchmovie.R
+import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.utils.ErrorManager
 import com.example.searchmovie.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
@@ -26,18 +25,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (this.applicationContext as SearchMovieApp).appComponent.inject(this)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.bottomsNavMenu.setupWithNavController((supportFragmentManager.findFragmentById(R.id.container_main) as NavHostFragment).navController)
-        errorManager = ErrorManager(this)
         displayErrors()
     }
 
     private fun displayErrors() {
         lifecycleScope.launch {
             errorManager.errorMessage.collect { massage ->
-                this@MainActivity.showToast(massage)
-                massage.log()
+                binding.customViewError.showError(massage)
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.example.searchmovie.presentation.main.useCase
 
 import com.example.common.extension.isCheckErrorNetwork
-import com.example.common.extension.log
 import com.example.common.model.DialogParameterMode
 import com.example.common.utils.Const
 import com.example.common.utils.DisplayMode
@@ -15,7 +14,9 @@ import com.example.searchmovie.core.utils.ErrorManager
 import com.example.searchmovie.core.utils.NetworkManager
 import com.example.searchmovie.presentation.main.state.MovieMainFragmentState
 import com.example.searchmovie.presentation.main.state.MoviesMainFragmentState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MovieUseCase @Inject constructor(
@@ -31,31 +32,46 @@ class MovieUseCase @Inject constructor(
         MutableStateFlow<MoviesMainFragmentState>(MoviesMainFragmentState.LoadingListMovie)
 
     var isLoading = false
+    private var isFirstLaunch: Boolean = false
     private var page = 1
     private var step = 0
 
-    suspend fun getMovie() {
-        " movie icConnect ${networkManager.isConnect()}".log()
+    suspend fun getMovie(firstLaunch: Boolean, waitingForConnection: Boolean?) {
+        isFirstLaunch = firstLaunch
         if (networkManager.isConnect()) {
-            getMovieNetwork()
-        } else {
+            getMovieNetwork(waitingForConnection)
+        } else if (!firstLaunch) {
             getMovieLocal()
-        }
-    }
-
-    suspend fun getMovies() {
-        " movies icConnect ${networkManager.isConnect()}".log()
-        if (networkManager.isConnect()) {
-            getMoviesNetwork()
         } else {
-            getMoviesLocal()
+            errorManager.showDialogGetLocalData(
+                dialogParameterMode = DialogParameterMode(
+                    isEnabled = true
+                )
+            )
         }
     }
 
-    private suspend fun getMovieNetwork() {
+    suspend fun getMovies(firstLaunch: Boolean, waitingForConnection: Boolean?) {
+        isFirstLaunch = firstLaunch
+        if (networkManager.isConnect()) {
+            getMoviesNetwork(waitingForConnection)
+        } else if (!firstLaunch) {
+            getMoviesLocal()
+        } else {
+            errorManager.showDialogGetLocalData(
+                dialogParameterMode = DialogParameterMode(
+                    isEnabled = true
+                )
+            )
+        }
+    }
+
+    private suspend fun getMovieNetwork(waitingForConnection: Boolean?) {
         try {
-            "Зашел в метод getMovieNetwork".log()
             stateRandomMovie.emit(MovieMainFragmentState.LoadingMovie)
+            if (waitingForConnection == true && networkManager.isConnect()) {
+                withContext(Dispatchers.IO) { getMovieLocal() }
+            }
             val repository = apiRepository.getRandomMovie()
             repository.body()?.let { movie ->
                 stateRandomMovie.emit(
@@ -69,21 +85,22 @@ class MovieUseCase @Inject constructor(
                 //TODO("Обработать ошибку")
             }
         } catch (networkException: Exception) {
-            "NETWORK MOVIE ${networkException.message}".log()
-            networkException.isCheckErrorNetwork {
-                errorManager.showDialogGetLocalData(
-                    dialogParameterMode = DialogParameterMode(
-                        isEnabled = true,
-                        displayMode = DisplayMode.MOVIE
+            if (isFirstLaunch) {
+                networkException.localizedMessage?.let { errorManager.postError(it) }
+                networkException.isCheckErrorNetwork {
+                    errorManager.showDialogGetLocalData(
+                        dialogParameterMode = DialogParameterMode(
+                            isEnabled = true,
+                            displayMode = DisplayMode.MOVIE
+                        )
                     )
-                )
-            }
+                }
+            } else getMovieLocal()
         }
     }
 
     suspend fun getMovieLocal() {
         try {
-            "Зашел в метод getMovieLocal".log()
             stateRandomMovie.emit(MovieMainFragmentState.LoadingMovie)
             val movie = localRepository.getRandomMovie()
             stateRandomMovie.emit(
@@ -93,18 +110,19 @@ class MovieUseCase @Inject constructor(
                 )
             )
         } catch (localException: Exception) {
-            "DATABASE MOVIE ${localException.message}".log()
             localException.localizedMessage?.let { errorManager.postError(it) }
             stateRandomMovie.emit(MovieMainFragmentState.Error)
         }
     }
 
-    private suspend fun getMoviesNetwork() {
+    private suspend fun getMoviesNetwork(waitingForConnection: Boolean?) {
         try {
-            "Зашел в метод getMoviesNetwork".log()
             if (!isLoading) {
                 isLoading = true
                 stateListMovie.emit(MoviesMainFragmentState.LoadingListMovie)
+                if (waitingForConnection == true && networkManager.isConnect()) {
+                    withContext(Dispatchers.IO) { getMoviesLocal() }
+                }
                 val response = apiRepository.getListMovie(
                     limit = Const.LIMIT,
                     page = page,
@@ -126,15 +144,17 @@ class MovieUseCase @Inject constructor(
                 }
             }
         } catch (networkException: Exception) {
-            "NETWORK MOVIES ${networkException.message}".log()
-            networkException.isCheckErrorNetwork {
-                errorManager.showDialogGetLocalData(
-                    dialogParameterMode = DialogParameterMode(
-                        isEnabled = true,
-                        displayMode = DisplayMode.MOVIES
+            if (isFirstLaunch) {
+                networkException.localizedMessage?.let { errorManager.postError(it) }
+                networkException.isCheckErrorNetwork {
+                    errorManager.showDialogGetLocalData(
+                        dialogParameterMode = DialogParameterMode(
+                            isEnabled = true,
+                            displayMode = DisplayMode.MOVIES
+                        )
                     )
-                )
-            }
+                }
+            } else getMoviesLocal()
         } finally {
             isLoading = false
         }
@@ -142,13 +162,14 @@ class MovieUseCase @Inject constructor(
 
     suspend fun getMoviesLocal() {
         try {
-            "Зашел в метод getMoviesLocal".log()
             if (!isLoading) {
                 isLoading = true
-                val moviesFromDatabase = localRepository.getListMovie(
-                    limit = Const.LIMIT,
-                    step = step
-                )
+                val moviesFromDatabase = withContext(Dispatchers.IO) {
+                    localRepository.getListMovie(
+                        limit = Const.LIMIT,
+                        step = step
+                    )
+                }
                 stateListMovie.emit(
                     MoviesMainFragmentState.SuccessListMovie(
                         listMovie = moviesFromDatabase.toListMovieUi(),
@@ -158,7 +179,6 @@ class MovieUseCase @Inject constructor(
                 step += Const.LIMIT
             }
         } catch (localException: Exception) {
-            "DATABASE MOVIES ${localException.message}".log()
             localException.localizedMessage?.let { errorManager.postError(it) }
             stateRandomMovie.emit(MovieMainFragmentState.Error)
         } finally {

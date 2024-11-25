@@ -22,18 +22,18 @@ class CommonModule {
     @Singleton
     @Provides
     fun provideViewModelFactory(
-        useCase: MovieUseCase,
-        repository: MovieRepository,
+        movieUseCase: MovieUseCase,
+        movieCardUseCase: MovieCardUseCase,
     ): ViewModelProvider.Factory {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(ViewModelRandomMovie::class.java)) {
                     @Suppress("UNCHECKED_CAST")
-                    return ViewModelRandomMovie(useCase) as T
+                    return ViewModelRandomMovie(movieUseCase) as T
                 }
                 if (modelClass.isAssignableFrom(CardMovieFragmentViewModel::class.java)) {
                     @Suppress("UNCHECKED_CAST")
-                    return CardMovieFragmentViewModel(repository) as T
+                    return CardMovieFragmentViewModel(movieCardUseCase) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }
@@ -72,8 +72,14 @@ class CommonModule {
     fun provideUseCaseMovieCard(
         repository: MovieRepository,
         localRepository: MovieLocalRepository,
-        networkManager: NetworkManager
+        networkManager: NetworkManager,
+        errorManager: ErrorManager
     ): MovieCardUseCase {
-        return MovieCardUseCase(repository, localRepository, networkManager)
+        return MovieCardUseCase(
+            apiRepository = repository,
+            localRepository = localRepository,
+            networkManager = networkManager,
+            errorManager = errorManager
+        )
     }
 }

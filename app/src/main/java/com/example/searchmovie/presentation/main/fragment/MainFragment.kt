@@ -8,8 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.extension.loadPhoto
-import com.example.common.extension.log
-import com.example.common.model.DataDisplayMode
+import com.example.common.model.DialogInfo
 import com.example.common.utils.BaseFragment
 import com.example.common.utils.DisplayMode
 import com.example.searchmovie.R
@@ -24,7 +23,9 @@ import com.example.searchmovie.presentation.main.adapter.MoviesPopularAdapter
 import com.example.searchmovie.presentation.main.state.MovieMainFragmentState
 import com.example.searchmovie.presentation.main.state.MoviesMainFragmentState
 import com.example.searchmovie.presentation.main.viewModel.ViewModelRandomMovie
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::inflate),
@@ -34,7 +35,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     private val currentListEmpty: Boolean
         get() = adapterMovieMain.currentList.isEmpty()
 
-    private val inject by lazy {
+    private val inject by lazy(LazyThreadSafetyMode.NONE) {
         (requireContext().applicationContext as SearchMovieApp).appComponent.inject(this)
     }
 
@@ -63,8 +64,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
 
     private fun interactionWithView() {
         binding.root.setOnRefreshListener {
-            viewModel.getMovie()
-            viewModel.getMovies()
+            viewModel.getMovie(firstLaunch = false, waitingForConnection = false)
+            viewModel.getMovies(firstLaunch = false, waitingForConnection = false)
         }
         errorWatch()
     }
@@ -82,7 +83,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                 val totalItemCount = layoutManager.itemCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                 if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
-                    viewModel.getMovies()
+                    viewModel.getMovies(firstLaunch = false, waitingForConnection = isLocalDate)
                 }
             }
         })
@@ -145,7 +146,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                 }
 
                 is MoviesMainFragmentState.SuccessListMovie -> {
-                    "isLoading ${moviesState.isLocalData}".log()
                     binding.root.isRefreshing = false
                     if (currentListEmpty) {
                         binding.apply {
@@ -163,32 +163,46 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     }
 
     private fun errorWatch() {
-        errorManager = ErrorManager(requireContext())
         lifecycleScope.launch {
             errorManager.errorMessageDialog.collect { dialogParameter ->
                 if (dialogParameter.isEnabled) {
                     when (dialogParameter.displayMode) {
-                        DisplayMode.MOVIE -> ErrorDialog(
-                            DataDisplayMode(
-                                title = getString(R.string.no_internet),
-                                description = getString(R.string.show_random_movie)
+                        DisplayMode.MOVIE -> withContext(Dispatchers.IO) {
+                            ErrorDialog(
+                                DialogInfo(
+                                    title = getString(R.string.no_internet),
+                                    description = getString(R.string.show_random_movie),
+                                    actionPositiveFirst = { viewModel.getLocalMovie() }
+                                )
+                            ).show(
+                                childFragmentManager,
+                                ErrorDialog.TAG_LOCAL_DATA
                             )
-                        ) { viewModel.getLocalMovie() }.show(
-                            childFragmentManager,
-                            ErrorDialog.TAG_LOCAL_DATA
-                        )
+                        }
 
-                        DisplayMode.MOVIES -> ErrorDialog(
-                            DataDisplayMode(
-                                title = getString(R.string.no_internet),
-                                description = getString(R.string.show_selection_of_movies)
+                        DisplayMode.MOVIES -> withContext(Dispatchers.IO) {
+                            ErrorDialog(
+                                DialogInfo(
+                                    title = getString(R.string.no_internet),
+                                    description = getString(R.string.show_selection_of_movies),
+                                    actionPositiveFirst = { viewModel.getLocalMovies() },
+                                )
+                            ).show(
+                                childFragmentManager,
+                                ErrorDialog.TAG_LOCAL_DATA
                             )
-                        ) { viewModel.getLocalMovies() }.show(
-                            childFragmentManager,
-                            ErrorDialog.TAG_LOCAL_DATA
-                        )
+                        }
 
-                        else -> Unit
+                        else -> {
+                            ErrorDialog(
+                                dialogInfo = DialogInfo(
+                                    title = resources.getString(R.string.no_internet),
+                                    description = resources.getString(R.string.take_movie_from_local_database),
+                                    actionPositiveFirst = { viewModel.getLocalMovie() },
+                                    actionPositiveSecond = { viewModel.getLocalMovies() }
+                                )
+                            ).show(childFragmentManager, ErrorDialog.TAG_LOCAL_DATA)
+                        }
                     }
                 }
             }

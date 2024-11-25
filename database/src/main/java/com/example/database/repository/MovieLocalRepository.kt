@@ -9,4 +9,6 @@ interface MovieLocalRepository {
     suspend fun getRandomMovie(): MovieEntity
 
     suspend fun getListMovie(limit: Int, step: Int): List<MovieEntity>
+
+    suspend fun getMovieByGenre(genre: List<String>): List<MovieEntity>
 }

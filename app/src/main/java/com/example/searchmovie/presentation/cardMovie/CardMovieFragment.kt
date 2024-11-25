@@ -12,12 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.example.common.extension.loadPhoto
 import com.example.common.extension.reduceToDecimals
-import com.example.common.extension.showToast
 import com.example.common.model.ValueHolderView
 import com.example.common.utils.BaseFragment
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
-import com.example.searchmovie.core.extension.toListMovieUi
 import com.example.searchmovie.core.model.MovieUi
 import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
@@ -56,13 +54,13 @@ class CardMovieFragment :
     }
 
     private fun initRecyclerView() {
-        viewModel.getListMovieByGenre(argsMovie.infoMovie)
+        viewModel.getMovies(argsMovie.infoMovie)
         adapterRelatedMovie = MoviesRelatedAdapter(this)
         binding.rvScrollSimilarMovie.adapter = adapterRelatedMovie
-        viewModel.stateListMovieByGenre.observe(viewLifecycleOwner) {
+        viewModel.stateMoviesByGenre.observe(viewLifecycleOwner) {
             when (it) {
                 is MovieCardMovieFragmentState.Error -> {
-                    requireContext().showToast(it.error)
+                    Unit
                 }
 
                 MovieCardMovieFragmentState.LoadingMoviesRelated -> {
@@ -71,7 +69,7 @@ class CardMovieFragment :
 
                 is MovieCardMovieFragmentState.SuccessMoviesRelated -> {
                     val currentList = adapterRelatedMovie.currentList
-                    adapterRelatedMovie.submitList(currentList.plus(it.movies.toListMovieUi()))
+                    adapterRelatedMovie.submitList(currentList.plus(it.movies))
                 }
             }
         }
@@ -84,7 +82,7 @@ class CardMovieFragment :
                     val totalItemCount = layoutManager.itemCount
                     val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                     if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
-                        viewModel.getListMovieByGenre(argsMovie.infoMovie)
+                        viewModel.getMovies(argsMovie.infoMovie)
                     }
                 }
             }

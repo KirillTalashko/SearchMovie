@@ -1,13 +1,11 @@
 package com.example.searchmovie.presentation.cardMovie.state
 
-import com.example.network.modelsMovie.Movie
+import com.example.searchmovie.core.model.MovieUi
 
 sealed class MovieCardMovieFragmentState {
 
-    data class Error(val error: String) : MovieCardMovieFragmentState()
-    data class SuccessMoviesRelated(val movies: List<Movie>) :
-        MovieCardMovieFragmentState()
-
+    data object Error : MovieCardMovieFragmentState()
+    data class SuccessMoviesRelated(val movies: List<MovieUi>) : MovieCardMovieFragmentState()
     data object LoadingMoviesRelated : MovieCardMovieFragmentState()
 
 }

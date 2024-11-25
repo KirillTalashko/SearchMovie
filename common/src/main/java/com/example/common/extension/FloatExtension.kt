@@ -6,7 +6,7 @@ fun Float.reduceToDecimals(): Float {
     return floor(this * 10) / 10
 }
 
-fun Float.convectInJsonForRequest(): String {
+fun Float.toStringForRequestRating(): String {
     return this.toInt().toString().plus("-10")
 }
 

@@ -18,6 +18,9 @@ interface MovieDao {
     @Query("SELECT * FROM RANDOM_MOVIE ORDER BY RANDOM() % (SELECT COUNT(ID) FROM RANDOM_MOVIE)")
     fun getRandomMovie(): MovieEntity
 
+    @Query("SELECT * FROM RANDOM_MOVIE WHERE GENRES IN (:genres)")
+    fun getMoviesByGenre(genres: List<String>): List<MovieEntity>
+
 
     @Delete(entity = MovieEntity::class)
     fun deleteMovies(movie: MovieEntity)

@@ -4,12 +4,11 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.example.common.model.DataDisplayMode
+import com.example.common.model.DialogInfo
 import com.example.searchmovie.R
 
 class ErrorDialog(
-    private val dataDisplayMode: DataDisplayMode,
-    private val action: (() -> Unit)? = null
+    private val dialogInfo: DialogInfo
 ) : DialogFragment() {
 
     companion object {
@@ -18,14 +17,20 @@ class ErrorDialog(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         AlertDialog.Builder(requireContext())
-            .setTitle(dataDisplayMode.title)
-            .setMessage(dataDisplayMode.description)
+            .setTitle(dialogInfo.title)
+            .setMessage(dialogInfo.description)
             .setCancelable(true)
-            .setPositiveButton(getString(R.string.positive_option)) { dialog, _ ->
-                action?.invoke()
+            .setPositiveButton(
+                dialogInfo.nameActionNegative ?: getString(R.string.positive_option)
+            ) { dialog, _ ->
+                dialogInfo.actionPositiveFirst?.invoke()
+                dialogInfo.actionPositiveSecond?.invoke()
                 dialog.dismiss()
             }
-            .setNegativeButton(getString(R.string.negative_option)) { dialog, _ ->
+            .setNegativeButton(
+                dialogInfo.nameActionNegative ?: getString(R.string.negative_option)
+            ) { dialog, _ ->
+                dialogInfo.actionNegative?.invoke()
                 dialog.dismiss()
             }
             .create()
