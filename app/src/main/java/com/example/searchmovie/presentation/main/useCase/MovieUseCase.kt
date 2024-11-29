@@ -36,10 +36,10 @@ class MovieUseCase @Inject constructor(
     private var page = 1
     private var step = 0
 
-    suspend fun getMovie(firstLaunch: Boolean, waitingForConnection: Boolean?) {
+    suspend fun getMovie(firstLaunch: Boolean) {
         isFirstLaunch = firstLaunch
         if (networkManager.isConnect()) {
-            getMovieNetwork(waitingForConnection)
+            getMovieNetwork()
         } else if (!firstLaunch) {
             getMovieLocal()
         } else {
@@ -51,10 +51,10 @@ class MovieUseCase @Inject constructor(
         }
     }
 
-    suspend fun getMovies(firstLaunch: Boolean, waitingForConnection: Boolean?) {
+    suspend fun getMovies(firstLaunch: Boolean) {
         isFirstLaunch = firstLaunch
         if (networkManager.isConnect()) {
-            getMoviesNetwork(waitingForConnection)
+            getMoviesNetwork()
         } else if (!firstLaunch) {
             getMoviesLocal()
         } else {
@@ -66,12 +66,9 @@ class MovieUseCase @Inject constructor(
         }
     }
 
-    private suspend fun getMovieNetwork(waitingForConnection: Boolean?) {
+    private suspend fun getMovieNetwork() {
         try {
             stateRandomMovie.emit(MovieMainFragmentState.LoadingMovie)
-            if (waitingForConnection == true && networkManager.isConnect()) {
-                withContext(Dispatchers.IO) { getMovieLocal() }
-            }
             val repository = apiRepository.getRandomMovie()
             repository.body()?.let { movie ->
                 stateRandomMovie.emit(
@@ -115,14 +112,11 @@ class MovieUseCase @Inject constructor(
         }
     }
 
-    private suspend fun getMoviesNetwork(waitingForConnection: Boolean?) {
+    private suspend fun getMoviesNetwork() {
         try {
             if (!isLoading) {
                 isLoading = true
                 stateListMovie.emit(MoviesMainFragmentState.LoadingListMovie)
-                if (waitingForConnection == true && networkManager.isConnect()) {
-                    withContext(Dispatchers.IO) { getMoviesLocal() }
-                }
                 val response = apiRepository.getListMovie(
                     limit = Const.LIMIT,
                     page = page,

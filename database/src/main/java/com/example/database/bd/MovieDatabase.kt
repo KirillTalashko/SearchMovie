@@ -9,7 +9,7 @@ import com.example.database.modelEntity.MovieEntity
 
 
 @Database(
-    version = 3,
+    version = 1,
     entities = [
         MovieEntity::class,
     ]

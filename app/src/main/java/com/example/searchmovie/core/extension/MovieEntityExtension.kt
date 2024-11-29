@@ -15,8 +15,7 @@ fun MovieEntity.toMovieUi(): MovieUi {
         year = this.year,
         genres = this.genres.toListGenres(),
         type = this.type,
-        description = this.description,
-        date = date
+        description = this.description
     )
 }
 

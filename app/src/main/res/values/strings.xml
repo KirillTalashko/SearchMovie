@@ -26,6 +26,7 @@
     <string name="positive_option">Ок</string>
     <string name="negative_option">Отмена</string>
     <string name="no_internet">Отсутсвует интеренет</string>
+    <string name="connect_internet">Подключено к интернету</string>
     <string name="show_random_movie">Показать рандомный фильм с локальной базы данных?</string>
     <string name="show_selection_of_movies">Показать подборку фильмов с локальной базы данных?</string>
     <string name="take_movie_from_local_database">Взять фильмы с локальной базы данных?</string>

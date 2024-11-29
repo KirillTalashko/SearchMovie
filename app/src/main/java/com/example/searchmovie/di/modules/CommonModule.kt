@@ -3,9 +3,12 @@ package com.example.searchmovie.di.modules
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkerParameters
+import com.example.common.utils.Core
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
 import com.example.searchmovie.core.utils.ErrorManager
+import com.example.searchmovie.core.utils.NetworkCheckerWorker
 import com.example.searchmovie.core.utils.NetworkManager
 import com.example.searchmovie.presentation.cardMovie.useCase.MovieCardUseCase
 import com.example.searchmovie.presentation.cardMovie.viewModel.CardMovieFragmentViewModel
@@ -81,5 +84,20 @@ class CommonModule {
             networkManager = networkManager,
             errorManager = errorManager
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideNetworkCheckerWorker(
+        context: Context,
+        params: WorkerParameters
+    ): NetworkCheckerWorker {
+        return NetworkCheckerWorker(context, params)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCore(): Core {
+        return Core()
     }
 }

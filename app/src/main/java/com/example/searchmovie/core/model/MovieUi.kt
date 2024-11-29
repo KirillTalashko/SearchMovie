@@ -16,8 +16,7 @@ data class MovieUi(
     val year: Int,
     val genres: List<Genres>?,
     val type: Int,
-    val description: String?,
-    val date: Long?
+    val description: String?
 ) : Parcelable
 
 

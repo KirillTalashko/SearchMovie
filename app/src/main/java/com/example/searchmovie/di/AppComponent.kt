@@ -2,6 +2,7 @@ package com.example.searchmovie.di
 
 import com.example.database.di.DatabaseModule
 import com.example.network.di.NetworkModule
+import com.example.searchmovie.core.utils.NetworkCheckerWorker
 import com.example.searchmovie.di.modules.CommonModule
 import com.example.searchmovie.di.modules.ContextModule
 import com.example.searchmovie.presentation.MainActivity
@@ -24,4 +25,5 @@ interface AppComponent {
     fun inject(fragment: MainFragment)
     fun inject(fragment: CardMovieFragment)
     fun inject(activity: MainActivity)
+    fun inject(networkCheckerWorker: NetworkCheckerWorker)
 }

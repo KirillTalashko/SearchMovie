@@ -1,8 +1,18 @@
 package com.example.common.utils
 
-object Core {
-    @Volatile
-    var isConnected = true
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
-    var isChecked = false
+class Core {
+    companion object {
+        @Volatile
+        var isConnected = true
+
+        @Volatile
+        var isChecked = false
+    }
+
+    var _networkChecker: MutableSharedFlow<Boolean> = MutableSharedFlow(replay = 1)
+
+    val networkChecker = _networkChecker.asSharedFlow()
 }

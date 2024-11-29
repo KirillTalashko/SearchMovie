@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.common.extension.loadPhoto
 import com.example.common.model.DialogInfo
 import com.example.common.utils.BaseFragment
+import com.example.common.utils.Core
 import com.example.common.utils.DisplayMode
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
@@ -45,6 +46,9 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     @Inject
     lateinit var errorManager: ErrorManager
 
+    @Inject
+    lateinit var core: Core
+
     private val viewModel: ViewModelRandomMovie by viewModels<ViewModelRandomMovie> { factory }
 
     private var isLocalDate: Boolean? = null
@@ -64,10 +68,20 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
 
     private fun interactionWithView() {
         binding.root.setOnRefreshListener {
-            viewModel.getMovie(firstLaunch = false, waitingForConnection = false)
-            viewModel.getMovies(firstLaunch = false, waitingForConnection = false)
+            viewModel.getMovie(firstLaunch = false)
+            viewModel.getMovies(firstLaunch = false)
         }
         errorWatch()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            core.networkChecker.collect {
+                if (it) {
+                    viewModel.getMovie(firstLaunch = false)
+                    viewModel.getMovies(firstLaunch = false)
+                }
+            }
+        }
+
     }
 
     private fun initRecyclerView() {
@@ -83,7 +97,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                 val totalItemCount = layoutManager.itemCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                 if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
-                    viewModel.getMovies(firstLaunch = false, waitingForConnection = isLocalDate)
+                    viewModel.getMovies(firstLaunch = false)
                 }
             }
         })

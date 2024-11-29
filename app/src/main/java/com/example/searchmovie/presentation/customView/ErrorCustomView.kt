@@ -19,6 +19,7 @@ class ErrorCustomView(
         visibility = GONE
         translationY = -resources.getDimensionPixelSize(R.dimen.error_view_height).toFloat()
         alpha = 0f
+        background
     }
 
     fun showError(errorMassage: String) {

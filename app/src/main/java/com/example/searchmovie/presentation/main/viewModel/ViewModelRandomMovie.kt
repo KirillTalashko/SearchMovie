@@ -23,19 +23,19 @@ class ViewModelRandomMovie @Inject constructor(
         get() = useCase.stateListMovie.asLiveData()
 
     init {
-        getMovie(firstLaunch = true, waitingForConnection = false)
-        getMovies(firstLaunch = true, waitingForConnection = false)
+        getMovie(firstLaunch = true)
+        getMovies(firstLaunch = true)
     }
 
-    fun getMovie(firstLaunch: Boolean, waitingForConnection: Boolean?) {
+    fun getMovie(firstLaunch: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            useCase.getMovie(firstLaunch, waitingForConnection)
+            useCase.getMovie(firstLaunch)
         }
     }
 
-    fun getMovies(firstLaunch: Boolean, waitingForConnection: Boolean?) {
+    fun getMovies(firstLaunch: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            useCase.getMovies(firstLaunch, waitingForConnection)
+            useCase.getMovies(firstLaunch)
         }
     }
 

@@ -5,17 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.common.utils.IntervalTimer
+import com.example.common.utils.Core
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.utils.ErrorManager
 import com.example.searchmovie.core.utils.NetworkCheckerWorker
 import com.example.searchmovie.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var errorManager: ErrorManager
+
+    @Inject
+    lateinit var core: Core
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,19 +48,30 @@ class MainActivity : AppCompatActivity() {
                 binding.customViewError.showError(massage)
             }
         }
+        lifecycleScope.launch {
+            core.networkChecker.collect {
+                if (it) {
+                    binding.customViewError.showError(resources.getString(R.string.connect_internet))
+                } else {
+                    binding.customViewError.showError(resources.getString(R.string.no_internet))
+                }
+            }
+        }
     }
 
-    private fun checkNetworkAccess() {
-        val networkRequest: OneTimeWorkRequest = OneTimeWorkRequestBuilder<NetworkCheckerWorker>()
-            .setInitialDelay(IntervalTimer.setIntervalTime(5), TimeUnit.SECONDS)
-            .build()
 
-        WorkManager.getInstance(this@MainActivity).enqueue(networkRequest)
+    private fun checkNetworkAccess() {
+        val networkRequest: OneTimeWorkRequest =
+            OneTimeWorkRequestBuilder<NetworkCheckerWorker>().build()
+
+        WorkManager.getInstance(this@MainActivity)
+            .enqueueUniqueWork("NetworkChecker", ExistingWorkPolicy.REPLACE, networkRequest)
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        WorkManager.getInstance(this@MainActivity).cancelUniqueWork("NetworkChecker")
         _binding = null
     }
 }

@@ -32,8 +32,7 @@ fun Movie.toMovieUi(): MovieUi {
         year = this.year,
         genres = this.genres,
         type = this.type,
-        description = this.description,
-        date = null
+        description = this.description
     )
 }
 
