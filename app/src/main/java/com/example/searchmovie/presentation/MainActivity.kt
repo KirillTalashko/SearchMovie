@@ -9,12 +9,13 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.common.utils.Core
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.utils.ErrorManager
 import com.example.searchmovie.core.utils.NetworkCheckerWorker
 import com.example.searchmovie.databinding.ActivityMainBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,13 +25,8 @@ class MainActivity : AppCompatActivity() {
     private val binding
         get() = _binding!!
 
-
     @Inject
     lateinit var errorManager: ErrorManager
-
-    @Inject
-    lateinit var core: Core
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,17 +44,30 @@ class MainActivity : AppCompatActivity() {
                 binding.customViewError.showError(massage)
             }
         }
-        lifecycleScope.launch {
-            core.networkChecker.collect {
-                if (it) {
-                    binding.customViewError.showError(resources.getString(R.string.connect_internet))
-                } else {
-                    binding.customViewError.showError(resources.getString(R.string.no_internet))
-                }
+        lifecycleScope.launch(Dispatchers.Main) {
+            errorManager.errorMessageDialog.collect { dialogInfo ->
+                MaterialAlertDialogBuilder(this@MainActivity)
+                    .setTitle(dialogInfo.title)
+                    .setMessage(dialogInfo.description)
+                    .setCancelable(true)
+                    .setPositiveButton(
+                        dialogInfo.nameActionNegative
+                            ?: this@MainActivity.getString(R.string.positive_option)
+                    ) { dialog, _ ->
+                        dialogInfo.actionPositiveFirst?.invoke()
+                        dialogInfo.actionPositiveSecond?.invoke()
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(
+                        dialogInfo.nameActionNegative
+                            ?: this@MainActivity.getString(R.string.negative_option)
+                    ) { dialog, _ ->
+                        dialogInfo.actionNegative?.invoke()
+                        dialog.dismiss()
+                    }.show()
             }
         }
     }
-
 
     private fun checkNetworkAccess() {
         val networkRequest: OneTimeWorkRequest =

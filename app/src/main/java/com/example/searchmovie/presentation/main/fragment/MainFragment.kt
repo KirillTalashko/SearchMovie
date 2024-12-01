@@ -8,14 +8,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.extension.loadPhoto
+import com.example.common.extension.log
 import com.example.common.model.DialogInfo
 import com.example.common.utils.BaseFragment
 import com.example.common.utils.Core
-import com.example.common.utils.DisplayMode
+import com.example.common.utils.IntervalTimer
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.model.MovieUi
-import com.example.searchmovie.core.utils.ErrorDialog
 import com.example.searchmovie.core.utils.ErrorManager
 import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.FragmentMainBinding
@@ -26,7 +26,6 @@ import com.example.searchmovie.presentation.main.state.MoviesMainFragmentState
 import com.example.searchmovie.presentation.main.viewModel.ViewModelRandomMovie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::inflate),
@@ -46,12 +45,11 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     @Inject
     lateinit var errorManager: ErrorManager
 
-    @Inject
-    lateinit var core: Core
-
     private val viewModel: ViewModelRandomMovie by viewModels<ViewModelRandomMovie> { factory }
 
     private var isLocalDate: Boolean? = null
+
+    private var previousNetworkStatus: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,21 +65,45 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     }
 
     private fun interactionWithView() {
-        binding.root.setOnRefreshListener {
-            viewModel.getMovie(firstLaunch = false)
-            viewModel.getMovies(firstLaunch = false)
-        }
-        errorWatch()
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            core.networkChecker.collect {
-                if (it) {
-                    viewModel.getMovie(firstLaunch = false)
-                    viewModel.getMovies(firstLaunch = false)
+        binding.root.setOnRefreshListener {
+            viewModel.getMovie()
+            viewModel.getMovies()
+        }
+
+        errorManager.networkStatus.observe(viewLifecycleOwner) { networkStatus ->
+            lifecycleScope.launch(Dispatchers.Main) {
+                "CHECK $networkStatus".log()
+                "previous $previousNetworkStatus".log()
+                if (networkStatus != previousNetworkStatus) {
+                    if (networkStatus && isLocalDate == true) {
+                        errorManager.showDialogGetLocalData(
+                            DialogInfo(
+                                title = getString(R.string.connect_internet),
+                                description = getString(R.string.show_selection_of_movies_from_network),
+                                actionPositiveFirst = { viewModel.getMovie() },
+                                actionPositiveSecond = { viewModel.getMovies() },
+                            )
+                        )
+                        IntervalTimer.counterReset()
+                    }
+                    if (!networkStatus && Core.firstLaunch ||
+                        !networkStatus && isLocalDate == false
+                    ) {
+                        errorManager.showDialogGetLocalData(
+                            DialogInfo(
+                                title = getString(R.string.no_internet),
+                                description = getString(R.string.show_selection_of_movies_from_database),
+                                actionPositiveFirst = { viewModel.getLocalMovie() },
+                                actionPositiveSecond = { viewModel.getLocalMovies() },
+                            )
+                        )
+                        Core.firstLaunch = false
+                    }
+                    previousNetworkStatus = networkStatus
                 }
             }
         }
-
     }
 
     private fun initRecyclerView() {
@@ -97,7 +119,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                 val totalItemCount = layoutManager.itemCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                 if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
-                    viewModel.getMovies(firstLaunch = false)
+                    viewModel.getMovies()
                 }
             }
         })
@@ -118,24 +140,28 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                 }
 
                 is MovieMainFragmentState.SuccessMovie -> {
+
                     binding.root.isRefreshing = false
                     binding.apply {
                         shimmerCardMovieMain.stopShimmer()
                         shimmerCardMovieMain.visibility = View.GONE
                         containerPlayRandomMovie.containerCardMovie.visibility = View.VISIBLE
-                        if (movieState.isLocalDate) {
+                        if (isLocalDate == true) {
                             containerPlayRandomMovie.imageViewLocalDateMovie.visibility =
                                 View.VISIBLE
+                        } else {
+                            containerPlayRandomMovie.imageViewLocalDateMovie.visibility =
+                                View.GONE
                         }
                         containerPlayRandomMovie.customViewPlayCard.getMovieNameTextView().text =
-                            movieState.movie.name ?: getString(R.string.no_name)
+                            movieState.movieUi.name ?: getString(R.string.no_name)
                         containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(
-                            movieState.movie.poster?.url
+                            movieState.movieUi.poster?.url
                         )
                         containerPlayRandomMovie.containerCardMovie.setOnClickListener {
                             findNavController().navigate(
                                 MainFragmentDirections.actionMainFragmentToCardMovieFragment(
-                                    infoMovie = movieState.movie
+                                    infoMovie = movieState.movieUi
                                 )
                             )
                         }
@@ -175,54 +201,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             }
         }
     }
-
-    private fun errorWatch() {
-        lifecycleScope.launch {
-            errorManager.errorMessageDialog.collect { dialogParameter ->
-                if (dialogParameter.isEnabled) {
-                    when (dialogParameter.displayMode) {
-                        DisplayMode.MOVIE -> withContext(Dispatchers.IO) {
-                            ErrorDialog(
-                                DialogInfo(
-                                    title = getString(R.string.no_internet),
-                                    description = getString(R.string.show_random_movie),
-                                    actionPositiveFirst = { viewModel.getLocalMovie() }
-                                )
-                            ).show(
-                                childFragmentManager,
-                                ErrorDialog.TAG_LOCAL_DATA
-                            )
-                        }
-
-                        DisplayMode.MOVIES -> withContext(Dispatchers.IO) {
-                            ErrorDialog(
-                                DialogInfo(
-                                    title = getString(R.string.no_internet),
-                                    description = getString(R.string.show_selection_of_movies),
-                                    actionPositiveFirst = { viewModel.getLocalMovies() },
-                                )
-                            ).show(
-                                childFragmentManager,
-                                ErrorDialog.TAG_LOCAL_DATA
-                            )
-                        }
-
-                        else -> {
-                            ErrorDialog(
-                                dialogInfo = DialogInfo(
-                                    title = resources.getString(R.string.no_internet),
-                                    description = resources.getString(R.string.take_movie_from_local_database),
-                                    actionPositiveFirst = { viewModel.getLocalMovie() },
-                                    actionPositiveSecond = { viewModel.getLocalMovies() }
-                                )
-                            ).show(childFragmentManager, ErrorDialog.TAG_LOCAL_DATA)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
 
     override fun getMovieModel(movie: MovieUi) {
         findNavController().navigate(

@@ -1,9 +1,7 @@
 package com.example.searchmovie.presentation.main.useCase
 
-import com.example.common.extension.isCheckErrorNetwork
-import com.example.common.model.DialogParameterMode
 import com.example.common.utils.Const
-import com.example.common.utils.DisplayMode
+import com.example.common.utils.Core
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
 import com.example.network.modelsMovie.Movie
@@ -14,9 +12,7 @@ import com.example.searchmovie.core.utils.ErrorManager
 import com.example.searchmovie.core.utils.NetworkManager
 import com.example.searchmovie.presentation.main.state.MovieMainFragmentState
 import com.example.searchmovie.presentation.main.state.MoviesMainFragmentState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MovieUseCase @Inject constructor(
@@ -31,38 +27,24 @@ class MovieUseCase @Inject constructor(
     val stateListMovie =
         MutableStateFlow<MoviesMainFragmentState>(MoviesMainFragmentState.LoadingListMovie)
 
-    var isLoading = false
-    private var isFirstLaunch: Boolean = false
-    private var page = 1
-    private var step = 0
 
-    suspend fun getMovie(firstLaunch: Boolean) {
-        isFirstLaunch = firstLaunch
-        if (networkManager.isConnect()) {
+    var isLoading = false
+    private var page = 1
+    private var lastDate: Long = 0L
+
+    suspend fun getMovie() {
+        if (networkManager.isConnect() || Core.isChecked) {
             getMovieNetwork()
-        } else if (!firstLaunch) {
-            getMovieLocal()
         } else {
-            errorManager.showDialogGetLocalData(
-                dialogParameterMode = DialogParameterMode(
-                    isEnabled = true
-                )
-            )
+            getMovieLocal()
         }
     }
 
-    suspend fun getMovies(firstLaunch: Boolean) {
-        isFirstLaunch = firstLaunch
-        if (networkManager.isConnect()) {
+    suspend fun getMovies() {
+        if (networkManager.isConnect() || Core.isChecked) {
             getMoviesNetwork()
-        } else if (!firstLaunch) {
-            getMoviesLocal()
         } else {
-            errorManager.showDialogGetLocalData(
-                dialogParameterMode = DialogParameterMode(
-                    isEnabled = true
-                )
-            )
+            getMoviesLocal()
         }
     }
 
@@ -73,7 +55,7 @@ class MovieUseCase @Inject constructor(
             repository.body()?.let { movie ->
                 stateRandomMovie.emit(
                     MovieMainFragmentState.SuccessMovie(
-                        movie = movie.toMovieUi(),
+                        movieUi = movie.toMovieUi(),
                         isLocalDate = false
                     )
                 )
@@ -82,17 +64,7 @@ class MovieUseCase @Inject constructor(
                 //TODO("Обработать ошибку")
             }
         } catch (networkException: Exception) {
-            if (isFirstLaunch) {
-                networkException.localizedMessage?.let { errorManager.postError(it) }
-                networkException.isCheckErrorNetwork {
-                    errorManager.showDialogGetLocalData(
-                        dialogParameterMode = DialogParameterMode(
-                            isEnabled = true,
-                            displayMode = DisplayMode.MOVIE
-                        )
-                    )
-                }
-            } else getMovieLocal()
+            getMovieLocal()
         }
     }
 
@@ -102,7 +74,7 @@ class MovieUseCase @Inject constructor(
             val movie = localRepository.getRandomMovie()
             stateRandomMovie.emit(
                 MovieMainFragmentState.SuccessMovie(
-                    movie = movie.toMovieUi(),
+                    movieUi = movie.toMovieUi(),
                     isLocalDate = true
                 )
             )
@@ -138,17 +110,7 @@ class MovieUseCase @Inject constructor(
                 }
             }
         } catch (networkException: Exception) {
-            if (isFirstLaunch) {
-                networkException.localizedMessage?.let { errorManager.postError(it) }
-                networkException.isCheckErrorNetwork {
-                    errorManager.showDialogGetLocalData(
-                        dialogParameterMode = DialogParameterMode(
-                            isEnabled = true,
-                            displayMode = DisplayMode.MOVIES
-                        )
-                    )
-                }
-            } else getMoviesLocal()
+            getMoviesLocal()
         } finally {
             isLoading = false
         }
@@ -158,19 +120,18 @@ class MovieUseCase @Inject constructor(
         try {
             if (!isLoading) {
                 isLoading = true
-                val moviesFromDatabase = withContext(Dispatchers.IO) {
-                    localRepository.getListMovie(
-                        limit = Const.LIMIT,
-                        step = step
-                    )
-                }
+                stateListMovie.emit(MoviesMainFragmentState.LoadingListMovie)
+                val moviesFromDatabase = localRepository.getMovies(
+                    lastDate = lastDate,
+                    limit = Const.LIMIT
+                )
+                lastDate = moviesFromDatabase[moviesFromDatabase.size - 1].date
                 stateListMovie.emit(
                     MoviesMainFragmentState.SuccessListMovie(
                         listMovie = moviesFromDatabase.toListMovieUi(),
                         isLocalData = true
                     )
                 )
-                step += Const.LIMIT
             }
         } catch (localException: Exception) {
             localException.localizedMessage?.let { errorManager.postError(it) }
@@ -181,12 +142,12 @@ class MovieUseCase @Inject constructor(
     }
 
     private suspend fun saveMovieInDatabase(movie: Movie) {
-        localRepository.insertMovie(movie.toMovieEntity())
+        localRepository.insertMovieIfNotExists(movie.toMovieEntity())
     }
 
     private suspend fun saveMovieInDatabase(movies: List<Movie>) {
         movies.forEach { movie ->
-            localRepository.insertMovie(movie.toMovieEntity())
+            localRepository.insertMovieIfNotExists(movie.toMovieEntity())
         }
     }
 }

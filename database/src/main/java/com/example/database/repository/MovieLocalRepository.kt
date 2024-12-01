@@ -4,11 +4,11 @@ import com.example.database.modelEntity.MovieEntity
 
 interface MovieLocalRepository {
 
-    suspend fun insertMovie(movieEntity: MovieEntity)
-
     suspend fun getRandomMovie(): MovieEntity
 
-    suspend fun getListMovie(limit: Int, step: Int): List<MovieEntity>
+    suspend fun getMovies(lastDate: Long, limit: Int): List<MovieEntity>
+
+    suspend fun insertMovieIfNotExists(movieEntity: MovieEntity)
 
     suspend fun getMovieByGenre(genre: List<String>): List<MovieEntity>
 }

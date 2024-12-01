@@ -19,7 +19,6 @@ class ErrorCustomView(
         visibility = GONE
         translationY = -resources.getDimensionPixelSize(R.dimen.error_view_height).toFloat()
         alpha = 0f
-        background
     }
 
     fun showError(errorMassage: String) {
@@ -27,21 +26,20 @@ class ErrorCustomView(
         binding.textViewError.text = errorMassage
 
         animate()
-            .translationY(50f)
-            .translationX(0f)
+            .translationY(0f)
+            .translationX(5f)
             .alpha(1f)
-            .setDuration(5000)
+            .setDuration(2000)
             .start()
 
-        postDelayed({ hideError() }, 5000)
+        postDelayed({ hideError() }, 3000)
     }
 
     private fun hideError() {
         animate()
             .translationY(-resources.getDimensionPixelSize(R.dimen.error_view_height).toFloat())
-            .translationX(1450f)
             .alpha(0.8f)
-            .setDuration(5000)
+            .setDuration(2000)
             .withEndAction {
                 visibility = GONE
             }
