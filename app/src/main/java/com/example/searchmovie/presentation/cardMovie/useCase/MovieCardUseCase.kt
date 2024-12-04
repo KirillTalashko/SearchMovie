@@ -3,8 +3,10 @@ package com.example.searchmovie.presentation.cardMovie.useCase
 import androidx.lifecycle.MutableLiveData
 import com.example.common.extension.toStringForRequestRating
 import com.example.common.utils.Const
+import com.example.database.modelEntity.MovieEntity
 import com.example.database.repository.MovieLocalRepository
 import com.example.network.domain.repository.MovieRepository
+import com.example.network.modelsMovie.Genres
 import com.example.searchmovie.core.extension.toListMovieUi
 import com.example.searchmovie.core.extension.toListString
 import com.example.searchmovie.core.model.MovieUi
@@ -63,7 +65,7 @@ class MovieCardUseCase @Inject constructor(
         try {
             if (!isLoading) {
                 isLoading = true
-                val localMovies = localRepository.getMovieByGenre(movies.genres.toListString())
+                val localMovies = getMovieByGenres(movies.genres)
                 stateMoviesByGenre.postValue(
                     MovieCardMovieFragmentState.SuccessMoviesRelated(
                         movies = localMovies.toListMovieUi()
@@ -75,5 +77,11 @@ class MovieCardUseCase @Inject constructor(
         } finally {
             isLoading = false
         }
+    }
+
+    private suspend fun getMovieByGenres(listGenres: List<Genres>?): List<MovieEntity> {
+        val query = listGenres.toListString()
+        //return localRepository.getMovieByGenre(query.toSupportSQLiteQuery())
+        return emptyList()
     }
 }

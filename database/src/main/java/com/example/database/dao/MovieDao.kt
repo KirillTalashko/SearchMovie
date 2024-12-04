@@ -5,7 +5,9 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Transaction
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.database.modelEntity.MovieEntity
 
 @Dao
@@ -30,8 +32,8 @@ interface MovieDao {
     @Query("SELECT * FROM RANDOM_MOVIE ORDER BY RANDOM() % (SELECT COUNT(ID) FROM RANDOM_MOVIE)")
     fun getRandomMovie(): MovieEntity
 
-    @Query("SELECT * FROM RANDOM_MOVIE WHERE GENRES IN (:genres)")
-    fun getMoviesByGenre(genres: List<String>): List<MovieEntity>
+    @RawQuery
+    fun getMoviesByGenre(query: SupportSQLiteQuery): List<MovieEntity>
 
 
     @Delete(entity = MovieEntity::class)

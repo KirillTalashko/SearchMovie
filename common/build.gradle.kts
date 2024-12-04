@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("kapt")
 }
 
 android {
@@ -46,4 +47,7 @@ dependencies {
 
     // Glide
     implementation(libs.glide)
+
+    kapt(libs.androidx.room.compiler)
+    implementation("androidx.room:room-runtime:2.5.2")
 }

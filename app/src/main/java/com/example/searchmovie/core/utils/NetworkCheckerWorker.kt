@@ -26,7 +26,7 @@ class NetworkCheckerWorker(private val context: Context, params: WorkerParameter
     }
 
     private var work = true
-    private var previousNetworkAccess: Boolean? = null
+    private var previousNetworkIsConnect: Boolean? = null
 
     override suspend fun doWork(): Result {
         while (work) {
@@ -34,20 +34,21 @@ class NetworkCheckerWorker(private val context: Context, params: WorkerParameter
 
             delay(interval)
 
-            val networkAccess = networkManager.isInternetReachable(IntervalTimer.MIDDLE_TIME)
+            val networkIsConnect = networkManager.isConnect()
 
-            Core.isChecked = networkAccess
+            Core.isChecked = networkIsConnect
 
-            errorManager.setNetworkChecker(networkAccess)
+            errorManager.setNetworkChecker(networkIsConnect)
 
-            if (previousNetworkAccess != networkAccess)
-                if (!networkAccess) {
+            if (previousNetworkIsConnect != networkIsConnect)
+                if (!networkIsConnect) {
                     errorManager.postError(context.getString(R.string.no_internet))
+                    IntervalTimer.counterReset()
                 } else {
                     errorManager.postError(context.getString(R.string.connect_internet))
                 }
 
-            previousNetworkAccess = networkAccess
+            previousNetworkIsConnect = networkIsConnect
         }
         return Result.success()
     }

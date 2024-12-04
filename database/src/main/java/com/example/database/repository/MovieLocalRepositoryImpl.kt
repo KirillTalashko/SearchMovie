@@ -1,5 +1,6 @@
 package com.example.database.repository
 
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.database.dao.MovieDao
 import com.example.database.modelEntity.MovieEntity
 
@@ -17,8 +18,8 @@ class MovieLocalRepositoryImpl(private val movieDao: MovieDao) : MovieLocalRepos
         return movieDao.insertMovieIfNotExists(movieEntity)
     }
 
-    override suspend fun getMovieByGenre(genre: List<String>): List<MovieEntity> {
-        return movieDao.getMoviesByGenre(genre)
+    override suspend fun getMovieByGenre(query: SupportSQLiteQuery): List<MovieEntity> {
+        return movieDao.getMoviesByGenre(query)
     }
 
 
