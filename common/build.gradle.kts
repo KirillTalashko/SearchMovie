@@ -48,6 +48,14 @@ dependencies {
     // Glide
     implementation(libs.glide)
 
-    kapt(libs.androidx.room.compiler)
-    implementation("androidx.room:room-runtime:2.5.2")
+    // WorkManager
+    implementation(libs.androidx.work.runtime)
+
+    // WorkManager Coroutines
+    implementation(libs.androidx.work.runtime.ktx)
+
+    // Dagger 2
+    kapt(libs.dagger.compiler)
+    implementation(libs.dagger)
+
 }

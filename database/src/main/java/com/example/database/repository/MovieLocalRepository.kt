@@ -1,6 +1,5 @@
 package com.example.database.repository
 
-import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.database.modelEntity.MovieEntity
 
 interface MovieLocalRepository {
@@ -11,5 +10,5 @@ interface MovieLocalRepository {
 
     suspend fun insertMovieIfNotExists(movieEntity: MovieEntity)
 
-    suspend fun getMovieByGenre(query: SupportSQLiteQuery): List<MovieEntity>
+    suspend fun getMovieByGenre(genres: List<String>): List<MovieEntity>
 }

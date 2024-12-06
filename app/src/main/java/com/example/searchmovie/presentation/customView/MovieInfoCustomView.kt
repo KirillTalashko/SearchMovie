@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.example.common.model.ValueHolderView
-import com.example.common.utils.TextExpander
+import com.example.common.utils.`object`.TextExpander
 import com.example.network.modelsMovie.Genres
 import com.example.searchmovie.R
 import com.example.searchmovie.databinding.ScreenInformationMovieBinding

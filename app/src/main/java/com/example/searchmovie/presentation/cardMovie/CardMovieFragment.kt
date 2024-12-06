@@ -13,14 +13,14 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.example.common.extension.loadPhoto
 import com.example.common.extension.reduceToDecimals
 import com.example.common.model.ValueHolderView
-import com.example.common.utils.BaseFragment
+import com.example.logic.state.MovieCardMovieFragmentState
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.core.model.MovieUi
+import com.example.searchmovie.core.utils.BaseFragment
 import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.MoviesRelatedAdapter
-import com.example.searchmovie.presentation.cardMovie.state.MovieCardMovieFragmentState
 import com.example.searchmovie.presentation.cardMovie.viewModel.CardMovieFragmentViewModel
 import com.example.searchmovie.presentation.customView.MovieInfoCustomView
 import javax.inject.Inject

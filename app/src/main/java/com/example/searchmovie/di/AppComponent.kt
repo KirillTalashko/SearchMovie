@@ -1,8 +1,9 @@
 package com.example.searchmovie.di
 
-import com.example.database.di.DatabaseModule
-import com.example.network.di.NetworkModule
-import com.example.searchmovie.core.utils.NetworkCheckerWorker
+
+import com.example.common.di.ManagerModule
+import com.example.common.utils.work.NetworkCheckerWorker
+import com.example.logic.di.LogicModule
 import com.example.searchmovie.di.modules.CommonModule
 import com.example.searchmovie.di.modules.ContextModule
 import com.example.searchmovie.presentation.MainActivity
@@ -17,8 +18,8 @@ import javax.inject.Singleton
     modules = [
         CommonModule::class,
         ContextModule::class,
-        NetworkModule::class,
-        DatabaseModule::class
+        LogicModule::class,
+        ManagerModule::class
     ]
 )
 interface AppComponent {

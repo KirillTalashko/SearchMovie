@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.searchmovie.presentation.main.state.MovieMainFragmentState
-import com.example.searchmovie.presentation.main.state.MoviesMainFragmentState
-import com.example.searchmovie.presentation.main.useCase.MovieUseCase
+import com.example.logic.state.MovieMainFragmentState
+import com.example.logic.state.MoviesMainFragmentState
+import com.example.logic.useCase.MovieUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,6 +21,7 @@ class ViewModelRandomMovie @Inject constructor(
 
     val stateListMovie: LiveData<MoviesMainFragmentState>
         get() = useCase.stateListMovie.asLiveData()
+
 
     init {
         getMovie()
