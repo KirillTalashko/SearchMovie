@@ -10,19 +10,20 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
-import com.example.common.extension.loadPhoto
 import com.example.common.extension.reduceToDecimals
 import com.example.common.model.ValueHolderView
 import com.example.logic.state.MovieCardMovieFragmentState
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
-import com.example.searchmovie.core.model.MovieUi
-import com.example.searchmovie.core.utils.BaseFragment
-import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.MoviesRelatedAdapter
 import com.example.searchmovie.presentation.cardMovie.viewModel.CardMovieFragmentViewModel
 import com.example.searchmovie.presentation.customView.MovieInfoCustomView
+import com.example.searchmovie.presentation.modelMovie.MovieUi
+import com.example.searchmovie.presentation.utils.BaseFragment
+import com.example.searchmovie.presentation.utils.OnClickGetModel
+import com.example.searchmovie.presentation.utils.extension.loadPhoto
+import com.example.searchmovie.presentation.utils.extension.toListMovieUi
 import javax.inject.Inject
 
 class CardMovieFragment :
@@ -57,8 +58,8 @@ class CardMovieFragment :
         viewModel.getMovies(argsMovie.infoMovie)
         adapterRelatedMovie = MoviesRelatedAdapter(this)
         binding.rvScrollSimilarMovie.adapter = adapterRelatedMovie
-        viewModel.stateMoviesByGenre.observe(viewLifecycleOwner) {
-            when (it) {
+        viewModel.stateMoviesByGenre.observe(viewLifecycleOwner) { moviesState ->
+            when (moviesState) {
                 is MovieCardMovieFragmentState.Error -> {
                     Unit
                 }
@@ -68,8 +69,9 @@ class CardMovieFragment :
                 }
 
                 is MovieCardMovieFragmentState.SuccessMoviesRelated -> {
+                    val movies = moviesState.movies.toListMovieUi()
                     val currentList = adapterRelatedMovie.currentList
-                    adapterRelatedMovie.submitList(currentList.plus(it.movies))
+                    adapterRelatedMovie.submitList(currentList.plus(movies))
                 }
             }
         }

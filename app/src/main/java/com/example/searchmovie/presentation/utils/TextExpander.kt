@@ -1,4 +1,4 @@
-package com.example.common.utils.`object`
+package com.example.searchmovie.presentation.utils
 
 import android.text.SpannableString
 import android.text.Spanned

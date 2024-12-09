@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 
 
 class NetworkManager(private val context: Context) {
+
     fun isConnect(): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -14,4 +15,5 @@ class NetworkManager(private val context: Context) {
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
+
 }

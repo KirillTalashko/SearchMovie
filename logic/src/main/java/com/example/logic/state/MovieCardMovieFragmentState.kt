@@ -1,11 +1,11 @@
 package com.example.logic.state
 
-import com.example.searchmovie.core.model.MovieUi
+import com.example.logic.model.MovieLogic
 
 sealed class MovieCardMovieFragmentState {
 
     data object Error : MovieCardMovieFragmentState()
-    data class SuccessMoviesRelated(val movies: List<MovieUi>) : MovieCardMovieFragmentState()
+    data class SuccessMoviesRelated(val movies: List<MovieLogic>) : MovieCardMovieFragmentState()
     data object LoadingMoviesRelated : MovieCardMovieFragmentState()
 
 }

@@ -1,10 +1,9 @@
 package com.example.logic.extension
 
 import com.example.database.modelEntity.MovieEntity
+import com.example.logic.model.GenreLogic
 import com.example.logic.model.MovieLogic
 import com.example.network.modelsMovie.Movie
-import com.example.network.modelsMovie.Poster
-import com.example.network.modelsMovie.Rating
 
 fun Movie.toMovieEntity(): MovieEntity {
     return MovieEntity(
@@ -16,7 +15,7 @@ fun Movie.toMovieEntity(): MovieEntity {
         ratingKp = this.rating.kp,
         duration = this.duration,
         year = this.year,
-        genres = this.genres.toListString(),
+        genres = this.genres.toListString { GenreLogic(it.genresName) },
         type = this.type,
         description = this.description ?: "Описание к фильму отсутствует"
     )
@@ -26,11 +25,11 @@ fun Movie.toMovieLogic(): MovieLogic {
     return MovieLogic(
         id = this.id,
         name = this.name,
-        poster = Poster(this.poster?.url),
-        rating = Rating(this.rating.kp, this.rating.imd),
+        poster = this.poster?.toPosterLogic(),
+        rating = this.rating.toRatingLogic(),
         duration = this.duration,
         year = this.year,
-        genres = this.genres,
+        genres = this.genres.toListGenreLogic { GenreLogic(it.genresName) },
         type = this.type,
         description = this.description,
         data = null

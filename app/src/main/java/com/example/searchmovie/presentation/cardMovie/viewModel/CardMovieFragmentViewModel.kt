@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.logic.state.MovieCardMovieFragmentState
-import com.example.searchmovie.core.model.MovieUi
+import com.example.searchmovie.presentation.modelMovie.MovieUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

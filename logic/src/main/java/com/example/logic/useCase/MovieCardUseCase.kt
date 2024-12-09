@@ -2,12 +2,13 @@ package com.example.logic.useCase
 
 import androidx.lifecycle.MutableLiveData
 import com.example.common.extension.toStringForRequestRating
+import com.example.common.utils.Const
 import com.example.common.utils.manager.ErrorManager
 import com.example.common.utils.manager.NetworkManager
-import com.example.common.utils.`object`.Const
 import com.example.database.repository.MovieLocalRepository
 import com.example.logic.extension.toListMovieLogic
 import com.example.logic.extension.toListString
+import com.example.logic.model.GenreLogic
 import com.example.logic.model.MovieLogic
 import com.example.logic.state.MovieCardMovieFragmentState
 import com.example.network.domain.repository.MovieRepository
@@ -37,7 +38,7 @@ class MovieCardUseCase @Inject constructor(
                 val response = apiRepository.getListMovie(
                     limit = Const.LIMIT,
                     page = page,
-                    genres = movies.genres.toListString(),
+                    genres = movies.genres.toListString { GenreLogic(it.name) },
                     rating = movies.rating.kp.toStringForRequestRating()
                 )
                 response.body()?.let {
@@ -63,10 +64,11 @@ class MovieCardUseCase @Inject constructor(
         try {
             if (!isLoading) {
                 isLoading = true
-                val localMovies = localRepository.getMovieByGenre(movies.genres.toListString())
+                val localMovies =
+                    localRepository.getMovieByGenre(movies.genres.toListString { GenreLogic(it.name) })
                 stateMoviesByGenre.postValue(
                     MovieCardMovieFragmentState.SuccessMoviesRelated(
-                        movies =
+                        movies = localMovies.toListMovieLogic()
                     )
                 )
             }

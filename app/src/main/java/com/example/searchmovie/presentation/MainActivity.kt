@@ -5,9 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.common.utils.manager.ErrorManager
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.databinding.ActivityMainBinding
+import com.example.searchmovie.worker.NetworkCheckerWorker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,11 +31,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (this.applicationContext as SearchMovieApp).appComponent.inject(this)
+        (applicationContext as SearchMovieApp).appComponent.inject(this@MainActivity)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.bottomsNavMenu.setupWithNavController((supportFragmentManager.findFragmentById(R.id.container_main) as NavHostFragment).navController)
         displayErrors()
+        checkNetworkAccess()
     }
 
     private fun displayErrors() {
@@ -48,8 +55,7 @@ class MainActivity : AppCompatActivity() {
                         dialogInfo.nameActionNegative
                             ?: this@MainActivity.getString(R.string.positive_option)
                     ) { dialog, _ ->
-                        dialogInfo.actionPositiveFirst?.invoke()
-                        dialogInfo.actionPositiveSecond?.invoke()
+                        dialogInfo.actionPositive?.invoke()
                         dialog.dismiss()
                     }
                     .setNegativeButton(
@@ -63,7 +69,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkNetworkAccess() {
+        val networkRequest: OneTimeWorkRequest =
+            OneTimeWorkRequestBuilder<NetworkCheckerWorker>().build()
+
+        WorkManager.getInstance(this@MainActivity)
+            .enqueueUniqueWork("NetworkChecker", ExistingWorkPolicy.REPLACE, networkRequest)
+    }
+
     override fun onDestroy() {
+        WorkManager.getInstance(this@MainActivity).cancelUniqueWork("NetworkChecker")
         super.onDestroy()
         _binding = null
     }

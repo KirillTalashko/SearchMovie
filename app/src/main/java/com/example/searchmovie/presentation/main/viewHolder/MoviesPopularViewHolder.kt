@@ -2,10 +2,10 @@ package com.example.searchmovie.presentation.main.viewHolder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.example.common.extension.loadPhoto
-import com.example.searchmovie.core.model.MovieUi
-import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.ScreenCardPopularMovieBinding
+import com.example.searchmovie.presentation.modelMovie.MovieUi
+import com.example.searchmovie.presentation.utils.OnClickGetModel
+import com.example.searchmovie.presentation.utils.extension.loadPhoto
 import kotlin.math.floor
 
 class MoviesPopularViewHolder(

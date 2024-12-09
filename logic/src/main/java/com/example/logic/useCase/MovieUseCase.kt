@@ -1,10 +1,9 @@
 package com.example.logic.useCase
 
 
+import com.example.common.utils.Const
 import com.example.common.utils.manager.ErrorManager
 import com.example.common.utils.manager.NetworkManager
-import com.example.common.utils.`object`.Const
-import com.example.common.utils.`object`.Core
 import com.example.database.repository.MovieLocalRepository
 import com.example.logic.extension.toListMovieLogic
 import com.example.logic.extension.toMovieEntity
@@ -34,7 +33,7 @@ class MovieUseCase @Inject constructor(
     private var lastDate: Long = 0L
 
     suspend fun getMovie() {
-        if (networkManager.isConnect() || Core.isChecked) {
+        if (networkManager.isConnect() || Const.isChecked) {
             getMovieNetwork()
         } else {
             getMovieLocal()
@@ -42,7 +41,7 @@ class MovieUseCase @Inject constructor(
     }
 
     suspend fun getMovies() {
-        if (networkManager.isConnect() || Core.isChecked) {
+        if (networkManager.isConnect() || Const.isChecked) {
             getMoviesNetwork()
         } else {
             getMoviesLocal()
@@ -56,7 +55,7 @@ class MovieUseCase @Inject constructor(
             repository.body()?.let { movie ->
                 stateRandomMovie.emit(
                     MovieMainFragmentState.SuccessMovie(
-                        movieUi = movie.toMovieLogic(),
+                        movieLogic = movie.toMovieLogic(),
                         isLocalDate = false
                     )
                 )
@@ -75,7 +74,7 @@ class MovieUseCase @Inject constructor(
             val movie = localRepository.getRandomMovie()
             stateRandomMovie.emit(
                 MovieMainFragmentState.SuccessMovie(
-                    movieUi = movie.toMovieLogic(),
+                    movieLogic = movie.toMovieLogic(),
                     isLocalDate = true
                 )
             )
@@ -100,7 +99,7 @@ class MovieUseCase @Inject constructor(
                     val currentList = movies.movie.orEmpty()
                     stateListMovie.emit(
                         MoviesMainFragmentState.SuccessListMovie(
-                            listMovie = currentList.toListMovieLogic(),
+                            listMovieLogic = currentList.toListMovieLogic(),
                             isLocalData = false
                         )
                     )
@@ -129,7 +128,7 @@ class MovieUseCase @Inject constructor(
                 lastDate = moviesFromDatabase[moviesFromDatabase.size - 1].date
                 stateListMovie.emit(
                     MoviesMainFragmentState.SuccessListMovie(
-                        listMovie = moviesFromDatabase.toListMovieLogic(),
+                        listMovieLogic = moviesFromDatabase.toListMovieLogic(),
                         isLocalData = true
                     )
                 )

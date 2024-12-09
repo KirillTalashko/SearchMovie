@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.searchmovie.core.model.MovieUi
-import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.ScreenSimilarMovieBinding
 import com.example.searchmovie.presentation.cardMovie.viewHolder.MoviesRelatedViewHolder
+import com.example.searchmovie.presentation.modelMovie.MovieUi
+import com.example.searchmovie.presentation.utils.OnClickGetModel
 
 class MoviesRelatedAdapter(private val onClick: OnClickGetModel) :
     ListAdapter<MovieUi, MoviesRelatedViewHolder>(DIFF_CALLBACK) {

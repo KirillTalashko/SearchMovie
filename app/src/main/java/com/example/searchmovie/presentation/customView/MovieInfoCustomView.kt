@@ -8,11 +8,11 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.example.common.model.ValueHolderView
-import com.example.common.utils.`object`.TextExpander
 import com.example.network.modelsMovie.Genres
 import com.example.searchmovie.R
 import com.example.searchmovie.databinding.ScreenInformationMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.MovieGenresAdapter
+import com.example.searchmovie.presentation.utils.TextExpander
 
 class MovieInfoCustomView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

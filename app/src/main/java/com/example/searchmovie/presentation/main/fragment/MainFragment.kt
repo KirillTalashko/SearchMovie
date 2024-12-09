@@ -7,17 +7,25 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.extension.log
+import com.example.common.model.DialogInfo
+import com.example.common.utils.Const
+import com.example.common.utils.manager.ErrorManager
 import com.example.logic.state.MovieMainFragmentState
 import com.example.logic.state.MoviesMainFragmentState
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
-import com.example.searchmovie.core.model.MovieUi
-import com.example.searchmovie.core.utils.BaseFragment
-import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.FragmentMainBinding
 import com.example.searchmovie.presentation.customView.CenterZoomLayoutManager
 import com.example.searchmovie.presentation.main.adapter.MoviesPopularAdapter
 import com.example.searchmovie.presentation.main.viewModel.ViewModelRandomMovie
+import com.example.searchmovie.presentation.modelMovie.MovieUi
+import com.example.searchmovie.presentation.utils.BaseFragment
+import com.example.searchmovie.presentation.utils.OnClickGetModel
+import com.example.searchmovie.presentation.utils.extension.loadPhoto
+import com.example.searchmovie.presentation.utils.extension.toListMovieUi
+import com.example.searchmovie.presentation.utils.extension.toMovieUi
+import com.example.searchmovie.worker.IntervalTimer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -58,11 +66,20 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
         interactionWithView()
     }
 
+    private fun updateMovie() {
+        viewModel.getMovie()
+        viewModel.getMovies()
+    }
+
+    private fun updateMovieLocal() {
+        viewModel.getLocalMovie()
+        viewModel.getLocalMovies()
+    }
+
     private fun interactionWithView() {
 
         binding.root.setOnRefreshListener {
-            viewModel.getMovie()
-            viewModel.getMovies()
+            updateMovie()
         }
 
         errorManager.networkStatus.observe(viewLifecycleOwner) { networkStatus ->
@@ -75,24 +92,22 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                             DialogInfo(
                                 title = getString(R.string.connect_internet),
                                 description = getString(R.string.show_selection_of_movies_from_network),
-                                actionPositiveFirst = { viewModel.getMovie() },
-                                actionPositiveSecond = { viewModel.getMovies() },
+                                actionPositive = { updateMovie() },
                             )
                         )
                         IntervalTimer.counterReset()
                     }
-                    if (!networkStatus && Core.firstLaunch ||
+                    if (!networkStatus && Const.firstLaunch ||
                         !networkStatus && isLocalDate == false
                     ) {
                         errorManager.showDialogGetLocalData(
                             DialogInfo(
                                 title = getString(R.string.no_internet),
                                 description = getString(R.string.show_selection_of_movies_from_database),
-                                actionPositiveFirst = { viewModel.getLocalMovie() },
-                                actionPositiveSecond = { viewModel.getLocalMovies() },
+                                actionPositive = { updateMovieLocal() },
                             )
                         )
-                        Core.firstLaunch = false
+                        Const.firstLaunch = false
                     }
                     previousNetworkStatus = networkStatus
                 }
@@ -134,7 +149,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                 }
 
                 is MovieMainFragmentState.SuccessMovie -> {
-
+                    val movie = movieState.movieLogic.toMovieUi()
                     binding.root.isRefreshing = false
                     binding.apply {
                         shimmerCardMovieMain.stopShimmer()
@@ -148,14 +163,14 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                                 View.GONE
                         }
                         containerPlayRandomMovie.customViewPlayCard.getMovieNameTextView().text =
-                            movieState.movieUi.name ?: getString(R.string.no_name)
+                            movieState.movieLogic.name ?: getString(R.string.no_name)
                         containerPlayRandomMovie.imageViewIntroMovie.loadPhoto(
-                            movieState.movieUi.poster?.url
+                            movieState.movieLogic.poster?.url
                         )
                         containerPlayRandomMovie.containerCardMovie.setOnClickListener {
                             findNavController().navigate(
                                 MainFragmentDirections.actionMainFragmentToCardMovieFragment(
-                                    infoMovie = movieState.movieUi
+                                    infoMovie = movie
                                 )
                             )
                         }
@@ -180,6 +195,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                 }
 
                 is MoviesMainFragmentState.SuccessListMovie -> {
+                    val movies = moviesState.listMovieLogic.toListMovieUi()
                     binding.root.isRefreshing = false
                     if (currentListEmpty) {
                         binding.apply {
@@ -190,7 +206,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
                     }
                     isLocalDate = moviesState.isLocalData
                     val currentList = adapterMovieMain.currentList
-                    adapterMovieMain.submitList(currentList.plus(moviesState.listMovie))
+                    adapterMovieMain.submitList(currentList.plus(movies))
                 }
             }
         }

@@ -71,7 +71,20 @@ dependencies {
     // SwipeRefreshLayout
     implementation(libs.androidx.swiperefreshlayout)
 
+    // WorkManager
+    implementation(libs.androidx.work.runtime)
+
+    // WorkManager Coroutines
+    implementation(libs.androidx.work.runtime.ktx)
+
+    // Glide
+    implementation(libs.glide)
+
     // logic
     implementation(project(":logic"))
+
+    //common
+    implementation(project(":common"))
+
 
 }

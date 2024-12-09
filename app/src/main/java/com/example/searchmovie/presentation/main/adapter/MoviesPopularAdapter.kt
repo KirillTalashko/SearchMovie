@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.searchmovie.core.model.MovieUi
-import com.example.searchmovie.core.utils.OnClickGetModel
 import com.example.searchmovie.databinding.ScreenCardPopularMovieBinding
 import com.example.searchmovie.presentation.main.viewHolder.MoviesPopularViewHolder
+import com.example.searchmovie.presentation.modelMovie.MovieUi
+import com.example.searchmovie.presentation.utils.OnClickGetModel
 
 
 class MoviesPopularAdapter(private val onClick: OnClickGetModel) :

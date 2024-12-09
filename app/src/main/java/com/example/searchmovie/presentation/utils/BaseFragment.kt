@@ -1,4 +1,4 @@
-package com.example.searchmovie.core.utils
+package com.example.searchmovie.presentation.utils
 
 import android.os.Bundle
 import android.view.LayoutInflater

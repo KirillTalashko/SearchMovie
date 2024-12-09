@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.common.extension.databaseErrorHandler
 import com.example.common.extension.networkErrorHandler
 import com.example.common.model.DialogInfo
-import com.example.common.utils.ErrorOrigin
+import com.example.common.model.ErrorOrigin
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 

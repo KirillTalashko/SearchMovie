@@ -34,6 +34,6 @@
         <argument
             android:name="info_movie"
             app:nullable="false"
-            app:argType="com.example.searchmovie.core.model.MovieUi" />
+            app:argType="com.example.searchmovie.presentation.modelMovie.MovieUi" />
     </fragment>
 </navigation>

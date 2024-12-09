@@ -2,13 +2,13 @@ package com.example.searchmovie.di
 
 
 import com.example.common.di.ManagerModule
-import com.example.common.utils.work.NetworkCheckerWorker
 import com.example.logic.di.LogicModule
 import com.example.searchmovie.di.modules.CommonModule
 import com.example.searchmovie.di.modules.ContextModule
 import com.example.searchmovie.presentation.MainActivity
 import com.example.searchmovie.presentation.cardMovie.CardMovieFragment
 import com.example.searchmovie.presentation.main.fragment.MainFragment
+import com.example.searchmovie.worker.NetworkCheckerWorker
 import dagger.Component
 import javax.inject.Singleton
 
@@ -19,7 +19,7 @@ import javax.inject.Singleton
         CommonModule::class,
         ContextModule::class,
         LogicModule::class,
-        ManagerModule::class
+        ManagerModule::class,
     ]
 )
 interface AppComponent {

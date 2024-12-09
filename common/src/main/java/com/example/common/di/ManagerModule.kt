@@ -18,7 +18,6 @@ class ManagerModule {
     }
 
     @Provides
-    @Singleton
     fun provideNetworkManager(
         context: Context,
     ): NetworkManager {

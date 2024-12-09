@@ -1,21 +1,20 @@
 package com.example.logic.extension
 
-import com.example.network.modelsMovie.Genres
+import com.example.logic.model.GenreLogic
 
-fun List<String>?.toListGenres(): List<Genres> {
-    val newGenreList = mutableListOf<Genres>()
-    this?.forEach {
-        newGenreList.add(Genres(it))
+fun <T> List<T>?.toListGenreLogic(mapper: (T) -> GenreLogic): List<GenreLogic> {
+    val newGenreList = mutableListOf<GenreLogic>()
+    this?.forEach { any ->
+        newGenreList.add(mapper(any))
     }
     return newGenreList
 }
 
-fun List<Genres>?.toListString(): List<String> {
+fun <T> List<T>?.toListString(mapper: (T) -> GenreLogic): List<String> {
     val newListString = mutableListOf<String>()
-    this?.forEach { genres ->
-        genres.genresName?.let {
-            newListString.add(it)
-        }
+    this?.forEach { any ->
+        mapper(any).name?.let { newListString.add(it) }
     }
     return newListString
 }
+

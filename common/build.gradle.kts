@@ -45,17 +45,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // Glide
-    implementation(libs.glide)
-
-    // WorkManager
-    implementation(libs.androidx.work.runtime)
-
-    // WorkManager Coroutines
-    implementation(libs.androidx.work.runtime.ktx)
-
     // Dagger 2
     kapt(libs.dagger.compiler)
     implementation(libs.dagger)
+
 
 }

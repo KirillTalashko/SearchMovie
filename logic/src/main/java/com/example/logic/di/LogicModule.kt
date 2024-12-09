@@ -3,15 +3,22 @@ package com.example.logic.di
 
 import com.example.common.utils.manager.ErrorManager
 import com.example.common.utils.manager.NetworkManager
+import com.example.database.di.DatabaseModule
 import com.example.database.repository.MovieLocalRepository
 import com.example.logic.useCase.MovieCardUseCase
 import com.example.logic.useCase.MovieUseCase
+import com.example.network.di.NetworkModule
 import com.example.network.domain.repository.MovieRepository
 import dagger.Module
 import dagger.Provides
 
 
-@Module
+@Module(
+    includes = [
+        DatabaseModule::class,
+        NetworkModule::class
+    ]
+)
 class LogicModule {
 
     @Provides
