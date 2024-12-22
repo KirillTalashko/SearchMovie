@@ -8,3 +8,9 @@ fun PosterLogic.toPosterUi(): PosterUi {
         url = url
     )
 }
+
+fun PosterUi?.toPosterLogic(): PosterLogic {
+    return PosterLogic(
+        url = this?.url
+    )
+}

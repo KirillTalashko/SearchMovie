@@ -2,7 +2,9 @@ package com.example.searchmovie.di
 
 
 import com.example.common.di.ManagerModule
+import com.example.database.di.DatabaseModule
 import com.example.logic.di.LogicModule
+import com.example.network.di.NetworkModule
 import com.example.searchmovie.di.modules.CommonModule
 import com.example.searchmovie.di.modules.ContextModule
 import com.example.searchmovie.presentation.MainActivity
@@ -20,6 +22,8 @@ import javax.inject.Singleton
         ContextModule::class,
         LogicModule::class,
         ManagerModule::class,
+        NetworkModule::class,
+        DatabaseModule::class
     ]
 )
 interface AppComponent {

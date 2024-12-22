@@ -9,3 +9,10 @@ fun RatingLogic.toRatingUi(): RatingUi {
         imd = this.imd
     )
 }
+
+fun RatingUi.toRatingLogic(): RatingLogic {
+    return RatingLogic(
+        kp = this.kp,
+        imd = this.imd
+    )
+}
