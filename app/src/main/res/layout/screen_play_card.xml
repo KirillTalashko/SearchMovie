@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_layout_card"
@@ -11,7 +9,7 @@
         android:background="@color/gray_shadow_text">
 
         <ImageView
-            android:id="@+id/image_play_bottom"
+            android:id="@+id/image_view_button_play_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
@@ -21,19 +19,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_watch_movie"
+            android:id="@+id/text_view_title_watch_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/lato"
             android:text="@string/watch_trailer"
             android:textColor="@color/gray_text"
             android:textSize="@dimen/text_size"
-            app:layout_constraintBottom_toTopOf="@id/text_name_movie"
-            app:layout_constraintStart_toEndOf="@id/image_play_bottom"
+            app:layout_constraintBottom_toTopOf="@id/text_view_name_in_card_play_movie"
+            app:layout_constraintStart_toEndOf="@id/image_view_button_play_movie"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_name_movie"
+            android:id="@+id/text_view_name_in_card_play_movie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -43,7 +41,7 @@
             android:text=""
             android:textSize="@dimen/section_text_size"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image_play_bottom"
-            app:layout_constraintTop_toBottomOf="@id/text_watch_movie" />
+            app:layout_constraintStart_toEndOf="@id/image_view_button_play_movie"
+            app:layout_constraintTop_toBottomOf="@id/text_view_title_watch_movie" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>

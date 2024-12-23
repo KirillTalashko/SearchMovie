@@ -6,5 +6,7 @@
     <color name="gray_text">#B3222223</color>
     <color name="gray_shadow_text">#E2DFDEDE</color>
     <color name="orange">#FF8F71</color>
+    <color name="green">#4CAF50</color>
+    <color name="red">#FA0209</color>
 
 </resources>

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("androidx.navigation.safeargs.kotlin")
     kotlin("kapt")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -35,7 +36,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
 }
@@ -47,28 +48,43 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.room.runtime.android)
-    implementation(libs.androidx.room.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // Navigation component
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation (libs.glide)
 
-    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.process)
 
-    implementation(libs.okhttp)
-    implementation (libs.retrofit)
-    implementation(libs.logging.interceptor)
-    implementation (libs.converter.gson)
-    implementation (libs.shimmer)
+    //ShimmerFrameLayout
+    implementation(libs.shimmer)
 
-    kapt (libs.dagger.compiler)
-    implementation (libs.dagger)
+    // Dagger 2
+    kapt(libs.dagger.compiler)
+    implementation(libs.dagger)
 
+    // SwipeRefreshLayout
     implementation(libs.androidx.swiperefreshlayout)
+
+    // WorkManager
+    implementation(libs.androidx.work.runtime)
+
+    // WorkManager Coroutines
+    implementation(libs.androidx.work.runtime.ktx)
+
+    // Glide
+    implementation(libs.glide)
+
+    // logic
+    implementation(project(":logic"))
+
+    //common
+    implementation(project(":common"))
+
+
 }

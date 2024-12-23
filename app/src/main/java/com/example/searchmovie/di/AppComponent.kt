@@ -1,10 +1,14 @@
 package com.example.searchmovie.di
 
+
+import com.example.common.di.ManagerModule
+import com.example.logic.di.LogicModule
 import com.example.searchmovie.di.modules.CommonModule
 import com.example.searchmovie.di.modules.ContextModule
-import com.example.searchmovie.di.modules.NetworkModule
+import com.example.searchmovie.presentation.MainActivity
 import com.example.searchmovie.presentation.cardMovie.CardMovieFragment
-import com.example.searchmovie.presentation.home.fragment.HomeFragment
+import com.example.searchmovie.presentation.main.fragment.MainFragment
+import com.example.searchmovie.worker.NetworkCheckerWorker
 import dagger.Component
 import javax.inject.Singleton
 
@@ -14,10 +18,13 @@ import javax.inject.Singleton
     modules = [
         CommonModule::class,
         ContextModule::class,
-        NetworkModule::class
+        LogicModule::class,
+        ManagerModule::class,
     ]
 )
 interface AppComponent {
-    fun inject(fragment: HomeFragment)
+    fun inject(fragment: MainFragment)
     fun inject(fragment: CardMovieFragment)
+    fun inject(activity: MainActivity)
+    fun inject(networkCheckerWorker: NetworkCheckerWorker)
 }

@@ -10,7 +10,13 @@ import javax.inject.Singleton
 class ContextModule(private val myApplication : SearchMovieApp) {
     @Singleton
     @Provides
-    fun provideContext() : Context {
+    fun provideContext(): Context {
         return myApplication.applicationContext
+    }
+
+    @Singleton
+    @Provides
+    fun provideSearchMovieApp(): SearchMovieApp {
+        return myApplication
     }
 }

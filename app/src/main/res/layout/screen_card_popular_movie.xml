@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_item_trending"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="30dp">
+
+    <ImageView
+        android:id="@+id/image_view_wallpaper_movie"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/image_view_local_date_movies"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:layout_margin="24dp"
+        android:src="@drawable/ic_network_error"
+        android:visibility="gone" />
+
+    <com.example.searchmovie.presentation.customView.MovieRatingCustomView
+        android:id="@+id/custom_view_card_short_help_movie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp" />
+
+    <TextView
+        android:id="@+id/text_view_name_movie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="30dp"
+        android:background="@drawable/text_color_card_trending"
+        android:maxEms="10"
+        android:padding="15dp"
+        android:text=""
+        android:fontFamily="@font/lato_bold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/section_text_size" />
+</androidx.cardview.widget.CardView>

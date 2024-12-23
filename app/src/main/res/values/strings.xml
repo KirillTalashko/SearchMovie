@@ -4,21 +4,31 @@
     <string name="watch_trailer">Смотреть трейлер</string>
     <string name="name">Название</string>
     <string name="popular">Популярные</string>
-    <string name="text_rating">IMDb</string>
+    <string name="text_rating_imdb">IMDb</string>
+    <string name="text_rating_kp">KP</string>
     <string name="text_rating_movie">7.0</string>
     <string name="no_name">Нет названия</string>
-    <string name="minutes">минуты</string>
+    <string name="minutes">минут</string>
     <string name="random_time">152</string>
-    <string name="example_description_long">В мире, где роботы-трансформеры могут принимать облик автомобилей, Самуэль, обычный подросток, оказывается в центре грандиозного противостояния между добрыми автоботами и злыми десептиконами. Он знакомится с Оптимусом Праймом, лидером автоботов, и вместе они сражаются за спасение Земли от вторжения десептиконов, жаждущих захватить ее ресурсы. Фильм полон зрелищных экшн-сцен, невероятных спецэффектов и захватывающего сюжета, который понравится как детям, так и взрослым.
-</string>
-    <string name="example_description_small">Роботы-инопланетяне трансформируются в машины и сражаются за Землю в эпическом бою с участием юного героя.
-</string>
     <string name="year">2023</string>
     <string name="release_date">Дата выхода</string>
     <string name="genre">Жанр</string>
     <string name="comedy">Комедия</string>
     <string name="thriller">Триллер</string>
     <string name="description">Описание</string>
+    <string name="read_less_text">...Read less</string>
+    <string name="read_more_text">...Read more</string>
+    <string name="no_description">Описание к фильму отсутствует</string>
+    <string name="no_genre">Без жанра</string>
+    <string name="similar_movies">Похожие фильмы</string>
+    <string name="network_date">Данные были взяты с интернета</string>
+    <string name="local_date">Данные иил часть данных были взяты с локальной базы данных</string>
+    <string name="positive_option">Ок</string>
+    <string name="negative_option">Отмена</string>
+    <string name="no_internet">Отсутсвует интеренет</string>
+    <string name="connect_internet">Подключено к интернету</string>
+    <string name="show_selection_of_movies_from_database">Взять фильмы с локальной базы данных?</string>
+    <string name="show_selection_of_movies_from_network">Взять фильмы с сети?</string>
 
 
 </resources>

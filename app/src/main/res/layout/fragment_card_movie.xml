@@ -1,76 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/image_movie_in_cardMovie"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@id/end_main_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/play_movie"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/end_main_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/image_view_poster_movie"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/end_main_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.30" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/play_movie"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/image_view_poster_movie"
+            app:layout_constraintEnd_toEndOf="@id/image_view_poster_movie"
+            app:layout_constraintStart_toStartOf="@id/image_view_poster_movie"
+            app:layout_constraintTop_toTopOf="@id/image_view_poster_movie" />
 
-    <com.example.searchmovie.presentation.customView.InfoMovie
-        android:id="@+id/info_movie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/end_main_image" />
+        <com.example.searchmovie.presentation.customView.MovieInfoCustomView
+            android:id="@+id/custom_view_info_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_view_poster_movie" />
 
-    <TextView
-        android:id="@+id/similar_movie_text_in_card_movie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:layout_marginVertical="10dp"
-        android:layout_marginHorizontal="24dp"
-        android:fontFamily="@font/lato_bold"
-        android:textColor="@color/black"
-        android:text="Похожие фильмы"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/top_scroll_similar_movie"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/text_view_similar_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="@dimen/margin_top_text"
+            android:fontFamily="@font/lato_bold"
+            android:text="@string/similar_movies"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/custom_view_info_movie" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/top_scroll_similar_movie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.75" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_scroll_similar_movie"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="visible"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_similar_movie"
+            tools:itemCount="3"
+            tools:listitem="@layout/screen_similar_movie" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/scroll_similar_movie"
-        android:visibility="visible"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        tools:itemCount="3"
-        tools:listitem="@layout/screen_similar_movie"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/top_scroll_similar_movie" />
-</androidx.constraintlayout.widget.ConstraintLayout>

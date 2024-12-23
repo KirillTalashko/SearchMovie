@@ -2,8 +2,8 @@ package com.example.searchmovie
 
 import android.app.Application
 import com.example.searchmovie.di.AppComponent
-import com.example.searchmovie.di.modules.ContextModule
 import com.example.searchmovie.di.DaggerAppComponent
+import com.example.searchmovie.di.modules.ContextModule
 
 class SearchMovieApp : Application() {
 

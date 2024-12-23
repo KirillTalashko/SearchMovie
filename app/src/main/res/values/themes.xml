@@ -1,7 +1,7 @@
 <resources>
 
     <style name="Base.Theme.SearchMovie" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#E65100</item>
+        <item name="colorPrimary">#FF5722</item>
         <item name="colorPrimaryDark">#BF360C</item>
     </style>
 
