@@ -5,8 +5,8 @@ import com.example.searchmovie.presentation.modelMovie.GenresUi
 
 fun List<GenreLogic>?.toGenreUi(): List<GenresUi> {
     val genres = mutableListOf<GenresUi>()
-    this?.forEach { genresLogic ->
-        genres.add(GenresUi(genresLogic.name))
+    this?.forEach { genre ->
+        genres.add(GenresUi(genre.name))
     }
     return genres
 }

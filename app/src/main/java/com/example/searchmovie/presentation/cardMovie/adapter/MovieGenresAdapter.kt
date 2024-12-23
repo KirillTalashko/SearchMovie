@@ -4,17 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.network.modelsMovie.Genres
 import com.example.searchmovie.databinding.ScreenButtonGenreMovieBinding
 import com.example.searchmovie.presentation.cardMovie.viewHolder.MovieGenresViewHolder
+import com.example.searchmovie.presentation.modelMovie.GenresUi
 
-class MovieGenresAdapter : ListAdapter<Genres, MovieGenresViewHolder>(DIFF_CALLBACK) {
+class MovieGenresAdapter : ListAdapter<GenresUi, MovieGenresViewHolder>(DIFF_CALLBACK) {
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Genres>() {
-            override fun areItemsTheSame(oldItem: Genres, newItem: Genres) =
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<GenresUi>() {
+            override fun areItemsTheSame(oldItem: GenresUi, newItem: GenresUi) =
                 oldItem == newItem
 
-            override fun areContentsTheSame(oldItem: Genres, newItem: Genres) =
+            override fun areContentsTheSame(oldItem: GenresUi, newItem: GenresUi) =
                 oldItem == newItem
         }
     }

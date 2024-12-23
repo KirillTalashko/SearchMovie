@@ -8,10 +8,10 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.example.common.model.ValueHolderView
-import com.example.network.modelsMovie.Genres
 import com.example.searchmovie.R
 import com.example.searchmovie.databinding.ScreenInformationMovieBinding
 import com.example.searchmovie.presentation.cardMovie.adapter.MovieGenresAdapter
+import com.example.searchmovie.presentation.modelMovie.GenresUi
 import com.example.searchmovie.presentation.utils.TextExpander
 
 class MovieInfoCustomView @JvmOverloads constructor(
@@ -28,7 +28,7 @@ class MovieInfoCustomView @JvmOverloads constructor(
         binding.rvListGenre.adapter = adapter
     }
 
-    fun setDataInfoMovie(name: String, year: String, genres: List<Genres>) {
+    fun setDataInfoMovie(name: String, year: String, genres: List<GenresUi>) {
         binding.apply {
             textViewNameInInfoMovie.text = name
             textViewYearMovie.text = year

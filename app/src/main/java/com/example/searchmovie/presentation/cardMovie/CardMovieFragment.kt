@@ -24,6 +24,7 @@ import com.example.searchmovie.presentation.utils.BaseFragment
 import com.example.searchmovie.presentation.utils.OnClickGetModel
 import com.example.searchmovie.presentation.utils.extension.loadPhoto
 import com.example.searchmovie.presentation.utils.extension.toListMovieUi
+import com.example.searchmovie.presentation.utils.extension.toMovieLogic
 import javax.inject.Inject
 
 class CardMovieFragment :
@@ -55,7 +56,7 @@ class CardMovieFragment :
     }
 
     private fun initRecyclerView() {
-        viewModel.getMovies(argsMovie.infoMovie)
+        viewModel.getMovies(argsMovie.infoMovie.toMovieLogic())
         adapterRelatedMovie = MoviesRelatedAdapter(this)
         binding.rvScrollSimilarMovie.adapter = adapterRelatedMovie
         viewModel.stateMoviesByGenre.observe(viewLifecycleOwner) { moviesState ->
@@ -84,7 +85,7 @@ class CardMovieFragment :
                     val totalItemCount = layoutManager.itemCount
                     val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                     if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
-                        viewModel.getMovies(argsMovie.infoMovie)
+                        viewModel.getMovies(argsMovie.infoMovie.toMovieLogic())
                     }
                 }
             }

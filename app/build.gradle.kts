@@ -86,5 +86,10 @@ dependencies {
     //common
     implementation(project(":common"))
 
+    //network
+    implementation(project(":network"))
 
+    //database
+    implementation(project(":database"))
+    
 }
