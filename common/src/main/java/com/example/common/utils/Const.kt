@@ -7,4 +7,6 @@ object Const {
 
     @Volatile
     var isChecked = true
+
+    var position: Int = 0
 }

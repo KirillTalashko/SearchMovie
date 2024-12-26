@@ -10,9 +10,10 @@ import com.example.searchmovie.databinding.ItemMovieCardFromCategorySmallBinding
 import com.example.searchmovie.presentation.modelMovie.MovieUi
 import com.example.searchmovie.presentation.search.viewHolder.MovieByCategoryFirstViewHolder
 import com.example.searchmovie.presentation.search.viewHolder.MovieByCategorySecondViewHolder
+import com.example.searchmovie.presentation.utils.OnClickGetModel
 
 
-class MovieCardByCategoryAdapter :
+class MovieCardByCategoryAdapter(private val onClickGetModel: OnClickGetModel) :
     ListAdapter<MovieUi, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
@@ -37,9 +38,9 @@ class MovieCardByCategoryAdapter :
             }
         } else {
             if ((position - 1) / 2 % 2 == 0) {
-                VIEW_HOLDER_FIRST
-            } else {
                 VIEW_HOLDER_SECOND
+            } else {
+                VIEW_HOLDER_FIRST
             }
         }
     }
@@ -50,13 +51,13 @@ class MovieCardByCategoryAdapter :
             VIEW_HOLDER_FIRST -> {
                 val view =
                     ItemMovieCardFromCategoryLargeBinding.inflate(layoutInflater, parent, false)
-                MovieByCategoryFirstViewHolder(view)
+                MovieByCategoryFirstViewHolder(view, onClickGetModel)
             }
 
             else -> {
                 val view =
                     ItemMovieCardFromCategorySmallBinding.inflate(layoutInflater, parent, false)
-                MovieByCategorySecondViewHolder(view)
+                MovieByCategorySecondViewHolder(view, onClickGetModel)
             }
         }
     }

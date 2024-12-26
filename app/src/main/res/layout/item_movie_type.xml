@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/text_view_name_movie_type"
+        android:id="@+id/text_view_name_movie_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center|start"
         android:layout_marginHorizontal="@dimen/margin_start_text"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/section_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
         android:fontFamily="@font/lato"
         android:text="Type"
-        android:textSize="@dimen/section_text_size" />
-</FrameLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view_highlight"
+        android:layout_width="25dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_highlight_selection"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/text_view_name_movie_category"
+        app:layout_constraintTop_toBottomOf="@id/text_view_name_movie_category" />
+</androidx.constraintlayout.widget.ConstraintLayout>

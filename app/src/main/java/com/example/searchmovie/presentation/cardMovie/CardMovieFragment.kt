@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.example.common.extension.reduceToDecimals
 import com.example.common.model.ValueHolderView
-import com.example.logic.state.MovieCardMovieFragmentState
+import com.example.domain.state.MovieCardMovieFragmentState
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.databinding.FragmentCardMovieBinding
@@ -24,7 +24,6 @@ import com.example.searchmovie.presentation.utils.BaseFragment
 import com.example.searchmovie.presentation.utils.OnClickGetModel
 import com.example.searchmovie.presentation.utils.extension.loadPhoto
 import com.example.searchmovie.presentation.utils.extension.toListMovieUi
-import com.example.searchmovie.presentation.utils.extension.toMovieLogic
 import javax.inject.Inject
 
 class CardMovieFragment :
@@ -34,10 +33,6 @@ class CardMovieFragment :
 
     private lateinit var adapterRelatedMovie: MoviesRelatedAdapter
 
-    private val inject by lazy(LazyThreadSafetyMode.NONE) {
-        (requireContext().applicationContext as SearchMovieApp).appComponent.inject(this)
-    }
-
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
@@ -46,7 +41,7 @@ class CardMovieFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        inject
+        (requireContext().applicationContext as SearchMovieApp).appComponent.inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,7 +51,7 @@ class CardMovieFragment :
     }
 
     private fun initRecyclerView() {
-        viewModel.getMovies(argsMovie.infoMovie.toMovieLogic())
+        viewModel.getMoviesByGenres(argsMovie.infoMovie)
         adapterRelatedMovie = MoviesRelatedAdapter(this)
         binding.rvScrollSimilarMovie.adapter = adapterRelatedMovie
         viewModel.stateMoviesByGenre.observe(viewLifecycleOwner) { moviesState ->
@@ -85,7 +80,7 @@ class CardMovieFragment :
                     val totalItemCount = layoutManager.itemCount
                     val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                     if (!viewModel.getIsLoading() && lastVisibleItem == totalItemCount - 3) {
-                        viewModel.getMovies(argsMovie.infoMovie.toMovieLogic())
+                        viewModel.getMoviesByGenres(argsMovie.infoMovie)
                     }
                 }
             }
@@ -162,10 +157,6 @@ class CardMovieFragment :
                 infoMovie = movie
             )
         )
-    }
-
-    override fun isLocalData(): Boolean? {
-        return isLocalDate
     }
 }
 

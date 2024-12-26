@@ -7,12 +7,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.common.extension.log
 import com.example.common.model.DialogInfo
 import com.example.common.utils.Const
 import com.example.common.utils.manager.ErrorManager
-import com.example.logic.state.MovieMainFragmentState
-import com.example.logic.state.MoviesMainFragmentState
+import com.example.domain.state.MovieMainFragmentState
+import com.example.domain.state.MoviesMainFragmentState
 import com.example.searchmovie.R
 import com.example.searchmovie.SearchMovieApp
 import com.example.searchmovie.databinding.FragmentMainBinding
@@ -34,12 +33,9 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
     OnClickGetModel {
 
     private lateinit var adapterMovieMain: MoviesPopularAdapter
+
     private val currentListEmpty: Boolean
         get() = adapterMovieMain.currentList.isEmpty()
-
-    private val inject by lazy(LazyThreadSafetyMode.NONE) {
-        (requireContext().applicationContext as SearchMovieApp).appComponent.inject(this)
-    }
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -55,7 +51,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        inject
+        (requireContext().applicationContext as SearchMovieApp).appComponent.inject(this)
     }
 
 
@@ -84,8 +80,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
 
         errorManager.networkStatus.observe(viewLifecycleOwner) { networkStatus ->
             lifecycleScope.launch(Dispatchers.Main) {
-                "CHECK $networkStatus".log()
-                "previous $previousNetworkStatus".log()
                 if (networkStatus != previousNetworkStatus) {
                     if (networkStatus && isLocalDate == true) {
                         errorManager.showDialogGetLocalData(
@@ -219,9 +213,4 @@ class MainFragment : BaseFragment<FragmentMainBinding>(FragmentMainBinding::infl
             )
         )
     }
-
-    override fun isLocalData(): Boolean? {
-        return isLocalDate
-    }
-
 }

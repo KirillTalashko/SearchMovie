@@ -4,9 +4,10 @@ package com.example.searchmovie.presentation.cardMovie.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.logic.model.MovieLogic
-import com.example.logic.state.MovieCardMovieFragmentState
-import com.example.logic.useCase.MovieCardUseCase
+import com.example.domain.state.MovieCardMovieFragmentState
+import com.example.domain.useCase.MovieCardUseCase
+import com.example.searchmovie.presentation.modelMovie.MovieUi
+import com.example.searchmovie.presentation.utils.extension.toMovieLogic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -33,9 +34,9 @@ class CardMovieFragmentViewModel(private val useCase: MovieCardUseCase) :
         }
     }
 
-    fun getMovies(movie: MovieLogic) {
+    fun getMoviesByGenres(movie: MovieUi) {
         viewModelScope.launch(Dispatchers.IO) {
-            useCase.getMoviesByGenreLocal(movie)
+            useCase.getMoviesByGenreNetwork(movie.toMovieLogic())
         }
     }
 }

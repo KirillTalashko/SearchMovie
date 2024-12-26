@@ -80,8 +80,8 @@ dependencies {
     // Glide
     implementation(libs.glide)
 
-    // logic
-    implementation(project(":logic"))
+    // domain
+    implementation(project(":domain"))
 
     //common
     implementation(project(":common"))
