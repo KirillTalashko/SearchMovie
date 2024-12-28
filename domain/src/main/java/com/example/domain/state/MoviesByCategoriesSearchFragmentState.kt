@@ -5,7 +5,7 @@ import com.example.domain.model.MovieLogic
 sealed class MoviesByCategoriesSearchFragmentState {
 
     data object Error : MoviesByCategoriesSearchFragmentState()
-    data class SuccessMoviesSearch(val movies: List<MovieLogic>) :
+    data class SuccessMoviesSearch(val movies: List<MovieLogic>, val update: Boolean) :
         MoviesByCategoriesSearchFragmentState()
 
     data object LoadingMoviesSearch : MoviesByCategoriesSearchFragmentState()

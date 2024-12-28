@@ -51,7 +51,6 @@ class MovieSearchUseCase @Inject constructor(
     suspend fun getMoviesByCategory(category: String) {
         try {
             if (category != currentCategory) {
-                currentCategory = category
                 page = 1
             }
             if (!isLoading) {
@@ -65,17 +64,14 @@ class MovieSearchUseCase @Inject constructor(
                 )
                 response.body()?.let { movies ->
                     val currentList = movies.movie.orEmpty().toListMovieLogic()
-                    val newMovies = if (page == 1) {
-                        currentList
-                    } else {
-                        val previousMovies =
-                            (stateMoviesByCategory.value as? MoviesByCategoriesSearchFragmentState.SuccessMoviesSearch)?.movies.orEmpty()
-                        previousMovies + currentList
-                    }
                     stateMoviesByCategory.emit(
-                        MoviesByCategoriesSearchFragmentState.SuccessMoviesSearch(newMovies)
+                        MoviesByCategoriesSearchFragmentState.SuccessMoviesSearch(
+                            movies = currentList,
+                            update = currentCategory != category
+                        )
                     )
                     page++
+                    currentCategory = category
                 } ?: run {
                     stateMoviesByCategory.emit(MoviesByCategoriesSearchFragmentState.Error)
                     errorManager.postError("Список пуст!")

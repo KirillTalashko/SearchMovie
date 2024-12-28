@@ -129,11 +129,11 @@ class SearchFragment : BottomSheetDialogFragment(), OnClickGetModel {
                 MoviesByCategoriesSearchFragmentState.Error -> Unit
                 MoviesByCategoriesSearchFragmentState.LoadingMoviesSearch -> Unit
                 is MoviesByCategoriesSearchFragmentState.SuccessMoviesSearch -> {
-
-                    if (adapterCardMovieByType.currentList.isNotEmpty()) {
+                    val currentList = adapterCardMovieByType.currentList
+                    if (currentList.isNotEmpty() && movieState.update) {
                         adapterCardMovieByType.submitList(emptyList())
-                    }
-                    adapterCardMovieByType.submitList(movieState.movies.toListMovieUi())
+                        adapterCardMovieByType.submitList(movieState.movies.toListMovieUi())
+                    } else adapterCardMovieByType.submitList(currentList.plus(movieState.movies.toListMovieUi()))
                 }
             }
         }

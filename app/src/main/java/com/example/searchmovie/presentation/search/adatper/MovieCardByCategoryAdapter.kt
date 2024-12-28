@@ -16,6 +16,8 @@ import com.example.searchmovie.presentation.utils.OnClickGetModel
 class MovieCardByCategoryAdapter(private val onClickGetModel: OnClickGetModel) :
     ListAdapter<MovieUi, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
+    private var switch = true
+
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieUi>() {
             override fun areItemsTheSame(oldItem: MovieUi, newItem: MovieUi) =
@@ -30,19 +32,14 @@ class MovieCardByCategoryAdapter(private val onClickGetModel: OnClickGetModel) :
 
 
     override fun getItemViewType(position: Int): Int {
-        return if (position % 2 == 0) {
-            if (position / 2 % 2 == 0) {
-                VIEW_HOLDER_FIRST
-            } else {
-                VIEW_HOLDER_SECOND
-            }
+
+        val itemPosition = if (position % 2 == 0) {
+            if (switch) VIEW_HOLDER_FIRST else VIEW_HOLDER_SECOND
         } else {
-            if ((position - 1) / 2 % 2 == 0) {
-                VIEW_HOLDER_SECOND
-            } else {
-                VIEW_HOLDER_FIRST
-            }
+            if (!switch) VIEW_HOLDER_SECOND else VIEW_HOLDER_FIRST
         }
+        switch = position % 2 == 0 != switch
+        return itemPosition
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

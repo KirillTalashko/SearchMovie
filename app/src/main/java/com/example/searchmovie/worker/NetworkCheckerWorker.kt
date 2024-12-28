@@ -38,13 +38,14 @@ class NetworkCheckerWorker(private val context: Context, params: WorkerParameter
             Const.isChecked = networkIsConnect
             errorManager.setNetworkChecker(networkIsConnect)
 
-            if (previousNetworkIsConnect != networkIsConnect)
+            if (previousNetworkIsConnect != networkIsConnect) {
                 if (!networkIsConnect) {
                     errorManager.postError(context.getString(R.string.no_internet))
                     IntervalTimer.counterReset()
                 } else {
                     errorManager.postError(context.getString(R.string.connect_internet))
                 }
+            }
 
             previousNetworkIsConnect = networkIsConnect
         }
