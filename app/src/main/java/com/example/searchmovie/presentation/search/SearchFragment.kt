@@ -33,9 +33,6 @@ class SearchFragment : BottomSheetDialogFragment(), OnClickGetModel {
     private val binding
         get() = _binding!!
 
-    private lateinit var adapterTypeMovie: MovieCategoryAdapter
-    private lateinit var adapterCardMovieByType: MovieCardByCategoryAdapter
-
     private var isCategory: String? = null
 
     @Inject
@@ -54,19 +51,35 @@ class SearchFragment : BottomSheetDialogFragment(), OnClickGetModel {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
-        observerViewModel()
+
+        val adapterTypeMovie = MovieCategoryAdapter { category ->
+            category.name?.let { viewModel.getMoviesByCategory(it) }
+            isCategory = category.name
+        }
+        val adapterCardMovieByType = MovieCardByCategoryAdapter(this)
+
+        initRecyclerView(
+            adapterTypeMovie = adapterTypeMovie,
+            adapterCardMovieByType = adapterCardMovieByType
+        )
+        observerViewModel(
+            adapterTypeMovie = adapterTypeMovie,
+            adapterCardMovieByType = adapterCardMovieByType
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireContext().applicationContext as SearchMovieApp).appComponent.inject(this)
+
     }
 
     override fun onStart() {
         super.onStart()
+
         dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             ?.let { bottomSheet ->
+
                 val behavior = BottomSheetBehavior.from(bottomSheet)
                 val displayMetrics = resources.displayMetrics
                 val percentageHeight = (displayMetrics.heightPixels * 0.9).toInt()
@@ -75,12 +88,10 @@ class SearchFragment : BottomSheetDialogFragment(), OnClickGetModel {
             }
     }
 
-    private fun initRecyclerView() {
-        adapterTypeMovie = MovieCategoryAdapter { category ->
-            category.name?.let { viewModel.getMoviesByCategory(it) }
-            isCategory = category.name
-        }
-        adapterCardMovieByType = MovieCardByCategoryAdapter(this)
+    private fun initRecyclerView(
+        adapterTypeMovie: MovieCategoryAdapter,
+        adapterCardMovieByType: MovieCardByCategoryAdapter
+    ) {
 
         binding.recyclerViewType.adapter = adapterTypeMovie
         binding.recyclerViewMovieByType.adapter = adapterCardMovieByType
@@ -103,40 +114,49 @@ class SearchFragment : BottomSheetDialogFragment(), OnClickGetModel {
         )
     }
 
-    private fun observerViewModel() {
+    private fun observerViewModel(
+        adapterTypeMovie: MovieCategoryAdapter,
+        adapterCardMovieByType: MovieCardByCategoryAdapter
+    ) {
         viewModel.stateMovieCategory.observe(viewLifecycleOwner) { categoryState ->
             when (categoryState) {
                 MovieCategorySearchFragmentState.Error -> Unit
                 MovieCategorySearchFragmentState.LoadingMoviesSearch -> Unit
                 is MovieCategorySearchFragmentState.SuccessMoviesSearch -> {
 
+                    adapterTypeMovie.submitList(categoryState.categories.toListCategoryUi())
                     val currentList = adapterTypeMovie.currentList
-                    adapterTypeMovie.submitList(currentList.plus(categoryState.categories.toListCategoryUi()))
 
                     if (currentList.isNotEmpty()) {
                         val firstType = currentList[0]
                         firstType.name?.let { type ->
-                            viewModel.getMoviesByCategory(
-                                type
-                            )
+                            viewModel.getMoviesByCategory(type)
+                            isCategory = type
                         }
                     }
                 }
             }
         }
+
         viewModel.stateMoviesByCategory.observe(viewLifecycleOwner) { movieState ->
             when (movieState) {
                 MoviesByCategoriesSearchFragmentState.Error -> Unit
                 MoviesByCategoriesSearchFragmentState.LoadingMoviesSearch -> Unit
                 is MoviesByCategoriesSearchFragmentState.SuccessMoviesSearch -> {
+
                     val currentList = adapterCardMovieByType.currentList
+
                     if (currentList.isNotEmpty() && movieState.update) {
                         adapterCardMovieByType.submitList(emptyList())
                         adapterCardMovieByType.submitList(movieState.movies.toListMovieUi())
-                    } else adapterCardMovieByType.submitList(currentList.plus(movieState.movies.toListMovieUi()))
+                    } else {
+                        adapterCardMovieByType.submitList(currentList.plus(movieState.movies.toListMovieUi()))
+                    }
+
                 }
             }
         }
+
     }
 
     override fun onDestroy() {

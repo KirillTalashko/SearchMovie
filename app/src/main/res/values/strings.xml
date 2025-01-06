@@ -16,8 +16,8 @@
     <string name="comedy">Комедия</string>
     <string name="thriller">Триллер</string>
     <string name="description">Описание</string>
-    <string name="read_less_text">...Read less</string>
-    <string name="read_more_text">...Read more</string>
+    <string name="read_less_text">…Уменьшить</string>
+    <string name="read_more_text">…Увеличить</string>
     <string name="no_description">Описание к фильму отсутствует</string>
     <string name="no_genre">Без жанра</string>
     <string name="similar_movies">Похожие фильмы</string>
@@ -29,6 +29,6 @@
     <string name="connect_internet">Подключено к интернету</string>
     <string name="show_selection_of_movies_from_database">Взять фильмы с локальной базы данных?</string>
     <string name="show_selection_of_movies_from_network">Взять фильмы с сети?</string>
-
-
+    <string name="search_movies_and_categories">Поиск фильмов и выбор по категориям</string>
+    <string name="enter_text">Введите текст</string>
 </resources>

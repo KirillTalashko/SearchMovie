@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">SearchMovie</string>
+    <string name="watch_film">Watch the movie</string>
+    <string name="watch_trailer">Watch trailer</string>
+    <string name="name">Name</string>
+    <string name="popular">Popular</string>
+    <string name="text_rating_imdb">IMDb</string>
+    <string name="text_rating_kp">KP</string>
+    <string name="text_rating_movie">7.0</string>
+    <string name="no_name">No title</string>
+    <string name="minutes">minutes</string>
+    <string name="random_time">152</string>
+    <string name="year">2023</string>
+    <string name="release_date">Release date</string>
+    <string name="genre">Genre</string>
+    <string name="comedy">Comedy</string>
+    <string name="thriller">Thriller</string>
+    <string name="description">Description</string>
+    <string name="read_less_text">…Read less</string>
+    <string name="read_more_text">…Read more</string>
+    <string name="no_description">There is no description for the film</string>
+    <string name="no_genre">No genre</string>
+    <string name="similar_movies">Similar movies</string>
+    <string name="network_date">The data was taken from the Internet</string>
+    <string name="local_date">Some data were taken from a local database</string>
+    <string name="positive_option">OK</string>
+    <string name="negative_option">Cancel</string>
+    <string name="no_internet">No internet</string>
+    <string name="connect_internet">Connected to the Internet</string>
+    <string name="show_selection_of_movies_from_database">Get movies from local database?</string>
+    <string name="show_selection_of_movies_from_network">Take movies from the network?</string>
+    <string name="search_movies_and_categories">Find Movies, Tv series, and more..</string>
+    <string name="enter_text">Enter text</string>
+
+</resources>
