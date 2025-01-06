@@ -1,9 +1,15 @@
 <resources>
 
-    <style name="Base.Theme.SearchMovie" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.SearchMovie" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">#FF5722</item>
         <item name="colorPrimaryDark">#BF360C</item>
     </style>
 
-    <style name="Theme.SearchMovie" parent="Base.Theme.SearchMovie" />
+    <style name="AppBottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+    </style>
+
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_rounded_corners</item>
+    </style>
 </resources>
