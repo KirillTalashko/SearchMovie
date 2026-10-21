@@ -1,6 +1,7 @@
 package com.example.network.domain.repository
 
 import com.example.network.domain.api.MovieApi
+import com.example.network.modelsMovie.Category
 import com.example.network.modelsMovie.ListMovie
 import com.example.network.modelsMovie.Movie
 import retrofit2.Response
@@ -15,14 +16,20 @@ class MovieRepositoryImpl(private val movieApi: MovieApi) : MovieRepository {
         limit: Int,
         page: Int,
         rating: String,
-        genres: List<String>
+        genres: List<String>,
+        type: String?
     ): Response<ListMovie> {
         return movieApi.getListMovie(
             limit = limit,
             page = page,
             ratingKp = rating,
-            genres = genres
+            genres = genres,
+            type = type
         )
+    }
+
+    override suspend fun getFilteringOptions(field: String): Response<List<Category>> {
+        return movieApi.getCategoryMovie(field)
     }
 
 

@@ -1,7 +1,6 @@
 package com.example.searchmovie.presentation.cardMovie.viewHolder
 
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.databinding.ScreenSimilarMovieBinding
 import com.example.searchmovie.presentation.modelMovie.MovieUi
@@ -28,10 +27,10 @@ class MoviesRelatedViewHolder(
         movie = item
         binding.imageSimilarMovieSecond.loadPhoto(item.poster?.url)
         binding.textSimilarMovieSecond.text = item.name
-        if (onClick.isLocalData() == true) {
+        /*if (onClick.isLocalData() == true) {
             binding.imageViewLocalDataSimilarMovie.visibility = View.VISIBLE
         } else {
             binding.imageViewLocalDataSimilarMovie.visibility = View.GONE
-        }
+        }*/
     }
 }

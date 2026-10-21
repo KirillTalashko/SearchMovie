@@ -4,15 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.logic.state.MovieMainFragmentState
-import com.example.logic.state.MoviesMainFragmentState
-import com.example.logic.useCase.MovieUseCase
+import com.example.domain.state.MovieMainFragmentState
+import com.example.domain.state.MoviesMainFragmentState
+import com.example.domain.useCase.MovieMainUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ViewModelRandomMovie @Inject constructor(
-    private val useCase: MovieUseCase
+    private val useCase: MovieMainUseCase
 ) : ViewModel() {
 
     fun getIsLoading() = useCase.isLoading

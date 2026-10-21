@@ -8,7 +8,7 @@ object IntervalTimer {
     const val FAST_TIME = 1000L
     const val MIDDLE_TIME = 3000L
 
-    private const val MAX_TIME = 180000L
+    private const val MAX_TIME = 1800000L
 
     fun setIntervalTime(interval: Long): Long {
         intervalTime += interval

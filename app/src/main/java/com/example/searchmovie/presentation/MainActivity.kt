@@ -1,5 +1,6 @@
 package com.example.searchmovie.presentation
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +18,7 @@ import com.example.searchmovie.worker.NetworkCheckerWorker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.bottomsNavMenu.setupWithNavController((supportFragmentManager.findFragmentById(R.id.container_main) as NavHostFragment).navController)
+        setDefaultLanguage()
         displayErrors()
         checkNetworkAccess()
     }
@@ -81,5 +84,13 @@ class MainActivity : AppCompatActivity() {
         WorkManager.getInstance(this@MainActivity).cancelUniqueWork("NetworkChecker")
         super.onDestroy()
         _binding = null
+    }
+
+    private fun setDefaultLanguage() {
+        val locale = Locale("ru")
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 }

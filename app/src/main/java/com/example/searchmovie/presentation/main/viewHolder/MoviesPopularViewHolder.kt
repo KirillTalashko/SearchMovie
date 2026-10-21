@@ -1,6 +1,5 @@
 package com.example.searchmovie.presentation.main.viewHolder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.searchmovie.databinding.ScreenCardPopularMovieBinding
 import com.example.searchmovie.presentation.modelMovie.MovieUi
@@ -30,11 +29,11 @@ class MoviesPopularViewHolder(
         binding.customViewCardShortHelpMovie.getMovieRatingTextView().text =
             (floor(item.rating.kp * 10) / 10).toString()
         binding.imageViewWallpaperMovie.loadPhoto(item.poster?.url)
-        if (onClick.isLocalData() == true) {
-            binding.imageViewLocalDateMovies?.visibility = View.VISIBLE
-        } else {
-            binding.imageViewLocalDateMovies?.visibility = View.GONE
-        }
+//        if (onClick.isLocalData() == true) {
+//            binding.imageViewLocalDateMovies?.visibility = View.VISIBLE
+//        } else {
+//            binding.imageViewLocalDateMovies?.visibility = View.GONE
+//        }
     }
 
 }

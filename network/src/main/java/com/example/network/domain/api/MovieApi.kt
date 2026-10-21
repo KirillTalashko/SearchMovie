@@ -1,6 +1,7 @@
 package com.example.network.domain.api
 
 
+import com.example.network.modelsMovie.Category
 import com.example.network.modelsMovie.ListMovie
 import com.example.network.modelsMovie.Movie
 import retrofit2.Response
@@ -17,5 +18,11 @@ interface MovieApi {
         @Query("page") page: Int,
         @Query("rating.kp") ratingKp: String,
         @Query("genres.name") genres: List<String>,
+        @Query("type") type: String? = null,
     ): Response<ListMovie>
+
+    @GET("v1/movie/possible-values-by-field")
+    suspend fun getCategoryMovie(
+        @Query("field") field: String
+    ): Response<List<Category>>
 }
